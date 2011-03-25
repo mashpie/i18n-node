@@ -18,7 +18,7 @@ in your app.js
 
 	// load modules
 	var express = require('express'),
-	    i18n = require("./lib/i18n");
+	    i18n = require("i18n");
 	
 	// register helpers for use in templates
 	app.helpers({
