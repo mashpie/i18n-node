@@ -1,6 +1,9 @@
 /**
- * @author      Created by Marcus Spiegel on 2011-03-25. marcus@aupeo.com
+ * @author      Created by Marcus Spiegel <marcus.spiegel@gmail.com> on 2011-03-25.
+ * @link        https://github.com/mashpie/i18n-node
  * @license		http://creativecommons.org/licenses/by-sa/3.0/
+ *
+ * @version     0.0.1a
  */
 
 // dependencies
