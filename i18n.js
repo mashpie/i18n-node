@@ -7,7 +7,7 @@
  */
 
 // dependencies
-var vsprintf  = require('sprintf').vsprintf,
+var vsprintf  = require('sprintf').vsprintf, // 0.1.1
     fs        = require('fs'),
     path      = require('path'),
     locales   = {},
