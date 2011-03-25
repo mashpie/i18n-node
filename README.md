@@ -2,7 +2,7 @@
 
 Lightweight simple translation module with dynamic json storage. 
 Uses common __('...') syntax in app and templates.
-Stores language files in json files compatible to http://webtranslateit.com/ json format.
+Stores language files in json files compatible to [webtranslateit](http://webtranslateit.com/) json format.
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
