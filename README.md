@@ -8,6 +8,7 @@ No extra parsing needed.
 
 ## Install
 
+	npm install i18n
 
 ## Usage
 
