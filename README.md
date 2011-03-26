@@ -50,6 +50,21 @@ this puts **Hello Marcus, how are you today?**. You might add endless arguments 
 	
 which puts **Hello Marcus, how are you today? How was your weekend.**
 
+### variable support
+
+you might even use dynamic variables. They get added to the `en.js` file if not yet existing.
+
+	var greetings = ['Hi', 'Hello', 'Howdy'];        
+    for (var i=0; i < greetings.length; i++) {
+        console.log( __(greetings[i]) );
+    };
+
+which puts 
+
+	Hi
+	Hello
+	Howdy
+
 ### json file
 
 the above will automatically generate a `en.js` by default inside `./locales/` which looks like

@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license		http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @version     0.0.1a
+ * @version     0.0.2a
  */
 
 // dependencies
@@ -17,12 +17,23 @@ var vsprintf  = require('sprintf').vsprintf, // 0.1.1
 // public export
 var i18n = exports;
 
+i18n.version = '0.0.2a';
+
 i18n.__ = function() {
     var msg = translate(arguments[0]);
     if (arguments.length > 1) {
         msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
     }
     return msg;
+};
+
+i18n.setLocale = function() {
+    locale = arguments[0];
+    return i18n.getLocale();
+};
+
+i18n.getLocale = function() {
+    return locale;
 };
 
 // ===================
@@ -47,7 +58,8 @@ function read(locale) {
     try {
         locales[locale] = JSON.parse(fs.readFileSync(locate(locale)));
     } catch(e) {
-        console.log('error reading locale for "'+locale+'": ' + e);
+        console.log('initializing '+locate(locale));
+        write(locale);
     }
 }
 
@@ -58,7 +70,7 @@ function write(locale) {
     } catch(e) {
         fs.mkdirSync(directory, 0755);
     }
-    fs.writeFile(locate(locale), JSON.stringify(locales[locale]));
+    fs.writeFile(locate(locale), JSON.stringify(locales[locale], null, "\t"));
 }
 
 // basic normalization of filepath
