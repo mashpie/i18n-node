@@ -2,11 +2,12 @@
 
 var i18n = require('../i18n'),
     __ = i18n.__,
+    __n = i18n.__n,
     assert = require('assert');
 
 module.exports = {
     'check version': function() {
-        assert.equal(i18n.version, '0.0.2a');
+        assert.equal(i18n.version, '0.1.0');
     },
     
     'check set/getLocale': function(){
@@ -25,6 +26,35 @@ module.exports = {
         assert.equal(__('Hello'), 'Hallo');
         assert.equal(__('Hello %s, how are you today?', 'Marcus'), 'Hallo Marcus, wie geht es dir heute?');
         assert.equal(__('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend')), 'Hallo Marcus, wie geht es dir heute? Wie war dein Wochenende.');        
+
+    },
+    
+    'check plural': function() {
+        i18n.setLocale('en');
+        var singular = __n('%s cat', '%s cats', 1);
+        var plural = __n('%s cat', '%s cats', 3);
+        assert.equal(singular, '1 cat');
+        assert.equal(plural, '3 cats');
+
+        i18n.setLocale('de');
+        var singular = __n('%s cat', '%s cats', 1);
+        var plural = __n('%s cat', '%s cats', 3);
+        assert.equal(singular, '1 Katze');
+        assert.equal(plural, '3 Katzen');
+    },
+    
+    'check nested plural': function() {
+        i18n.setLocale('en');
+        var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, __('tree'));
+        var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, __('tree'));
+        assert.equal(singular, 'There is one monkey in the tree');
+        assert.equal(plural, 'There are 3 monkeys in the tree');
+
+        i18n.setLocale('de');
+        var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, __('tree'));
+        var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, __('tree'));
+        assert.equal(singular, 'Im Baum sitzt ein Affe');
+        assert.equal(plural, 'Im Baum sitzen 3 Affen');
 
     },
     

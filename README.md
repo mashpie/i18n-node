@@ -65,15 +65,59 @@ which puts
 	Hello
 	Howdy
 
+### plural support
+
+different plural froms are supported as response to `count`:
+
+	var singular = __n('%s cat', '%s cats', 1);
+    var plural = __n('%s cat', '%s cats', 3);
+
+this puts **1 cat** or **3 cats**
+and again these could get nested:
+
+	var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, 'tree');
+	var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, 'tree');
+	
+putting **There is one monkey in the tree** or **There are 3 monkeys in the tree**
+
 ### json file
 
 the above will automatically generate a `en.js` by default inside `./locales/` which looks like
 
 	{
-	    "Hello":"Hello",
-	    "Hello %s, how are you today?":"Hello %s, how are you today?",
-	    "weekend":"weekend",
-	    "Hello %s, how are you today? How was your %s.":"Hello %s, how are you today? How was your %s."
+		"Hello": "Hello",
+		"Hello %s, how are you today?": "Hello %s, how are you today?",
+		"weekend": "weekend",
+		"Hello %s, how are you today? How was your %s.": "Hello %s, how are you today? How was your %s.",
+		"Hi": "Hi",
+		"Howdy": "Howdy",
+		"%s cat": {
+			"one": "%s cat",
+			"other": "%s cats"
+		},
+		"There is one monkey in the %%s": {
+			"one": "There is one monkey in the %%s",
+			"other": "There are %d monkeys in the %%s"
+		},
+		"tree": "tree"
 	}
 
-that file can be edited or just uploaded to webtranslateit for any kind of collaborative translation workflow.
+that file can be edited or just uploaded to [webtranslateit](http://docs.webtranslateit.com/file_formats/) for any kind of collaborative translation workflow:
+
+	{
+		"Hello": "Hallo",
+		"Hello %s, how are you today?": "Hallo %s, wie geht es dir heute?",
+		"weekend": "Wochenende",
+		"Hello %s, how are you today? How was your %s.": "Hallo %s, wie geht es dir heute? Wie war dein %s.",
+		"Hi": "Hi",
+		"Howdy": "Hallöchen",
+		"%s cat": {
+			"one": "%s Katze",
+			"other": "%s Katzen"
+		},
+		"There is one monkey in the %%s": {
+			"one": "Im %%s sitzt ein Affe",
+			"other": "Im Baum sitzen %d Affen"
+		},
+		"tree": "Baum"
+	}
