@@ -1,13 +1,19 @@
 // Run $ expresso
 
 var i18n = require('../i18n'),
-    __ = i18n.__,
-    __n = i18n.__n,
     assert = require('assert');
+
+    i18n.configure({
+        // setup some locales - other locales default to en silently
+        locales:['en', 'de'],
+        
+        // where to register __() and __n() to, might be "global" if you know what you are doing
+        register: global
+    });
 
 module.exports = {
     'check version': function() {
-        assert.equal(i18n.version, '0.1.0');
+        assert.equal(i18n.version, '0.3.0');
     },
     
     'check set/getLocale': function(){

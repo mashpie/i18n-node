@@ -20,6 +20,8 @@ in your app.js
 	var express = require('express'),
 	    i18n = require("i18n");
 	
+now you are ready to use `i18n.__('Hello')`, or you register some helpers, like:
+	
 	// register helpers for use in templates
 	app.helpers({
 	  __: i18n.__
@@ -27,6 +29,29 @@ in your app.js
 	
 	// or even a global for use in your app.js
 	var __= i18n.__;
+	
+or (since 0.3.0) use configure to setup these:
+
+    i18n.configure({
+        // setup some locales - other locales default to en silently
+        locales:['en', 'de'],
+
+        // where to register __() and __n() to, might be "global" if you know what you are doing
+        register: global
+    });
+
+in an express app, you might use i18n.init to gather language settings of your visitors, ie:
+
+	// Configuration
+	app.configure(function() {
+
+    	[...]
+
+	    // using 'accept-language' header to guess language settings
+	    app.use(i18n.init);
+	    app.use(app.router);
+	    app.use(express.static(__dirname + '/public'));
+	});
 	
 ### simple usage
 
@@ -121,3 +146,10 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 		},
 		"tree": "Baum"
 	}
+	
+### Changelog
+
+0.3.0: added configure and init with express support (calling guessLanguage() via 'accept-language')
+0.2.0: added plurals
+0.1.0: added tests
+0.0.1: start 
