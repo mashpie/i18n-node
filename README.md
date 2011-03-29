@@ -149,7 +149,7 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 	
 ### Changelog
 
-0.3.0: added configure and init with express support (calling guessLanguage() via 'accept-language')
-0.2.0: added plurals
-0.1.0: added tests
-0.0.1: start 
+* 0.3.0: added configure and init with express support (calling guessLanguage() via 'accept-language')
+* 0.2.0: added plurals
+* 0.1.0: added tests
+* 0.0.1: start 
