@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license		http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @version     0.3.1
+ * @version     0.3.2
  */
 
 // dependencies
