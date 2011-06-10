@@ -7,22 +7,22 @@
  */
 
 // dependencies
+var vsprintf = require('sprintf').vsprintf,
 
-var vsprintf = require('sprintf').vsprintf, // 0.1.1
     fs = require('fs'),
+    url = require('url'),
     path = require('path'),
     
 // defaults
-    
     locales = {},
-    locale = 'en',
+    defaultLocale = 'de',
+    cookiename = null,
     directory = './locales';
 
 // public exports
-
 var i18n = exports;
 
-i18n.version = '0.3.0';
+i18n.version = '0.3.2';
 
 i18n.configure = function(opt){
     if( typeof opt.locales === 'object' ){
@@ -35,6 +35,12 @@ i18n.configure = function(opt){
     if( typeof opt.register === 'object' ){
         opt.register.__ = i18n.__;
         opt.register.__n = i18n.__n;
+    opt.register.getLocale = i18n.getLocale;
+  }
+  
+  // sets a custom cookie name to parse locale settings from
+  if (typeof opt.cookie === 'string'){
+    cookiename = opt.cookie;
     }
 }
 
@@ -48,7 +54,11 @@ i18n.init = function(request, response, next) {
 };
 
 i18n.__ = function() {
-    var msg = translate(arguments[0]);
+  var locale;
+  if (this && this.scope) {
+    locale = this.scope.locale;
+  }
+  var msg = translate(locale, arguments[0]);
     if (arguments.length > 1) {
         msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
     }
@@ -56,10 +66,14 @@ i18n.__ = function() {
 };
 
 i18n.__n = function() {
+  var locale;
+  if (this && this.scope) {
+    locale = this.scope.locale;
+  }
     var singular = arguments[0];
     var plural = arguments[1];
     var count = arguments[2];
-    var msg = translate(singular, plural);
+  var msg = translate(locale, singular, plural);
 
     if (parseInt(count) > 1) {
         msg = vsprintf(msg.other, [count]);
@@ -74,31 +88,45 @@ i18n.__n = function() {
     return msg;
 };
 
-i18n.setLocale = function() {
-    if (locales[arguments[0]]) {
-        locale = arguments[0];
+i18n.setLocale = function(request, target_locale) {
+  if (locales[target_locale]) {
+    request.locale = target_locale;
     }
-    return i18n.getLocale();
+  return i18n.getLocale(request);
 };
 
-i18n.getLocale = function() {
-    return locale;
+i18n.getLocale = function(request) {
+  if (request === undefined) {
+    console.log("No request passed in - returning default locale");
+    return defaultLocale;
+  }
+  return request.locale;
 };
+
+i18n.overrideLocaleFromQuery = function(req) {
+  if (req == null) {
+    return;
+  }
+  var urlObj = url.parse(req.url, true);
+  if (urlObj.query.locale) {
+    console.log("Overriding locale from query: " + urlObj.query.locale);
+    i18n.setLocale(req, urlObj.query.locale.toLowerCase());
+  }
+}
 
 // ===================
 // = private methods =
 // ===================
-
 // guess language setting based on http headers
 function guessLanguage(request){
     if(typeof request === 'object'){
         var language_header = request.headers['accept-language'],
         languages = [];
         regions = [];
-        request.languages = [locale];
-        request.regions = [locale];
-        request.language = locale;
-        request.region = locale;
+    request.languages = [defaultLocale];
+    request.regions = [defaultLocale];
+    request.language = defaultLocale;
+    request.region = defaultLocale;
 
         if (language_header) {
             language_header.split(',').forEach(function(l) {
@@ -122,12 +150,22 @@ function guessLanguage(request){
                 request.region = regions[0];
             }
         }
-        i18n.setLocale(request.language);
+    
+    // setting the language by cookie
+    if (cookiename && request.cookies[cookiename]) {
+      request.language = request.cookies[cookiename];
+    } 
+    
+    i18n.setLocale(request, request.language);
     }
 }
 
 // read locale file, translate a msg and write to fs if new
-function translate(singular, plural) {
+function translate(locale, singular, plural) {
+  if (locale === undefined) {
+    console.log("No locale found - check the context of the call to $__?");
+    return singular;
+  }
     if (!locales[locale]) {
         read(locale);
     }
@@ -151,13 +189,22 @@ function translate(singular, plural) {
 
 // try reading a file
 function read(locale) {
-    locales[locale] = {};
+  var localeFile = {};
+  var file = locate(locale);
+  // try to read from FS
     try {
-        locales[locale] = JSON.parse(fs.readFileSync(locate(locale)));
+    localeFile = fs.readFileSync(file);
     } catch(e) {
-        console.log('initializing ' + locate(locale));
+    console.log('initializing ' + file);
         write(locale);
     }
+
+  // try to parse to JSON
+  try {
+    locales[locale] = JSON.parse(localeFile);
+  } catch(e) {
+    console.log('unable to parse locales from file ('+file+'): ', e);
+  }
 }
 
 // try writing a file in a created directory
