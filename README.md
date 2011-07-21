@@ -6,7 +6,6 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-
 ## Install
 
 	npm install i18n
