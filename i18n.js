@@ -167,7 +167,12 @@ function write(locale) {
     } catch(e) {
         fs.mkdirSync(directory, 0755);
     }
-    fs.writeFile(locate(locale), JSON.stringify(locales[locale], null, "\t"));
+    var target = locate(locale), tmp  = target + ".tmp";
+    fs.writeFile(tmp, JSON.stringify(locales[locale], null, "\t"),
+        "utf8", function(err) {
+            if(!err)
+                fs.renameSync(tmp, target);
+	});
 }
 
 // basic normalization of filepath
