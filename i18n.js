@@ -7,42 +7,40 @@
  */
 
 // dependencies
-
-var vsprintf = require('sprintf').vsprintf, // 0.1.1
+var vsprintf = require('sprintf').vsprintf,
+    // 0.1.1
     fs = require('fs'),
     path = require('path'),
-    
-// defaults
-    
+
+    // defaults
     locales = {},
     locale = 'en',
     directory = './locales';
 
 // public exports
-
 var i18n = exports;
 
-i18n.version = '0.3.0';
+i18n.version = '0.3.2';
 
-i18n.configure = function(opt){
-    if( typeof opt.locales === 'object' ){
-        opt.locales.forEach(function(l){
+i18n.configure = function(opt) {
+    if (typeof opt.locales === 'object') {
+        opt.locales.forEach(function(l) {
             read(l);
         });
     }
-    
+
     // you may register helpers in global scope, up to you
-    if( typeof opt.register === 'object' ){
+    if (typeof opt.register === 'object') {
         opt.register.__ = i18n.__;
         opt.register.__n = i18n.__n;
     }
 }
 
-i18n.init = function(request, response, next) { 
-    if( typeof request === 'object' ){
+i18n.init = function(request, response, next) {
+    if (typeof request === 'object') {
         guessLanguage(request);
     }
-    if( typeof next === 'function' ){
+    if (typeof next === 'function') {
         next();
     }
 };
@@ -88,10 +86,9 @@ i18n.getLocale = function() {
 // ===================
 // = private methods =
 // ===================
-
 // guess language setting based on http headers
-function guessLanguage(request){
-    if(typeof request === 'object'){
+function guessLanguage(request) {
+    if (typeof request === 'object') {
         var language_header = request.headers['accept-language'],
         languages = [];
         regions = [];
@@ -165,14 +162,16 @@ function write(locale) {
     try {
         stats = fs.lstatSync(directory);
     } catch(e) {
+        console.log('creating locales dir in: ' + directory);
         fs.mkdirSync(directory, 0755);
     }
-    var target = locate(locale), tmp  = target + ".tmp";
-    fs.writeFile(tmp, JSON.stringify(locales[locale], null, "\t"),
-        "utf8", function(err) {
-            if(!err)
-                fs.renameSync(tmp, target);
-	});
+    var target = locate(locale),
+        tmp = target + ".tmp";
+    fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, "\t"), "utf8");
+    fs.stat(tmp, function(err, stat){
+        if (err) throw err;
+        fs.rename(tmp, target);
+    });
 }
 
 // basic normalization of filepath

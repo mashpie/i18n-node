@@ -13,7 +13,7 @@ var i18n = require('../i18n'),
 
 module.exports = {
     'check version': function() {
-        assert.equal(i18n.version, '0.3.0');
+        assert.equal(i18n.version, '0.3.2');
     },
     
     'check set/getLocale': function(){
