@@ -149,6 +149,7 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 	
 ### Changelog
 
+* 0.3.3: merged pull request from codders/master and modified for backward compatibility. Usage and tests pending
 * 0.3.2: merged pull request #7 from carlptr/master and added tests, modified fswrite to do sync writes
 * 0.3.0: added configure and init with express support (calling guessLanguage() via 'accept-language')
 * 0.2.0: added plurals

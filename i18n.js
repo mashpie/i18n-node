@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license		http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @version     0.3.2
+ * @version     0.3.3
  */
 
 // dependencies
@@ -12,17 +12,17 @@ var vsprintf = require('sprintf').vsprintf,
     fs = require('fs'),
     url = require('url'),
     path = require('path'),
-    
+
 // defaults
     locales = {},
-    defaultLocale = 'de',
+    defaultLocale = 'en',
     cookiename = null,
     directory = './locales';
 
 // public exports
 var i18n = exports;
 
-i18n.version = '0.3.2';
+i18n.version = '0.3.3';
 
 i18n.configure = function(opt) {
     if (typeof opt.locales === 'object') {
@@ -35,12 +35,12 @@ i18n.configure = function(opt) {
     if (typeof opt.register === 'object') {
         opt.register.__ = i18n.__;
         opt.register.__n = i18n.__n;
-    opt.register.getLocale = i18n.getLocale;
-  }
-  
-  // sets a custom cookie name to parse locale settings from
-  if (typeof opt.cookie === 'string'){
-    cookiename = opt.cookie;
+        opt.register.getLocale = i18n.getLocale;
+    }
+
+    // sets a custom cookie name to parse locale settings from
+    if (typeof opt.cookie === 'string') {
+        cookiename = opt.cookie;
     }
 }
 
@@ -54,11 +54,11 @@ i18n.init = function(request, response, next) {
 };
 
 i18n.__ = function() {
-  var locale;
-  if (this && this.scope) {
-    locale = this.scope.locale;
-  }
-  var msg = translate(locale, arguments[0]);
+    var locale;
+    if (this && this.scope) {
+        locale = this.scope.locale;
+    }
+    var msg = translate(locale, arguments[0]);
     if (arguments.length > 1) {
         msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
     }
@@ -66,14 +66,14 @@ i18n.__ = function() {
 };
 
 i18n.__n = function() {
-  var locale;
-  if (this && this.scope) {
-    locale = this.scope.locale;
-  }
+    var locale;
+    if (this && this.scope) {
+        locale = this.scope.locale;
+    }
     var singular = arguments[0];
     var plural = arguments[1];
     var count = arguments[2];
-  var msg = translate(locale, singular, plural);
+    var msg = translate(locale, singular, plural);
 
     if (parseInt(count) > 1) {
         msg = vsprintf(msg.other, [count]);
@@ -88,30 +88,41 @@ i18n.__n = function() {
     return msg;
 };
 
-i18n.setLocale = function(request, target_locale) {
-  if (locales[target_locale]) {
-    request.locale = target_locale;
+// either gets called like 
+// setLocale('en') or like
+// setLocale(req, 'en')
+i18n.setLocale = function(arg1, arg2) {
+    var request = {},
+        target_locale = arg1;
+
+    if(arg2 && locales[arg2]){
+        request = arg1;
+        target_locale = arg2
     }
-  return i18n.getLocale(request);
+    
+    if (locales[target_locale]) {
+        request.locale = target_locale;
+        defaultLocale = target_locale;
+    }
+    return i18n.getLocale(request);
 };
 
 i18n.getLocale = function(request) {
-  if (request === undefined) {
-    console.log("No request passed in - returning default locale");
-    return defaultLocale;
-  }
-  return request.locale;
+    if (request === undefined) {
+        return defaultLocale;
+    }
+    return request.locale;
 };
 
 i18n.overrideLocaleFromQuery = function(req) {
-  if (req == null) {
-    return;
-  }
-  var urlObj = url.parse(req.url, true);
-  if (urlObj.query.locale) {
-    console.log("Overriding locale from query: " + urlObj.query.locale);
-    i18n.setLocale(req, urlObj.query.locale.toLowerCase());
-  }
+    if (req == null) {
+        return;
+    }
+    var urlObj = url.parse(req.url, true);
+    if (urlObj.query.locale) {
+        console.log("Overriding locale from query: " + urlObj.query.locale);
+        i18n.setLocale(req, urlObj.query.locale.toLowerCase());
+    }
 }
 
 // ===================
@@ -123,10 +134,10 @@ function guessLanguage(request) {
         var language_header = request.headers['accept-language'],
         languages = [];
         regions = [];
-    request.languages = [defaultLocale];
-    request.regions = [defaultLocale];
-    request.language = defaultLocale;
-    request.region = defaultLocale;
+        request.languages = [defaultLocale];
+        request.regions = [defaultLocale];
+        request.language = defaultLocale;
+        request.region = defaultLocale;
 
         if (language_header) {
             language_header.split(',').forEach(function(l) {
@@ -150,26 +161,27 @@ function guessLanguage(request) {
                 request.region = regions[0];
             }
         }
-    
-    // setting the language by cookie
-    if (cookiename && request.cookies[cookiename]) {
-      request.language = request.cookies[cookiename];
-    } 
-    
-    i18n.setLocale(request, request.language);
+
+        // setting the language by cookie
+        if (cookiename && request.cookies[cookiename]) {
+            request.language = request.cookies[cookiename];
+        }
+
+        i18n.setLocale(request, request.language);
     }
 }
 
 // read locale file, translate a msg and write to fs if new
 function translate(locale, singular, plural) {
-  if (locale === undefined) {
-    console.log("No locale found - check the context of the call to $__?");
-    return singular;
-  }
+    if (locale === undefined) {
+        console.warn("WARN: No locale found - check the context of the call to $__?");
+        locale = defaultLocale;
+    }
+    
     if (!locales[locale]) {
         read(locale);
     }
-
+    
     if (plural) {
         if (!locales[locale][singular]) {
             locales[locale][singular] = {
@@ -179,7 +191,7 @@ function translate(locale, singular, plural) {
             write(locale);
         }
     }
-
+    
     if (!locales[locale][singular]) {
         locales[locale][singular] = singular;
         write(locale);
@@ -189,22 +201,23 @@ function translate(locale, singular, plural) {
 
 // try reading a file
 function read(locale) {
-  var localeFile = {};
-  var file = locate(locale);
-  // try to read from FS
+    var localeFile = {};
+    var file = locate(locale);
+    // try to read from FS
     try {
-    localeFile = fs.readFileSync(file);
+        localeFile = fs.readFileSync(file);
+        console.log('read ' + file + ' for locale: ' + locale);
     } catch(e) {
-    console.log('initializing ' + file);
+        console.log('initializing ' + file);
         write(locale);
     }
 
-  // try to parse to JSON
-  try {
-    locales[locale] = JSON.parse(localeFile);
-  } catch(e) {
-    console.log('unable to parse locales from file ('+file+'): ', e);
-  }
+    // try to parse to JSON
+    try {
+        locales[locale] = JSON.parse(localeFile);
+    } catch(e) {
+        console.log('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+    }
 }
 
 // try writing a file in a created directory
@@ -217,11 +230,18 @@ function write(locale) {
     }
     var target = locate(locale),
         tmp = target + ".tmp";
+
+    // first time init has an empty file
+    if(!locales[locale]){
+        locales[locale] = {};
+    }
+
     fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, "\t"), "utf8");
-    fs.stat(tmp, function(err, stat){
+    fs.stat(tmp, function(err, stat) {
         if (err) throw err;
         fs.rename(tmp, target);
     });
+
 }
 
 // basic normalization of filepath
