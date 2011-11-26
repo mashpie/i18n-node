@@ -26,12 +26,6 @@ var i18n = exports;
 i18n.version = '0.3.4';
 
 i18n.configure = function(opt) {
-    if (typeof opt.locales === 'object') {
-        opt.locales.forEach(function(l) {
-            read(l);
-        });
-    }
-
     // you may register helpers in global scope, up to you
     if (typeof opt.register === 'object') {
         opt.register.__ = i18n.__;
@@ -47,12 +41,21 @@ i18n.configure = function(opt) {
 	// where to store json files
     if (typeof opt.directory === 'string') {
       	directory = opt.directory;
-    }
+    }else{
+		directory = './locales';
+	}
 
 	// enabled some debug output
 	if (opt.debug) {
 		debug = opt.debug;
 	}
+	
+	// implicitly read all locales
+    if (typeof opt.locales === 'object') {
+        opt.locales.forEach(function(l) {
+            read(l);
+        });
+    }
 }
 
 i18n.init = function(request, response, next) {

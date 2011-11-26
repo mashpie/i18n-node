@@ -11,26 +11,18 @@ var i18n = require('../i18n'),
 		debug: true
     });
 
-fs.rmdirSync('./testlocales');
-
-// module.exports = {    
-//     'check set/getLocale': function(){
-// 		var loc = i18n.getLocale();
-//         assert.equal('en', i18n.getLocale(), 'should return default setting');
-//         assert.equal('de', i18n.setLocale('de'), 'should return the new setting');
-//         assert.equal('de', i18n.getLocale(), 'should return the new setting');
-//     },
-//     
-//     'check singular': function(){
-//         i18n.setLocale('en');
-//         assert.equal(__('Hello'), 'Hello');
-//         assert.equal(__('Hello %s, how are you today?', 'Marcus'), 'Hello Marcus, how are you today?');
-//         assert.equal(__('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend')), 'Hello Marcus, how are you today? How was your weekend.');        
-//     },
-// 
-// 	'check_directory': function(){
-// 		fs.stat('./testlocales/de.js', function(err, stat) {
-// 			assert.isNull(err, './testlocales/de.js should exist');
-// 	    });
-// 	}
-// };
+module.exports = {    
+    'check set/getLocale': function(){
+		var loc = i18n.getLocale();
+        assert.equal('en', i18n.getLocale(), 'should return default setting');
+        assert.equal('de', i18n.setLocale('de'), 'should return the new setting');
+        assert.equal('de', i18n.getLocale(), 'should return the new setting');
+    },
+    
+    'check singular': function(){
+        i18n.setLocale('en');
+        assert.equal(__('Hello'), 'Hello');
+        assert.equal(__('Hello %s, how are you today?', 'Marcus'), 'Hello Marcus, how are you today?');
+        assert.equal(__('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend')), 'Hello Marcus, how are you today? How was your weekend.');        
+    }
+};
