@@ -42,6 +42,10 @@ i18n.configure = function(opt) {
     if (typeof opt.cookie === 'string') {
         cookiename = opt.cookie;
     }
+    
+    if (typeof opt.directory === 'string') {
+      directory = opt.directory;
+    }
 }
 
 i18n.init = function(request, response, next) {
@@ -174,8 +178,8 @@ function guessLanguage(request) {
 // read locale file, translate a msg and write to fs if new
 function translate(locale, singular, plural) {
     if (locale === undefined) {
-        console.warn("WARN: No locale found - check the context of the call to $__?");
-        locale = defaultLocale;
+      console.warn("WARN: No locale found - check the context of the call to $__?");
+      locale = defaultLocale;
     }
     
     if (!locales[locale]) {
