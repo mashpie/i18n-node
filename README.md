@@ -10,27 +10,17 @@ No extra parsing needed.
 
 	npm install i18n
 
-## Usage
-
-### load and configure with express
-
+## Load
 in your app.js
 
 	// load modules
 	var express = require('express'),
 	    i18n = require("i18n");
 	
-now you are ready to use `i18n.__('Hello')`, or you register some helpers, like:
-	
-	// register helpers for use in templates
-	app.helpers({
-	  __: i18n.__
-	});
-	
-	// or even a global for use in your app.js
-	var __= i18n.__;
-	
-or (since 0.3.0) use configure to setup these:
+now you are ready to use `i18n.__('Hello')`.
+
+## Configure
+use configure to setup these:
 
     i18n.configure({
         // setup some locales - other locales default to en silently
@@ -39,6 +29,26 @@ or (since 0.3.0) use configure to setup these:
         // where to register __() and __n() to, might be "global" if you know what you are doing
         register: global
     });
+
+**CAREFULL:** as jade uses `__` as internal variable you need to register view helpers tweaked to your needs when used with jade.
+
+### tweak helpers 
+configure i18n without register: global
+
+	i18n.configure({
+	    // setup some locales - other locales default to en silently
+	    locales:['en', 'de'],
+	});
+
+and register view helpers on your own
+
+	// register helpers for use in templates
+	app.helpers({
+	  __i: i18n.__,
+	  __n: i18n.__n
+	});
+
+### hook into express configure
 
 in an express app, you might use i18n.init to gather language settings of your visitors, ie:
 
@@ -53,7 +63,7 @@ in an express app, you might use i18n.init to gather language settings of your v
 	    app.use(express.static(__dirname + '/public'));
 	});
 	
-### simple usage
+## Use
 
 in your app
 
@@ -105,6 +115,8 @@ and again these could get nested:
 	
 putting **There is one monkey in the tree** or **There are 3 monkeys in the tree**
 
+## Storage
+
 ### json file
 
 the above will automatically generate a `en.js` by default inside `./locales/` which looks like
@@ -147,8 +159,9 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 		"tree": "Baum"
 	}
 	
-### Changelog
+## Changelog
 
+* 0.3.4: merged pull request #13 from Fuitad/master and updated README
 * 0.3.3: merged pull request from codders/master and modified for backward compatibility. Usage and tests pending
 * 0.3.2: merged pull request #7 from carlptr/master and added tests, modified fswrite to do sync writes
 * 0.3.0: added configure and init with express support (calling guessLanguage() via 'accept-language')

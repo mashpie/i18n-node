@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license		http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @version     0.3.3
+ * @version     0.3.4
  */
 
 // dependencies
@@ -17,12 +17,13 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     defaultLocale = 'en',
     cookiename = null,
+	debug = false;
     directory = './locales';
 
 // public exports
 var i18n = exports;
 
-i18n.version = '0.3.3';
+i18n.version = '0.3.4';
 
 i18n.configure = function(opt) {
     if (typeof opt.locales === 'object') {
@@ -43,9 +44,15 @@ i18n.configure = function(opt) {
         cookiename = opt.cookie;
     }
     
+	// where to store json files
     if (typeof opt.directory === 'string') {
-      directory = opt.directory;
+      	directory = opt.directory;
     }
+
+	// enabled some debug output
+	if (opt.debug) {
+		debug = opt.debug;
+	}
 }
 
 i18n.init = function(request, response, next) {
@@ -124,7 +131,7 @@ i18n.overrideLocaleFromQuery = function(req) {
     }
     var urlObj = url.parse(req.url, true);
     if (urlObj.query.locale) {
-        console.log("Overriding locale from query: " + urlObj.query.locale);
+        if (debug) console.log("Overriding locale from query: " + urlObj.query.locale);
         i18n.setLocale(req, urlObj.query.locale.toLowerCase());
     }
 }
@@ -178,7 +185,7 @@ function guessLanguage(request) {
 // read locale file, translate a msg and write to fs if new
 function translate(locale, singular, plural) {
     if (locale === undefined) {
-      console.warn("WARN: No locale found - check the context of the call to $__?");
+      if (debug) console.warn("WARN: No locale found - check the context of the call to $__?");
       locale = defaultLocale;
     }
     
@@ -220,7 +227,7 @@ function read(locale) {
     try {
         locales[locale] = JSON.parse(localeFile);
     } catch(e) {
-        console.log('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+        console.error('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
     }
 }
 
@@ -229,7 +236,7 @@ function write(locale) {
     try {
         stats = fs.lstatSync(directory);
     } catch(e) {
-        console.log('creating locales dir in: ' + directory);
+        if (debug) console.log('creating locales dir in: ' + directory);
         fs.mkdirSync(directory, 0755);
     }
     var target = locate(locale),
