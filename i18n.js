@@ -146,7 +146,7 @@ i18n.overrideLocaleFromQuery = function(req) {
 function guessLanguage(request) {
     if (typeof request === 'object') {
         var language_header = request.headers['accept-language'],
-        languages = [];
+        languages = [],
         regions = [];
         request.languages = [defaultLocale];
         request.regions = [defaultLocale];
