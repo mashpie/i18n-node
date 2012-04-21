@@ -260,5 +260,5 @@ function write(locale) {
 
 // basic normalization of filepath
 function locate(locale) {
-    return path.normalize(directory + '/' + locale + '.js');
+    return path.normalize(directory + '/' + locale + '.json');
 }
