@@ -12,13 +12,14 @@ var vsprintf = require('sprintf').vsprintf,
     fs = require('fs'),
     url = require('url'),
     path = require('path'),
+    debug = require('debug')('i18n'),
 
 // defaults
     locales = {},
     defaultLocale = 'en',
     cookiename = null,
-	debug = false;
-    directory = './locales';
+    directory = './locales',
+    extension = '.json';
 
 // public exports
 var i18n = exports;
@@ -37,19 +38,16 @@ i18n.configure = function(opt) {
     if (typeof opt.cookie === 'string') {
         cookiename = opt.cookie;
     }
-    
-	// where to store json files
+
+    // where to store json files
     if (typeof opt.directory === 'string') {
       	directory = opt.directory;
-    }else{
-		directory = './locales';
-	}
+    }
 
-	// enabled some debug output
-	if (opt.debug) {
-		debug = opt.debug;
-	}
-	
+  if (typeof opt.extension === 'string') {
+    extension = opt.extension;
+  }
+
 	// implicitly read all locales
     if (typeof opt.locales === 'object') {
         opt.locales.forEach(function(l) {
@@ -134,7 +132,7 @@ i18n.overrideLocaleFromQuery = function(req) {
     }
     var urlObj = url.parse(req.url, true);
     if (urlObj.query.locale) {
-        if (debug) console.log("Overriding locale from query: " + urlObj.query.locale);
+        debug('Overriding locale from query: ' + urlObj.query.locale);
         i18n.setLocale(req, urlObj.query.locale.toLowerCase());
     }
 }
@@ -188,7 +186,7 @@ function guessLanguage(request) {
 // read locale file, translate a msg and write to fs if new
 function translate(locale, singular, plural) {
     if (locale === undefined) {
-      if (debug) console.warn("WARN: No locale found - check the context of the call to $__?");
+      debug('No locale found - check the context of the call to $__?');
       locale = defaultLocale;
     }
     
@@ -220,9 +218,9 @@ function read(locale) {
     // try to read from FS
     try {
         localeFile = fs.readFileSync(file);
-        console.log('read ' + file + ' for locale: ' + locale);
+        debug('read ' + file + ' for locale: ' + locale);
     } catch(e) {
-        console.log('initializing ' + file);
+        debug('initializing ' + file);
         write(locale);
     }
 
@@ -230,7 +228,7 @@ function read(locale) {
     try {
         locales[locale] = JSON.parse(localeFile);
     } catch(e) {
-        console.error('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+        debug('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ');
     }
 }
 
@@ -239,7 +237,7 @@ function write(locale) {
     try {
         stats = fs.lstatSync(directory);
     } catch(e) {
-        if (debug) console.log('creating locales dir in: ' + directory);
+        debug('creating locales dir in: ' + directory);
         fs.mkdirSync(directory, 0755);
     }
     var target = locate(locale),
@@ -260,5 +258,5 @@ function write(locale) {
 
 // basic normalization of filepath
 function locate(locale) {
-    return path.normalize(directory + '/' + locale + '.js');
+    return path.normalize(directory + '/' + locale + extension);
 }
