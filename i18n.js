@@ -134,9 +134,9 @@ i18n.overrideLocaleFromQuery = function(req, param) {
     }
     var urlObj = url.parse(req.url, true);
 
-    param = param || 'locale';
+    param = typeof param === 'string' ? param : 'locale';
 
-    if (urlObj.query.locale) {
+    if (urlObj.query[param]) {
         if (debug) console.log("Overriding locale from query: " + urlObj.query.locale);
         i18n.setLocale(req, urlObj.query[param].toLowerCase());
     }
