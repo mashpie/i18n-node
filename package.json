@@ -12,7 +12,8 @@
     "directories": {
         "lib": "."
     },
-    "dependencies" : { 
+    "dependencies" : {
+          "debug": "*",
           "sprintf" : ">=0.1.1"
     },
     "engines": {
