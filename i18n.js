@@ -128,14 +128,17 @@ i18n.getLocale = function(request) {
     return request.locale;
 };
 
-i18n.overrideLocaleFromQuery = function(req) {
+i18n.overrideLocaleFromQuery = function(req, param) {
     if (req == null) {
         return;
     }
     var urlObj = url.parse(req.url, true);
+
+    param = param || 'locale';
+
     if (urlObj.query.locale) {
         if (debug) console.log("Overriding locale from query: " + urlObj.query.locale);
-        i18n.setLocale(req, urlObj.query.locale.toLowerCase());
+        i18n.setLocale(req, urlObj.query[param].toLowerCase());
     }
 }
 
