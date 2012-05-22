@@ -156,7 +156,12 @@ function guessLanguage(request) {
         request.language = defaultLocale;
         request.region = defaultLocale;
 
-        if (language_header) {
+        // if a cookie is set, we've already guessed the language
+        if (cookiename && request.cookies[cookiename]) {
+            request.language = request.cookies[cookiename];
+        }
+        // otherwise, we should guess
+        else if (language_header) {
             language_header.split(',').forEach(function(l) {
                 header = l.split(';', 1)[0];
                 lr = header.split('-', 2);
@@ -177,11 +182,6 @@ function guessLanguage(request) {
                 request.regions = regions;
                 request.region = regions[0];
             }
-        }
-
-        // setting the language by cookie
-        if (cookiename && request.cookies[cookiename]) {
-            request.language = request.cookies[cookiename];
         }
 
         i18n.setLocale(request, request.language);
