@@ -67,6 +67,14 @@ i18n.configure = function(opt) {
 i18n.init = function(request, response, next) {
     if (typeof request === 'object') {
         guessLanguage(request);
+
+        if (cookiename) {
+            if (response.cookie) {
+                response.cookie(cookiename, getLocale());
+            } else {
+                throw "Cookie parser not set.";
+            }
+        }
     }
     if (typeof next === 'function') {
         next();
@@ -124,6 +132,7 @@ i18n.setLocale = function(arg1, arg2) {
         request.locale = target_locale;
         defaultLocale = target_locale;
     }
+
     return i18n.getLocale(request);
 };
 
