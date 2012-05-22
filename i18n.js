@@ -17,6 +17,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     defaultLocale = 'en',
     cookiename = null,
+    query_param = null,
 	debug = false;
     directory = './locales';
 
@@ -36,6 +37,11 @@ i18n.configure = function(opt) {
     // sets a custom cookie name to parse locale settings from
     if (typeof opt.cookie === 'string') {
         cookiename = opt.cookie;
+    }
+
+    // query-string parameter to be watched
+    if (typeof opt.cookie === 'string') {
+        query_param = opt.query_param;
     }
     
 	// where to store json files
@@ -128,20 +134,6 @@ i18n.getLocale = function(request) {
     return request.locale;
 };
 
-i18n.overrideLocaleFromQuery = function(req, param) {
-    if (req == null) {
-        return;
-    }
-    var urlObj = url.parse(req.url, true);
-
-    param = typeof param === 'string' ? param : 'locale';
-
-    if (urlObj.query[param]) {
-        if (debug) console.log("Overriding locale from query: " + urlObj.query.locale);
-        i18n.setLocale(req, urlObj.query[param].toLowerCase());
-    }
-}
-
 // ===================
 // = private methods =
 // ===================
@@ -149,6 +141,7 @@ i18n.overrideLocaleFromQuery = function(req, param) {
 function guessLanguage(request) {
     if (typeof request === 'object') {
         var language_header = request.headers['accept-language'],
+        url_obj = url.parse(request.url, true),
         languages = [],
         regions = [];
         request.languages = [defaultLocale];
@@ -156,10 +149,20 @@ function guessLanguage(request) {
         request.language = defaultLocale;
         request.region = defaultLocale;
 
+        // if query parameter is set, a language change was requested
+        if (query_param && url_obj.query[query_param]) {
+            if (debug) {
+                console.log("Overriding locale from query: " + url_obj.query[query_param]);
+            }
+
+            request.language = url_obj.query[query_param].toLowerCase();
+        }
+
         // if a cookie is set, we've already guessed the language
-        if (cookiename && request.cookies[cookiename]) {
+        else if (cookiename && request.cookies[cookiename]) {
             request.language = request.cookies[cookiename];
         }
+
         // otherwise, we should guess
         else if (language_header) {
             language_header.split(',').forEach(function(l) {
