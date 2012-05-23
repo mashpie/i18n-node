@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license		http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @version     0.3.4
+ * @version     0.3.5
  */
 
 // dependencies
@@ -17,13 +17,14 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     defaultLocale = 'en',
     cookiename = null,
+    query_param = null,
 	debug = false;
     directory = './locales';
 
 // public exports
 var i18n = exports;
 
-i18n.version = '0.3.4';
+i18n.version = '0.3.5';
 
 i18n.configure = function(opt) {
     // you may register helpers in global scope, up to you
@@ -36,6 +37,11 @@ i18n.configure = function(opt) {
     // sets a custom cookie name to parse locale settings from
     if (typeof opt.cookie === 'string') {
         cookiename = opt.cookie;
+    }
+
+    // query-string parameter to be watched
+    if (typeof opt.query_param === 'string') {
+        query_param = opt.query_param;
     }
     
 	// where to store json files
@@ -61,6 +67,14 @@ i18n.configure = function(opt) {
 i18n.init = function(request, response, next) {
     if (typeof request === 'object') {
         guessLanguage(request);
+
+        if (cookiename) {
+            if (response.cookie) {
+                response.cookie(cookiename, getLocale());
+            } else {
+                throw "Cookie parser not set.";
+            }
+        }
     }
     if (typeof next === 'function') {
         next();
@@ -118,6 +132,7 @@ i18n.setLocale = function(arg1, arg2) {
         request.locale = target_locale;
         defaultLocale = target_locale;
     }
+
     return i18n.getLocale(request);
 };
 
@@ -128,17 +143,6 @@ i18n.getLocale = function(request) {
     return request.locale;
 };
 
-i18n.overrideLocaleFromQuery = function(req) {
-    if (req == null) {
-        return;
-    }
-    var urlObj = url.parse(req.url, true);
-    if (urlObj.query.locale) {
-        if (debug) console.log("Overriding locale from query: " + urlObj.query.locale);
-        i18n.setLocale(req, urlObj.query.locale.toLowerCase());
-    }
-}
-
 // ===================
 // = private methods =
 // ===================
@@ -146,6 +150,7 @@ i18n.overrideLocaleFromQuery = function(req) {
 function guessLanguage(request) {
     if (typeof request === 'object') {
         var language_header = request.headers['accept-language'],
+        url_obj = url.parse(request.url, true),
         languages = [],
         regions = [];
         request.languages = [defaultLocale];
@@ -153,7 +158,22 @@ function guessLanguage(request) {
         request.language = defaultLocale;
         request.region = defaultLocale;
 
-        if (language_header) {
+        // if query parameter is set, a language change was requested
+        if (query_param && url_obj.query[query_param]) {
+            if (debug) {
+                console.log("Overriding locale from query: " + url_obj.query[query_param]);
+            }
+
+            request.language = url_obj.query[query_param].toLowerCase();
+        }
+
+        // if a cookie is set, we've already guessed the language
+        else if (cookiename && request.cookies[cookiename]) {
+            request.language = request.cookies[cookiename];
+        }
+
+        // otherwise, we should guess
+        else if (language_header) {
             language_header.split(',').forEach(function(l) {
                 header = l.split(';', 1)[0];
                 lr = header.split('-', 2);
@@ -174,11 +194,6 @@ function guessLanguage(request) {
                 request.regions = regions;
                 request.region = regions[0];
             }
-        }
-
-        // setting the language by cookie
-        if (cookiename && request.cookies[cookiename]) {
-            request.language = request.cookies[cookiename];
         }
 
         i18n.setLocale(request, request.language);
