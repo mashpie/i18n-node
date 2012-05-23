@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license		http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @version     0.3.4
+ * @version     0.3.5
  */
 
 // dependencies
@@ -24,7 +24,7 @@ var vsprintf = require('sprintf').vsprintf,
 // public exports
 var i18n = exports;
 
-i18n.version = '0.3.4';
+i18n.version = '0.3.5';
 
 i18n.configure = function(opt) {
     // you may register helpers in global scope, up to you
@@ -40,7 +40,7 @@ i18n.configure = function(opt) {
     }
 
     // query-string parameter to be watched
-    if (typeof opt.cookie === 'string') {
+    if (typeof opt.query_param === 'string') {
         query_param = opt.query_param;
     }
     
