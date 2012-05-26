@@ -7,7 +7,7 @@ i18n.configure({
   locales: ['en', 'de'],
   register: global,
   directory: './testlocales',
-  debug: true
+  debug: false
 });
 
 module.exports = {
