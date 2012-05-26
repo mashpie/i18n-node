@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license		  http://creativecommons.org/licenses/by-sa/3.0/
  *
- * @version     0.3.4
+ * @version     0.3.5
  */
 
 // dependencies
@@ -16,12 +16,13 @@ var vsprintf = require('sprintf').vsprintf,
     cookiename = null,
     debug = false,
     verbose = false,
+    extension = '.js',
     directory = './locales';
 
 // public exports
 var i18n = exports;
 
-i18n.version = '0.3.4';
+i18n.version = '0.3.5';
 
 i18n.configure = function (opt) {
   // you may register helpers in global scope, up to you
@@ -39,8 +40,13 @@ i18n.configure = function (opt) {
   // where to store json files
   if (typeof opt.directory === 'string') {
     directory = opt.directory;
-  } else {
+  }else{
     directory = './locales';
+  }
+
+  // where to store json files
+  if (typeof opt.extension === 'string') {
+    extension = opt.extension;
   }
 
   // enabled some debug output
@@ -219,20 +225,21 @@ function translate(locale, singular, plural) {
 function read(locale) {
   var localeFile = {};
   var file = locate(locale);
-  // try to read from FS
   try {
-    localeFile = fs.readFileSync(file);
     if (verbose) console.log('read ' + file + ' for locale: ' + locale);
+    localeFile = fs.readFileSync(file);
+    try {
+      // parsing filecontents to locales[locale]
+      locales[locale] = JSON.parse(localeFile);
+    } catch (e) {
+      console.error('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+    }
   } catch (e) {
+    // unable to read, so intialize that file
+    // locales[locale] are already set in memory, so no extra read required
+    // or locales[locale] are empty, which initializes an empty locale.json file
     if (verbose) console.log('initializing ' + file);
     write(locale);
-  }
-
-  // try to parse to JSON
-  try {
-    locales[locale] = JSON.parse(localeFile);
-  } catch (e) {
-    console.error('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
   }
 }
 
@@ -240,7 +247,7 @@ function read(locale) {
 
 function write(locale) {
   try {
-    stats = fs.lstatSync(directory);
+    var stats = fs.lstatSync(directory);
   } catch (e) {
     if (debug) console.log('creating locales dir in: ' + directory);
     fs.mkdirSync(directory, 0755);
@@ -264,5 +271,6 @@ function write(locale) {
 // basic normalization of filepath
 
 function locate(locale) {
-  return path.normalize(directory + '/' + locale + '.js');
+  var ext = extension || '.js';
+  return path.normalize(directory + '/' + locale + ext);
 }

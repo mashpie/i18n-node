@@ -7,6 +7,7 @@ i18n.configure({
   locales: ['en', 'de'],
   register: global,
   directory: './testlocales',
+  extension: '.json',
   debug: false
 });
 
