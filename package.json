@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "sprintf": ">=0.1.1",
-    "expresso": ">=0.9.2"
+    "expresso": ">=0.9.2",
+    "vows": ">=0.6.2"
   },
   "engines": {
     "node": ">=0.4.0"

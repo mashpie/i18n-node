@@ -40,7 +40,7 @@ i18n.configure = function (opt) {
   // where to store json files
   if (typeof opt.directory === 'string') {
     directory = opt.directory;
-  }else{
+  } else {
     directory = './locales';
   }
 
@@ -195,7 +195,7 @@ function guessLanguage(request) {
 
 function translate(locale, singular, plural) {
   if (locale === undefined) {
-    if (debug) console.warn("WARN: No locale found - check the context of the call to $__?");
+    if (debug) console.warn("WARN: No locale found - check the context of the call to $__. Using " + defaultLocale + " (set by request) as current locale");
     locale = defaultLocale;
   }
 
@@ -246,25 +246,34 @@ function read(locale) {
 // try writing a file in a created directory
 
 function write(locale) {
+  // creating directory if necessary 
   try {
     var stats = fs.lstatSync(directory);
   } catch (e) {
     if (debug) console.log('creating locales dir in: ' + directory);
     fs.mkdirSync(directory, 0755);
   }
-  var target = locate(locale),
-      tmp = target + ".tmp";
 
   // first time init has an empty file
   if (!locales[locale]) {
     locales[locale] = {};
   }
 
-  fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, "\t"), "utf8");
-  fs.stat(tmp, function (err, stat) {
-    if (err) throw err;
-    fs.rename(tmp, target);
-  });
+  // writing to tmp and rename on success
+  try {
+    var target = locate(locale),
+        tmp = target + ".tmp";
+
+    fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, "\t"), "utf8");
+    var Stats = fs.statSync(tmp);
+    if (Stats.isFile()) {
+      fs.renameSync(tmp, target);
+    } else {
+      console.error('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
+    }
+  } catch (e) {
+    console.error('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
+  }
 
 }
 
