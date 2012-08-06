@@ -161,8 +161,8 @@ function guessLanguage(request) {
 
     if (language_header) {
       language_header.split(',').forEach(function (l) {
-        header = l.split(';', 1)[0];
-        lr = header.split('-', 2);
+        var header = l.split(';', 1)[0];
+        var lr = header.split('-', 2);
         if (lr[0]) {
           languages.push(lr[0].toLowerCase());
         }
