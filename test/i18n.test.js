@@ -20,6 +20,8 @@ module.exports = {
     assert.equal('en', i18n.getLocale(), 'should return default setting');
     assert.equal('de', i18n.setLocale('de'), 'should return the new setting');
     assert.equal('de', i18n.getLocale(), 'should return the new setting');
+    assert.equal('en', i18n.setLocale({}, 'en'), 'should return the request setting');
+    assert.equal('de', i18n.getLocale(), 'should return the previous default setting');
   },
 
   'check singular': function () {

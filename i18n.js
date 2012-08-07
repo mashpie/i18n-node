@@ -110,7 +110,7 @@ i18n.__n = function () {
 // setLocale('en') or like
 // setLocale(req, 'en')
 i18n.setLocale = function (arg1, arg2) {
-  var request = {},
+  var request = undefined,
       target_locale = arg1;
 
   if (arg2 && locales[arg2]) {
@@ -119,8 +119,12 @@ i18n.setLocale = function (arg1, arg2) {
   }
 
   if (locales[target_locale]) {
-    request.locale = target_locale;
-    defaultLocale = target_locale;
+    if (request === undefined) {
+      defaultLocale = target_locale;
+    }
+    else {
+      request.locale = target_locale;
+    }
   }
   return i18n.getLocale(request);
 };
