@@ -13,6 +13,7 @@ var vsprintf = require('sprintf').vsprintf,
     path = require('path'),
     locales = {},
     defaultLocale = 'en',
+    updateFiles = true,
     cookiename = null,
     debug = false,
     verbose = false,
@@ -42,6 +43,11 @@ i18n.configure = function (opt) {
     directory = opt.directory;
   } else {
     directory = './locales';
+  }
+
+  // write new locale information to disk
+  if (typeof opt.updateFiles === 'boolean') {
+    updateFiles = opt.updateFiles
   }
 
   // where to store json files
@@ -250,6 +256,11 @@ function read(locale) {
 // try writing a file in a created directory
 
 function write(locale) {
+  // don't write new locale information to disk if updateFiles isn't true
+  if(!updateFiles) {
+    return;
+  }
+
   // creating directory if necessary 
   try {
     var stats = fs.lstatSync(directory);
