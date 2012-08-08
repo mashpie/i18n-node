@@ -164,7 +164,15 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 		},
 		"tree": "Baum"
 	}
-	
+
+to turn off automatic locale file updates:
+
+	// turn off locale file updating in production mode
+	i18n.configure({
+	    // disable locale file updates
+	    updateFiles: false
+	});
+
 ## Changelog
 
 * 0.3.5: fixed some issues, prepared refactoring, prepared publishing to npm finally
