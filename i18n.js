@@ -18,7 +18,8 @@ var vsprintf = require('sprintf').vsprintf,
     debug = false,
     verbose = false,
     extension = '.js',
-    directory = './locales';
+    directory = './locales',
+    readFn = JSON.parse;
 
 // public exports
 var i18n = exports;
@@ -53,6 +54,11 @@ i18n.configure = function (opt) {
   // where to store json files
   if (typeof opt.extension === 'string') {
     extension = opt.extension;
+  }
+
+  // function that will read locale file
+  if (typeof opt.readFn === 'function') {
+    readFn = opt.readFn;
   }
 
   // enabled some debug output
