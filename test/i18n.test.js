@@ -19,14 +19,17 @@ module.exports = {
   'check set/getLocale language only': function () {
     assert.equal('en', i18n.getLocale().language, 'should return default setting');
     assert.equal('de', i18n.setLocale('de').language, 'should return the new setting');
+    assert.equal('de', i18n.setLocale('ec').language, 'should keep previous setting');
   },
 
   'check set/getLocale': function () {
+    var req = {};
     i18n.setLocale('en');
     assert.equal('en', i18n.getLocale().language, 'should return default setting');
     assert.equal('de', i18n.setLocale('de_DE').language, 'should return the new setting');
     assert.equal('de', i18n.getLocale().language, 'should return the new setting');
-    assert.equal('en', i18n.setLocale({}, 'en_US').language, 'should return the request setting');
+    assert.equal('en', i18n.setLocale(req, 'en_US').language, 'should return the request setting');
+    assert.equal('en', i18n.setLocale(req, 'ec').language, 'should keep previous setting');
     assert.equal('de', i18n.getLocale().language, 'should return the previous default setting');
   },
 
