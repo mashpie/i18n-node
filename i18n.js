@@ -12,19 +12,38 @@ var vsprintf = require('sprintf').vsprintf,
     url = require('url'),
     path = require('path'),
     locales = {},
-    defaultLocale = 'en',
+    defaultLocale = null,
     updateFiles = true,
     cookiename = null,
     debug = false,
     verbose = false,
     extension = '.js',
-    directory = './locales',
-    readFn = JSON.parse;
+    directory = './locales';
+
+function Locale(language, region, q) {
+    this.q = (typeof q != 'undefined') ? q : 1;
+    this.language = language;
+    this.region = region;
+}
+
+Locale.prototype.toString = function() {
+    return this.language + (this.region ? '_' + this.region : '');
+}
+
+Locale.fromString = function(str, q) {
+    var match = str.match(/^([a-z]{2})(?:[-_]([A-Z]{2}))?$/i); //only ISO-639 for primary-tag and ISO-3166 for subtag
+    if (match) {
+        return new Locale(match[1].toLowerCase(), (match[2] ? match[2].toUpperCase(): null), q);
+    }
+    return null;
+}
 
 // public exports
 var i18n = exports;
 
 i18n.version = '0.3.5';
+
+i18n.Locale = Locale;
 
 i18n.configure = function (opt) {
   // you may register helpers in global scope, up to you
@@ -32,6 +51,15 @@ i18n.configure = function (opt) {
     opt.register.__ = i18n.__;
     opt.register.__n = i18n.__n;
     opt.register.getLocale = i18n.getLocale;
+  }
+
+    // sets a custom default locale
+  if (typeof opt.defaultLocale === 'string') {
+      defaultLocale = Locale.fromString(opt.defaultLocale);
+  }
+
+  if (!defaultLocale) {
+      defaultLocale = Locale.fromString('en_US');
   }
 
   // sets a custom cookie name to parse locale settings from
@@ -54,11 +82,6 @@ i18n.configure = function (opt) {
   // where to store json files
   if (typeof opt.extension === 'string') {
     extension = opt.extension;
-  }
-
-  // function that will read locale file
-  if (typeof opt.readFn === 'function') {
-    readFn = opt.readFn;
   }
 
   // enabled some debug output
@@ -130,7 +153,22 @@ i18n.setLocale = function (arg1, arg2) {
     target_locale = arg2;
   }
 
-  if (locales[target_locale]) {
+  if (typeof target_locale == 'string') {
+      target_locale = Locale.fromString(target_locale);
+  }
+
+  var target_locale_key = target_locale.toString();
+  if (!locales[target_locale_key]) { //if full match not found, pick by language only
+      for(var p in locales) {
+          var l = Locale.fromString(p);
+          if(target_locale.language == l.language) {
+              target_locale = l;
+              target_locale_key = target_locale.toString();
+          }
+      }
+  }
+
+  if (locales[target_locale_key]) {
     if (request === undefined) {
       defaultLocale = target_locale;
     }
@@ -155,7 +193,7 @@ i18n.overrideLocaleFromQuery = function (req) {
   var urlObj = url.parse(req.url, true);
   if (urlObj.query.locale) {
     if (debug) console.log("Overriding locale from query: " + urlObj.query.locale);
-    i18n.setLocale(req, urlObj.query.locale.toLowerCase());
+    i18n.setLocale(req, Locale.fromString(urlObj.query.locale));
   }
 };
 
@@ -166,78 +204,108 @@ i18n.overrideLocaleFromQuery = function (req) {
 
 function guessLanguage(request) {
   if (typeof request === 'object') {
-    var language_header = request.headers['accept-language'],
-        languages = [],
-        regions = [];
+    var language_header = request.headers['accept-language'];
 
-    request.languages = [defaultLocale];
-    request.regions = [defaultLocale];
-    request.language = defaultLocale;
-    request.region = defaultLocale;
+    request.locales = [];
+    request.locale = null;
 
     if (language_header) {
-      language_header.split(',').forEach(function (l) {
-        var header = l.split(';', 1)[0];
-        var lr = header.split('-', 2);
-        if (lr[0]) {
-          languages.push(lr[0].toLowerCase());
+      language_header.split(';').forEach(function (block) {
+        var q = 1, locales = [];
+        var header = block.split(',').forEach(function (piece) {
+            var nq = piece.match(/^q=([01]{1}(?:.[0-9]{1,3})?)$/); // rfc2616
+            if(nq) {
+                q = parseFloat(nq[1]);
+                for(var p in locales) { //set q, it was not set yet
+                    locales[p].q = q;
+                }
+                return;
+            }
+
+            var locale = Locale.fromString(piece, q);
+            if (locale){
+                locales.push(locale);
+            }
+
+        });
+
+        for(var p in locales) {
+            request.locales.push(locales[p]); //dump to request locales
         }
-        if (lr[1]) {
-          regions.push(lr[1].toLowerCase());
-        }
+        locales = [];
       });
-
-      if (languages.length > 0) {
-        request.languages = languages;
-        request.language = languages[0];
-      }
-
-      if (regions.length > 0) {
-        request.regions = regions;
-        request.region = regions[0];
-      }
     }
+
+    request.locales.sort(function(a, b){
+        if(a.q > b.q) return -1;
+        if(a.q < b.q) return 1;
+        return 0;
+    });
 
     // setting the language by cookie
     if (cookiename && request.cookies[cookiename]) {
-      request.language = request.cookies[cookiename];
+      var cookie_value = request.cookies[cookiename];
+      for(var p in request.locales) {
+        if(request.locales[p] == cookie_value) {
+            request.locale = request.locales[p];
+        }
+      }
     }
 
-    i18n.setLocale(request, request.language);
+    if (!request.locale && request.locales) {
+        request.locale = request.locales[0];
+    }
+
+    i18n.setLocale(request, request.locale);
   }
 }
 
-// read locale file, translate a msg and write to fs if new
-
+/**
+ * read locale file, translate a msg and write to fs if new
+ *
+ * @param string locale
+ * @param singular
+ * @param plural
+ * @return {*}
+ */
 function translate(locale, singular, plural) {
   if (locale === undefined) {
     if (debug) console.warn("WARN: No locale found - check the context of the call to $__. Using " + defaultLocale + " (set by request) as current locale");
     locale = defaultLocale;
   }
 
-  if (!locales[locale]) {
-    read(locale);
+  if (typeof locale == 'string') {
+      locale = Locale.fromString(locale);
+  }
+
+  var localeKey = locale.toString();
+
+  if (!locales[localeKey]) {
+    read(localeKey);
   }
 
   if (plural) {
-    if (!locales[locale][singular]) {
-      locales[locale][singular] = {
+    if (!locales[localeKey][singular]) {
+      locales[localeKey][singular] = {
         'one': singular,
         'other': plural
       };
-      write(locale);
+      write(localeKey);
     }
   }
 
-  if (!locales[locale][singular]) {
-    locales[locale][singular] = singular;
-    write(locale);
+  if (!locales[localeKey][singular]) {
+    locales[localeKey][singular] = singular;
+    write(localeKey);
   }
-  return locales[locale][singular];
+  return locales[localeKey][singular];
 }
 
-// try reading a file
-
+/**
+ * try read locale file
+ *
+ * @param string locale
+ */
 function read(locale) {
   var localeFile = {};
   var file = locate(locale);
@@ -259,8 +327,11 @@ function read(locale) {
   }
 }
 
-// try writing a file in a created directory
-
+/**
+ * try writing a file in a created directory
+ *
+ * @param string locale
+ */
 function write(locale) {
   // don't write new locale information to disk if updateFiles isn't true
   if(!updateFiles) {
@@ -298,8 +369,13 @@ function write(locale) {
 
 }
 
-// basic normalization of filepath
-
+/**
+ * basic normalization of filepath
+ *
+ * @param string locale
+ *
+ * @return string
+ */
 function locate(locale) {
   var ext = extension || '.js';
   return path.normalize(directory + '/' + locale + ext);
