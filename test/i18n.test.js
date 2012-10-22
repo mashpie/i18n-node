@@ -46,6 +46,14 @@ module.exports = {
 
   },
 
+  'check singular placeholders': function () {
+      i18n.setLocale('en_US');
+      assert.equal(__('Click {LINK_START}here{LINK_END} and have some free beer', {'LINK_START': '<a href="mylink">', 'LINK_END': '</a>'}), 'Click <a href="mylink">here</a> and have some free beer');
+
+      i18n.setLocale('de_DE');
+      assert.equal(__('Click {LINK_START}here{LINK_END} and have some free beer', {'LINK_START': '<a href="mylink">', 'LINK_END': '</a>'}), 'Klicken Sie <a href="mylink">hier</a> und haben einige Freibier');
+  },
+
   'check plural': function () {
     i18n.setLocale('en_US');
     var singular = __n('%s cat', '%s cats', 1);
@@ -61,18 +69,18 @@ module.exports = {
   },
 
   'check nested plural': function () {
-    i18n.setLocale('en_US');
-    var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, __('tree'));
-    var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, __('tree'));
-    assert.equal(singular, 'There is one monkey in the tree');
-    assert.equal(plural, 'There are 3 monkeys in the tree');
+        i18n.setLocale('en_US');
+        var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, __('tree'));
+        var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, __('tree'));
+        assert.equal(singular, 'There is one monkey in the tree');
+        assert.equal(plural, 'There are 3 monkeys in the tree');
 
-    i18n.setLocale('de_DE');
-    singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, __('tree'));
-    plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, __('tree'));
-    assert.equal(singular, 'Im Baum sitzt ein Affe');
-    assert.equal(plural, 'Im Baum sitzen 3 Affen');
-  },
+        i18n.setLocale('de_DE');
+        singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, __('tree'));
+        plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, __('tree'));
+        assert.equal(singular, 'Im Baum sitzt ein Affe');
+        assert.equal(plural, 'Im Baum sitzen 3 Affen');
+    },
 
   'check variables': function () {
     var i = 0;

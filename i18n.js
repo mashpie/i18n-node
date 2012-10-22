@@ -116,7 +116,14 @@ i18n.__ = function () {
     }
     var msg = translate(locale, arguments[0]);
     if (arguments.length > 1) {
-        msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
+        if(arguments.length == 2 && typeof arguments[1] == 'object') {
+            var replacements = arguments[1];
+            for(var p in replacements) {
+                msg = msg.replace('{' + p + '}', replacements[p]);
+            }
+        } else {
+            msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
+        }
     }
     return msg;
 };

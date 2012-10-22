@@ -13,5 +13,6 @@
     "one": "Im %%s sitzt ein Affe",
     "other": "Im Baum sitzen %d Affen"
   },
-  "tree": "Baum"
+  "tree": "Baum",
+  "Click {LINK_START}here{LINK_END} and have some free beer": "Klicken Sie {LINK_START}hier{LINK_END} und haben einige Freibier"
 }

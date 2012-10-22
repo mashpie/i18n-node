@@ -1,17 +1,18 @@
 {
-  "Hello": "Hallo",
-  "Hello %s, how are you today?": "Hallo %s, wie geht es dir heute?",
-  "weekend": "Wochenende",
-  "Hello %s, how are you today? How was your %s.": "Hallo %s, wie geht es dir heute? Wie war dein %s.",
-  "Hi": "Hi",
-  "Howdy": "Hallöchen",
-  "%s cat": {
+    "Hello": "Hallo",
+    "Hello %s, how are you today?": "Hallo %s, wie geht es dir heute?",
+    "weekend": "Wochenende",
+    "Hello %s, how are you today? How was your %s.": "Hallo %s, wie geht es dir heute? Wie war dein %s.",
+    "Hi": "Hi",
+    "Howdy": "Hallöchen",
+    "%s cat": {
     "one": "%s Katze",
-    "other": "%s Katzen"
-  },
-  "There is one monkey in the %%s": {
+        "other": "%s Katzen"
+},
+    "There is one monkey in the %%s": {
     "one": "Im %%s sitzt ein Affe",
-    "other": "Im Baum sitzen %d Affen"
-  },
-  "tree": "Baum"
+        "other": "Im Baum sitzen %d Affen"
+},
+    "tree": "Baum",
+    "Click {LINK_START}here{LINK_END} and have some free beer": "Klicken Sie {LINK_START}hier{LINK_END} und haben einige Freibier"
 }
