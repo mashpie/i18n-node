@@ -6,8 +6,6 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-[![Build Status](https://secure.travis-ci.org/mashpie/i18n-node.png?branch=master)](http://travis-ci.org/mashpie/i18n-node)
-
 ## Install
 
 	npm install i18n
@@ -30,7 +28,7 @@ use configure to setup these:
 
     i18n.configure({
         // setup some locales - other locales default to en silently
-        locales:['en', 'de'],
+        locales:['en_US', 'de_DE'],
 
         // where to register __() and __n() to, might be "global" if you know what you are doing
         register: global
@@ -43,7 +41,7 @@ configure i18n without register: global
 
 	i18n.configure({
 	    // setup some locales - other locales default to en silently
-	    locales:['en', 'de'],
+	    locales:['en_US', 'de_DE'],
 	});
 
 and register view helpers on your own
@@ -90,6 +88,12 @@ this puts **Hello Marcus, how are you today?**. You might add endless arguments 
 	var greeting = __('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend'));
 	
 which puts **Hello Marcus, how are you today? How was your weekend.**
+
+### placeholders support
+
+	var freebeer = __('Click {LINK_START}here{LINK_END} and have some free beer', {'LINK_START': '<a href="mylink">', 'LINK_END': '</a>'});
+
+this puts **Click <a href="mylink">here</a> and have some free beer**.
 
 ### variable support
 
@@ -175,6 +179,7 @@ to turn off automatic locale file updates:
 
 ## Changelog
 
+* 0.3.6: named parameters in translation strings
 * 0.3.5: fixed some issues, prepared refactoring, prepared publishing to npm finally
 * 0.3.4: merged pull request #13 from Fuitad/master and updated README
 * 0.3.3: merged pull request from codders/master and modified for backward compatibility. Usage and tests pending
