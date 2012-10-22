@@ -101,7 +101,7 @@ i18n.init = function (request, response, next) {
   if (typeof request === 'object') {
     guessLanguage(request);
     if (!request.locale) {
-      i18n.setLocale(defaultLocale);
+      i18n.setLocale(request, defaultLocale);
     }
   }
   if (typeof next === 'function') {
@@ -111,8 +111,8 @@ i18n.init = function (request, response, next) {
 
 i18n.__ = function () {
   var locale;
-  if (this && this.scope) {
-    locale = this.scope.locale;
+  if (this && (this.locale || this.scope)) {
+    locale = this.locale || this.scope.locale;
   }
   var msg = translate(locale, arguments[0]);
   if (arguments.length > 1) {
@@ -130,8 +130,8 @@ i18n.__ = function () {
 
 i18n.__n = function () {
   var locale;
-  if (this && this.scope) {
-    locale = this.scope.locale;
+  if (this && (this.locale || this.scope)) {
+    locale = this.locale || this.scope.locale;
   }
   var singular = arguments[0];
   var plural = arguments[1];
