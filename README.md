@@ -36,7 +36,7 @@ use configure to setup these:
         register: global
     });
 
-**CAREFULL:** as jade uses `__` as internal variable you need to register view helpers tweaked to your needs when used with jade.
+**CAREFULL:** as jade uses `__` as internal variable you need to register view helpers tweaked to your needs when used with jade. Reference: https://github.com/visionmedia/jade/issues/403
 
 ### tweak helpers 
 configure i18n without register: global
@@ -46,13 +46,22 @@ configure i18n without register: global
 	    locales:['en', 'de'],
 	});
 
-and register view helpers on your own
+to register view helpers on your own in **express 2.x**:
 
 	// register helpers for use in templates
 	app.helpers({
 	  __i: i18n.__,
 	  __n: i18n.__n
 	});
+
+to register view helpers on your own in **express 3.x**:
+
+	// register helpers for use in templates
+	app.locals({
+	  __i: i18n.__,
+	  __n: i18n.__n
+	});
+
 
 ### hook into express configure
 
