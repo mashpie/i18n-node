@@ -6,8 +6,6 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-[![Build Status](https://secure.travis-ci.org/mashpie/i18n-node.png?branch=master)](http://travis-ci.org/mashpie/i18n-node)
-
 ## Install
 
 	npm install i18n
