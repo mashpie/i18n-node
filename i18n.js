@@ -99,11 +99,18 @@ i18n.__n = function () {
   var count = arguments[2];
   var msg = translate(locale, singular, plural);
 
-  if (parseInt(count, 10) > 1) {
-    msg = vsprintf(msg.other, [count]);
-  } else {
-    msg = vsprintf(msg.one, [count]);
-  }
+  var mod = Math.abs(parseInt(count, 10));
+  if (mod > 20) mod = mod % 10;
+
+  var form;
+
+  if (mod == 1) form = msg.one;
+  else if (mod > 1 && msg.other) form = msg.other;
+  else if (mod == 0 && msg.zero) form = msg.zero; 
+  else if (mod > 1 && mod < 5 && msg.two) form = msg.two;
+  else if (msg.five) form = msg.five;
+
+  msg = vsprintf(form, [count]);
 
   if (arguments.length > 3) {
     msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
