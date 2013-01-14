@@ -7,7 +7,13 @@
  * Adds new strings on-the-fly when first used in your app.
  * No extra parsing needed.
 
-## Example
+## Installation
+
+Run the following:
+
+	npm install i18n-2
+
+## Simple Example
 
 	// Load Module and Instantiate
 	var i18n = new (require('i18n'))({
