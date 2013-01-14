@@ -74,7 +74,7 @@ i18n.expressBind = function(app, opt) {
 	}
 
 	app.use(function(req, res, next) {
-		opt.request = request;
+		opt.request = req;
 		req.i18n = new i18n(opt);
 
 		// Express 3
@@ -94,7 +94,7 @@ i18n.expressBind = function(app, opt) {
 i18n.registerMethods = function(helpers) {
 	i18n.resMethods.forEach(function(method) {
 		helpers[method] = function(req) {
-			return req.i18n[method];
+			return req.i18n[method].bind(req.i18n);
 		};
 	});
 
