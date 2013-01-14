@@ -1,4 +1,4 @@
-# i18n
+# i18n-node-2
 
 Lightweight simple translation module with dynamic json storage. 
 Uses common __('...') syntax in app and templates.
@@ -22,7 +22,7 @@ In your app.js:
 		// ...
 
 		// Attach the i18n property to the express request object
-		// And attach dynamicHelpers for use in templates
+		// And attach helper methods for use in templates
 		i18n.expressBind(app, {
 			// setup some locales - other locales default to en silently
 			locales: ['en', 'de']
@@ -58,7 +58,7 @@ In your app.js:
 # Using Standalone (without Express)
 
 	// Load Module and Instantiate
-	var i18n = require('i18n').create({
+	var i18n = new (require('i18n'))({
 		// setup some locales - other locales default to en silently
 		locales: ['en', 'de']
 	});

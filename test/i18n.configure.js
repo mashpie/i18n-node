@@ -1,28 +1,32 @@
 // Run $ expresso
-var i18n = require('../i18n'),
-    assert = require('assert'),
-    fs = require('fs');
-
-i18n.configure({
-  locales: ['en', 'de'],
-  register: global,
-  directory: './testlocales',
-  extension: '.json',
-  debug: false
-});
+var I18n = require('../i18n'),
+	assert = require('assert'),
+	fs = require('fs');
 
 module.exports = {
-  'check set/getLocale': function () {
-    var loc = i18n.getLocale();
-    assert.equal('en', i18n.getLocale(), 'should return default setting');
-    assert.equal('de', i18n.setLocale('de'), 'should return the new setting');
-    assert.equal('de', i18n.getLocale(), 'should return the new setting');
-  },
+	'check set/getLocale': function () {
+		var i18n = new I18n({
+			locales: ['en', 'de'],
+			directory: './testlocales',
+			extension: '.json'
+		});
 
-  'check singular': function () {
-    i18n.setLocale('en');
-    assert.equal(__('Hello'), 'Hello');
-    assert.equal(__('Hello %s, how are you today?', 'Marcus'), 'Hello Marcus, how are you today?');
-    assert.equal(__('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend')), 'Hello Marcus, how are you today? How was your weekend.');
-  }
+		var loc = i18n.getLocale();
+		assert.equal('en', i18n.getLocale(), 'should return default setting');
+		assert.equal('de', i18n.setLocale('de'), 'should return the new setting');
+		assert.equal('de', i18n.getLocale(), 'should return the new setting');
+	},
+
+	'check singular': function () {
+		var i18n = new I18n({
+			locales: ['en', 'de'],
+			directory: './testlocales',
+			extension: '.json'
+		});
+
+		i18n.setLocale('en');
+		assert.equal(i18n.__('Hello'), 'Hello');
+		assert.equal(i18n.__('Hello %s, how are you today?', 'Marcus'), 'Hello Marcus, how are you today?');
+		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus', i18n.__('weekend')), 'Hello Marcus, how are you today? How was your weekend.');
+	}
 };

@@ -12,14 +12,11 @@ var vsprintf = require("sprintf").vsprintf,
 	fs = require("fs"),
 	path = require("path");
 
-var i18n = exports = function() {
+var i18n = module.exports = function(opt) {
 	var self = this;
 
 	// Put into dev or production mode
-	this.devMode = process.env.NODE_ENV === "development";
-
-	// Set the locale to the default locale
-	this.setLocale(this.defaultLocale);
+	this.devMode = process.env.NODE_ENV !== "production";
 
 	// Copy over options
 	for (var prop in opt) {
@@ -36,9 +33,17 @@ var i18n = exports = function() {
 	// implicitly read all locales
 	// if it's an array of locale names, read in the data
 	if (this.locales && this.locales.forEach) {
-		locales.forEach(this.readFile);
-		this.defaultLocale = this.locales[0];
+		this.locales = {};
+
+		opt.locales.forEach(function(locale) {
+			self.readFile(locale);
+		});
+
+		this.defaultLocale = opt.locales[0];
 	}
+
+	// Set the locale to the default locale
+	this.setLocale(this.defaultLocale);
 
 	// Check the defaultLocale
 	if (!this.locales[this.defaultLocale]) {
@@ -58,7 +63,7 @@ var i18n = exports = function() {
 	}
 };
 
-i18n.version = "0.4";
+i18n.version = "0.4.0";
 
 i18n.localeCache = {};
 i18n.resMethods = ["__", "__n", "getLocale", "isPreferredLocale"];
@@ -102,7 +107,7 @@ i18n.prototype = {
 	directory: "./locales",
 
 	__: function() {
-		var msg = translate(this.locale, arguments[0]);
+		var msg = this.translate(this.locale, arguments[0]);
 
 		if (arguments.length > 1) {
 			msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
@@ -112,7 +117,7 @@ i18n.prototype = {
 	},
 
 	__n: function(singular, plural, count) {
-		var msg = translate(this.locale, singular, plural);
+		var msg = this.translate(this.locale, singular, plural);
 
 		msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, [count]);
 
@@ -225,11 +230,10 @@ i18n.prototype = {
 			return i18n.localeCache[locale];
 		}
 
-		var localeFile = "{}";
 		var file = this.locateFile(locale);
 
 		try {
-			localeFile = fs.readFileSync(file);
+			var localeFile = fs.readFileSync(file);
 
 			try {
 				// parsing filecontents to locales[locale]
@@ -252,12 +256,15 @@ i18n.prototype = {
 	writeFile: function(locale) {
 		// don't write new locale information to disk if we're not in dev mode
 		if (!this.devMode) {
+			// Initialize the locale if didn't exist already
+			this.initLocale(locale, {});
+
 			return;
 		}
 
 		// creating directory if necessary
 		try {
-			var stats = fs.lstatSync(this.directory);
+			fs.lstatSync(this.directory);
 
 		} catch (e) {
 			if (this.devMode) {
@@ -292,14 +299,14 @@ i18n.prototype = {
 		}
 	},
 
+	// basic normalization of filepath
+	locateFile: function(locale) {
+		return path.normalize(this.directory + '/' + locale + this.extension);
+	},
+
 	initLocale: function(locale, data) {
 		if (!this.locales[locale]) {
 			i18n.localeCache[locale] = this.locales[locale] = data;
 		}
-	},
-
-	// basic normalization of filepath
-	locateFile: function(locale) {
-		return path.normalize(this.directory + '/' + locale + this.extension);
 	}
 };
