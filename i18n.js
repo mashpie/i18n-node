@@ -51,8 +51,8 @@ var i18n = module.exports = function(opt) {
 	}
 
 	if (this.request) {
-		if (this.host) {
-			this.setLocaleFromHost(this.request);
+		if (this.subdomain) {
+			this.setLocaleFromSubdomain(this.request);
 		}
 
 		if (this.query !== false) {
@@ -167,7 +167,7 @@ i18n.prototype = {
 		}
 	},
 
-	setLocaleFromHost: function(req) {
+	setLocaleFromSubdomain: function(req) {
 		req = req || this.request;
 
 		if (!req || !req.headers || !req.headers.host) {
@@ -307,8 +307,13 @@ i18n.prototype = {
 
 	initLocale: function(locale, data) {
 		if (!this.locales[locale]) {
-			var file = this.locateFile(locale);
-			i18n.localeCache[file] = this.locales[locale] = data;
+			this.locales[locale] = data;
+
+			// Only cache the files when we're not in dev mode
+			if (!this.devMode) {
+			    var file = this.locateFile(locale);
+			    i18n.localeCache[file] = data;
+			}
 		}
 	}
 };
