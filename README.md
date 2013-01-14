@@ -6,88 +6,66 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-## Install
+# Using with Express.js
 
-	npm install i18n
-	
-## Test 
+## Load and Configure
 
-	npm test
-
-## Load
-in your app.js
+In your app.js:
 
 	// load modules
 	var express = require('express'),
-	    i18n = require("i18n");
-	
-now you are ready to use `i18n.__('Hello')`.
+		i18n = require('i18n');
 
-## Configure
-use configure to setup these:
-
-    i18n.configure({
-        // setup some locales - other locales default to en silently
-        locales:['en', 'de'],
-
-        // where to register __() and __n() to, might be "global" if you know what you are doing
-        register: global
-    });
-
-**CAREFULL:** as jade uses `__` as internal variable you need to register view helpers tweaked to your needs when used with jade. Reference: https://github.com/visionmedia/jade/issues/403
-
-### tweak helpers 
-configure i18n without register: global
-
-	i18n.configure({
-	    // setup some locales - other locales default to en silently
-	    locales:['en', 'de'],
-	});
-
-to register view helpers on your own in **express 2.x**:
-
-	// register helpers for use in templates
-	app.helpers({
-	  __i: i18n.__,
-	  __n: i18n.__n
-	});
-
-to register view helpers on your own in **express 3.x**:
-
-	// register helpers for use in templates
-	app.locals({
-	  __i: i18n.__,
-	  __n: i18n.__n
-	});
-
-
-### hook into express configure
-
-in an express app, you might use i18n.init to gather language settings of your visitors, ie:
-
-	// Configuration
+	// Express Configuration
 	app.configure(function() {
 
-    	[...]
+		// ...
 
-	    // using 'accept-language' header to guess language settings
-	    app.use(i18n.init);
-	    app.use(app.router);
-	    app.use(express.static(__dirname + '/public'));
+		// Attach the i18n property to the express request object
+		// And attach dynamicHelpers for use in templates
+		i18n.expressBind(app, {
+			// setup some locales - other locales default to en silently
+			locales: ['en', 'de']
+		}));
+
+		// Set up the rest of the Express middleware
+		app.use(app.router);
+		app.use(express.static(__dirname + '/public'));
 	});
-	
-## Use
 
-in your app
+## Inside Your Express View
 
-	var greeting = __('Hello');
-	
-in your template (depending on your template compiler)
-	
-	<%= __('Hello') %>
-	
-	${__('Hello')}
-	
+	module.exports = {
+		index: function(req, res) {
+			req.render("index", {
+				title: req.i18n.__("My Site Title"),
+				desc: req.i18n.__("My Site Description")
+			});
+		}
+	};
+
+## Inside Your Templates
+
+(This example uses the Swig templating system.)
+
+	{% extends "page.swig" %}
+
+	{% block content %}
+	<h1>{{ __("Welcome to:") }} {{ title }}</h1>
+	<p>{{ desc }}</p>
+	{% endblock %}
+
+# Using Standalone (without Express)
+
+	// Load Module and Instantiate
+	var i18n = require('i18n').create({
+		// setup some locales - other locales default to en silently
+		locales: ['en', 'de']
+	});
+
+	// Use it however you wish
+	console.log( i18n.__("Hello!") );
+
 ### sprintf support
 
 	var greeting = __('Hello %s, how are you today?', 'Marcus');
@@ -102,10 +80,10 @@ which puts **Hello Marcus, how are you today? How was your weekend.**
 
 you might even use dynamic variables. They get added to the `en.js` file if not yet existing.
 
-	var greetings = ['Hi', 'Hello', 'Howdy'];        
-    for (var i=0; i < greetings.length; i++) {
-        console.log( __(greetings[i]) );
-    };
+	var greetings = ['Hi', 'Hello', 'Howdy'];
+	for (var i=0; i < greetings.length; i++) {
+		console.log( __(greetings[i]) );
+	};
 
 which puts 
 
@@ -118,14 +96,14 @@ which puts
 different plural froms are supported as response to `count`:
 
 	var singular = __n('%s cat', '%s cats', 1);
-    var plural = __n('%s cat', '%s cats', 3);
+	var plural = __n('%s cat', '%s cats', 3);
 
 this puts **1 cat** or **3 cats**
 and again these could get nested:
 
 	var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, 'tree');
 	var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, 'tree');
-	
+
 putting **There is one monkey in the tree** or **There are 3 monkeys in the tree**
 
 ## Storage
@@ -176,12 +154,13 @@ to turn off automatic locale file updates:
 
 	// turn off locale file updating in production mode
 	i18n.configure({
-	    // disable locale file updates
-	    updateFiles: false
+		// disable locale file updates
+		updateFiles: false
 	});
 
 ## Changelog
 
+* 0.4.0: made settings contained within a single object
 * 0.3.5: fixed some issues, prepared refactoring, prepared publishing to npm finally
 * 0.3.4: merged pull request #13 from Fuitad/master and updated README
 * 0.3.3: merged pull request from codders/master and modified for backward compatibility. Usage and tests pending
