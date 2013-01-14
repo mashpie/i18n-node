@@ -129,12 +129,15 @@ i18n.prototype = {
 	},
 
 	setLocale: function(locale) {
-		if (this.locales[locale]) {
-			return (this.locale = locale);
+		if (!this.locales[locale]) {
+			if (this.devMode) {
+				console.warn("Locale (" + locale + ") not found.");
+			}
 
-		} else {
-			console.error("Locale (" + locale + ") not found.");
+			locale = this.defaultLocale;
 		}
+
+		return (this.locale = locale);
 	},
 
 	getLocale: function() {
@@ -146,8 +149,8 @@ i18n.prototype = {
 			this.prefLocale === this.getLocale();
 	},
 
-	setLocaleFromQuery: function() {
-		var req = this.request;
+	setLocaleFromQuery: function(req) {
+		req = req || this.request;
 
 		if (!req || !req.query || !req.query.locale) {
 			return;
@@ -164,8 +167,8 @@ i18n.prototype = {
 		}
 	},
 
-	setLocaleFromHost: function() {
-		var req = this.request;
+	setLocaleFromHost: function(req) {
+		req = req || this.request;
 
 		if (!req || !req.headers || !req.headers.host) {
 			return;
@@ -180,8 +183,8 @@ i18n.prototype = {
 		}
 	},
 
-	preferredLocale: function() {
-		var req = this.request;
+	preferredLocale: function(req) {
+		req = req || this.request;
 
 		if (!req || !req.headers) {
 			return;
@@ -226,11 +229,11 @@ i18n.prototype = {
 
 	// try reading a file
 	readFile: function(locale) {
-		if (!this.devMode && i18n.localeCache[locale]) {
-			return i18n.localeCache[locale];
-		}
-
 		var file = this.locateFile(locale);
+
+		if (!this.devMode && i18n.localeCache[file]) {
+			return i18n.localeCache[file];
+		}
 
 		try {
 			var localeFile = fs.readFileSync(file);
@@ -257,9 +260,7 @@ i18n.prototype = {
 		// don't write new locale information to disk if we're not in dev mode
 		if (!this.devMode) {
 			// Initialize the locale if didn't exist already
-			this.initLocale(locale, {});
-
-			return;
+			return this.initLocale(locale, {});
 		}
 
 		// creating directory if necessary
@@ -306,7 +307,8 @@ i18n.prototype = {
 
 	initLocale: function(locale, data) {
 		if (!this.locales[locale]) {
-			i18n.localeCache[locale] = this.locales[locale] = data;
+			var file = this.locateFile(locale);
+			i18n.localeCache[file] = this.locales[locale] = data;
 		}
 	}
 };
