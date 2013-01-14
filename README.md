@@ -90,11 +90,11 @@ Sets a locale to the specified string. If the locale is unknown, the locale defa
 
 To be used with Express.js or another framework that provides a `request` object. Generally you would want to use this by setting the `query` option to `true`.
 
-This method takes in an Express.js request object, looks at the query property, and specifically at the `locale` parameter. Reading the value of that parameter will then set the locale.
+This method takes in an Express.js request object, looks at the query property, and specifically at the `lang` parameter. Reading the value of that parameter will then set the locale.
 
 For example:
 
-	example.com/?locale=de
+	example.com/?lang=de
 
 Will then do:
 
@@ -254,6 +254,7 @@ In your app.js:
 
 ## Changelog
 
+* 0.4.1: rename locale query string param to lang
 * 0.4.0: made settings contained, and scoped, to a single object (complete re-write by jeresig)
 * 0.3.5: fixed some issues, prepared refactoring, prepared publishing to npm finally
 * 0.3.4: merged pull request #13 from Fuitad/master and updated README

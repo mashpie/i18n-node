@@ -2,9 +2,9 @@
  * @author  John Resig <jeresig@gmail.com>
  * @author  Originally by Marcus Spiegel <marcus.spiegel@gmail.com>
  * @link    https://github.com/jeresig/i18n-node
- * @license http://creativecommons.org/licenses/by-sa/3.0/
+ * @license http://opensource.org/licenses/MIT
  *
- * @version 0.4
+ * @version 0.4.1
  */
 
 // dependencies
@@ -63,7 +63,7 @@ var i18n = module.exports = function(opt) {
 	}
 };
 
-i18n.version = "0.4.0";
+i18n.version = "0.4.1";
 
 i18n.localeCache = {};
 i18n.resMethods = ["__", "__n", "getLocale", "isPreferredLocale"];
@@ -152,11 +152,11 @@ i18n.prototype = {
 	setLocaleFromQuery: function(req) {
 		req = req || this.request;
 
-		if (!req || !req.query || !req.query.locale) {
+		if (!req || !req.query || !req.query.lang) {
 			return;
 		}
 
-		var locale = req.query.locale.toLowerCase();
+		var locale = req.query.lang.toLowerCase();
 
 		if (this.locales[locale]) {
 			if (this.devMode) {
