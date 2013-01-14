@@ -84,7 +84,7 @@ Returns a string containing the current locale. If no locale has been specified 
 
 ### `setLocale(locale)`
 
-Sets a locale to the specified string. If the locale is unknown, the locale defaults to the one specified by `defaultLocale`. For example if you have locales of 'en' and 'de', and a `defaultLocale` of 'en', then call `.setLocale('jp')` it will be equivalent to calling `.setLocale('en')`.
+Sets a locale to the specified string. If the locale is unknown, the locale defaults to the one specified by `defaultLocale`. For example if you have locales of 'en' and 'de', and a `defaultLocale` of 'en', then call `.setLocale('ja')` it will be equivalent to calling `.setLocale('en')`.
 
 ### `setLocaleFromQuery([request])`
 
@@ -147,7 +147,7 @@ In this particular case no files will ever be read when doing a translation. Thi
 
 ### `defaultLocale`
 
-You can explicitly define a default locale to be used in cases where `.setLocale(locale)` is used with an unknown locale. For example if you have locales of 'en' and 'de', and a `defaultLocale` of 'en', then call `.setLocale('jp')` it will be equivalent to calling `.setLocale('en')`.
+You can explicitly define a default locale to be used in cases where `.setLocale(locale)` is used with an unknown locale. For example if you have locales of 'en' and 'de', and a `defaultLocale` of 'en', then call `.setLocale('ja')` it will be equivalent to calling `.setLocale('en')`.
 
 ### `directory` and `extension`
 
