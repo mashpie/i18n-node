@@ -196,6 +196,7 @@ remember to turn off automatic locale file updates:
 
 ## Changelog
 
+* 0.3.6: travisCI, writeFileSync, devDependencies, jslint, MIT, fixed: #29, #9, merged: #25, #30, #43
 * 0.3.5: fixed some issues, prepared refactoring, prepared publishing to npm finally
 * 0.3.4: merged pull request #13 from Fuitad/master and updated README
 * 0.3.3: merged pull request from codders/master and modified for backward compatibility. Usage and tests pending

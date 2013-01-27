@@ -1,19 +1,16 @@
-// Run $ expresso
+/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
+
 var i18n = require('../i18n'),
     assert = require('assert');
 
 i18n.configure({
-  // setup some locales - other locales default to en silently
   locales: ['en', 'de'],
-
-  // where to register __() and __n() to, might be "global" if you know what you are doing
   register: global
-
 });
 
 module.exports = {
   'check version': function () {
-    assert.equal(i18n.version, '0.3.5');
+    assert.equal(i18n.version, '0.3.6');
   },
 
   'check set/getLocale': function () {
@@ -39,8 +36,8 @@ module.exports = {
 
   'check plural': function () {
     i18n.setLocale('en');
-    var singular = __n('%s cat', '%s cats', 1);
-    var plural = __n('%s cat', '%s cats', 3);
+    var singular = __n('%s cat', '%s cats', 1),
+        plural = __n('%s cat', '%s cats', 3);
     assert.equal(singular, '1 cat');
     assert.equal(plural, '3 cats');
 
@@ -53,8 +50,8 @@ module.exports = {
 
   'check nested plural': function () {
     i18n.setLocale('en');
-    var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, __('tree'));
-    var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, __('tree'));
+    var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, __('tree')),
+        plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, __('tree'));
     assert.equal(singular, 'There is one monkey in the tree');
     assert.equal(plural, 'There are 3 monkeys in the tree');
 
@@ -67,17 +64,18 @@ module.exports = {
   },
 
   'check variables': function () {
-    var i = 0;
+    var i = 0,
+        greetings = ['Hi', 'Hello', 'Howdy'],
+        greetingsDE = ['Hi', 'Hallo', 'Hallöchen'];
+
     i18n.setLocale('en');
-    var greetings = ['Hi', 'Hello', 'Howdy'];
     for (i = 0; i < greetings.length; i++) {
       assert.equal(greetings[i], __(greetings[i]));
-    };
+    }
 
     i18n.setLocale('de');
-    var greetingsDE = ['Hi', 'Hallo', 'Hallöchen'];
     for (i = 0; i < greetings.length; i++) {
       assert.equal(greetingsDE[i], __(greetings[i]));
-    };
+    }
   }
 };
