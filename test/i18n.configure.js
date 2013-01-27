@@ -4,7 +4,7 @@ var i18n = require('../i18n'),
     fs = require('fs');
 
 i18n.configure({
-  locales: ['en', 'de'],
+  locales: ['en', 'de', 'ru'],
   register: global,
   directory: './testlocales',
   extension: '.json',
