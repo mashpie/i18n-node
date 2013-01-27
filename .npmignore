@@ -1,0 +1,8 @@
+.git*
+.DS_Store
+testlocales/
+test/
+locales/
+vows/
+coverage.html
+lib-cov

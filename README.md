@@ -26,27 +26,22 @@ in your app.js
 now you are ready to use `i18n.__('Hello')`.
 
 ## Configure
-use configure to setup these:
+minimal example, just setup two locales and register helpers to global scope:
 
     i18n.configure({
-        // setup some locales - other locales default to en silently
         locales:['en', 'de'],
-
-        // where to register __() and __n() to, might be "global" if you know what you are doing
         register: global
     });
 
-### tweak helpers 
+### register helpers manually 
 configure i18n without register: global
 
 	i18n.configure({
-	    // setup some locales - other locales default to en silently
 	    locales:['en', 'de'],
 	});
 
 to register view helpers on your own in **express 2.x**:
 
-	// register helpers for use in templates
 	app.helpers({
 	  __: i18n.__,
 	  __n: i18n.__n
@@ -54,12 +49,33 @@ to register view helpers on your own in **express 2.x**:
 
 to register view helpers on your own in **express 3.x**:
 
-	// register helpers for use in templates
 	app.locals({
 	  __: i18n.__,
 	  __n: i18n.__n
 	});
 
+### list of configuration options
+
+	i18n.configure({
+	    // setup some locales - other locales default to en silently
+	    locales:['en', 'de'],
+
+	    // sets a custom cookie name to parse locale settings from
+	    cookie: 'yourcookiename',
+
+	    // where to store json files - defaults to './locales'
+	    directory: './mylocales',
+
+	    // whether to write new locale information to disk - defaults to true
+	    updateFiles: false,
+
+	    // setting extension of json files - defaults to '.js' (according to webtranslateit)
+	    extension: '.json',
+
+	    // enabled some debug output - defaults to false
+	    debug: true
+
+	});
 
 ### hook into express configure
 
@@ -70,7 +86,7 @@ in an express app, you might use i18n.init to gather language settings of your v
 
     	[...]
 
-	    // using 'accept-language' header to guess language settings
+	    // default: using 'accept-language' header to guess language settings
 	    app.use(i18n.init);
 	    app.use(app.router);
 	    app.use(express.static(__dirname + '/public'));
@@ -172,11 +188,9 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 		"tree": "Baum"
 	}
 
-to turn off automatic locale file updates:
+remember to turn off automatic locale file updates:
 
-	// turn off locale file updating in production mode
 	i18n.configure({
-	    // disable locale file updates
 	    updateFiles: false
 	});
 
