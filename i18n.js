@@ -83,6 +83,9 @@ i18n.__ = function (phrase) {
   if (this && this.scope) {
     locale = this.scope.locale;
   }
+  if (this && this.locale) {
+    locale = this.locale;
+  }
   msg = translate(locale, phrase);
   if (arguments.length > 1) {
     msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
@@ -94,6 +97,9 @@ i18n.__n = function (singular, plural, count) {
   var locale, msg;
   if (this && this.scope) {
     locale = this.scope.locale;
+  }
+  if (this && this.locale) {
+    locale = this.locale;
   }
   msg = translate(locale, singular, plural);
 
