@@ -32,7 +32,7 @@ var i18n = module.exports = function(opt) {
 
 	// implicitly read all locales
 	// if it's an array of locale names, read in the data
-	if (this.locales && this.locales.forEach) {
+	if (opt.locales && opt.locales.forEach) {
 		this.locales = {};
 
 		opt.locales.forEach(function(locale) {
@@ -221,7 +221,9 @@ i18n.prototype = {
 				{ one: singular, other: plural } :
 				singular;
 
-			this.writeFile(locale);
+			if (this.devMode) {
+				this.writeFile(locale);
+			}
 		}
 
 		return this.locales[locale][singular];
@@ -232,7 +234,8 @@ i18n.prototype = {
 		var file = this.locateFile(locale);
 
 		if (!this.devMode && i18n.localeCache[file]) {
-			return i18n.localeCache[file];
+			this.initLocale(locale, i18n.localeCache[file]);
+			return;
 		}
 
 		try {
@@ -260,7 +263,7 @@ i18n.prototype = {
 		// don't write new locale information to disk if we're not in dev mode
 		if (!this.devMode) {
 			// Initialize the locale if didn't exist already
-			return this.initLocale(locale, {});
+			this.initLocale(locale, {});
 		}
 
 		// creating directory if necessary
@@ -312,7 +315,9 @@ i18n.prototype = {
 			// Only cache the files when we're not in dev mode
 			if (!this.devMode) {
 			    var file = this.locateFile(locale);
-			    i18n.localeCache[file] = data;
+				if ( !i18n.localeCache[file] ) {
+			    	i18n.localeCache[file] = data;
+				}
 			}
 		}
 	}
