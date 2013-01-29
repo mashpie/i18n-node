@@ -4,7 +4,7 @@
  * @link    https://github.com/jeresig/i18n-node
  * @license http://opensource.org/licenses/MIT
  *
- * @version 0.4.1
+ * @version 0.4.2
  */
 
 // dependencies
