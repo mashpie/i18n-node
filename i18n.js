@@ -69,7 +69,7 @@ i18n.configure = function (opt) {
   }
 };
 
-i18n.init = function (request, response, next) {
+i18n.init = function i18nInit(request, response, next) {
   if (typeof request === 'object') {
     guessLanguage(request);
   }
