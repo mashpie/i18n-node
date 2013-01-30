@@ -200,7 +200,7 @@ function guessLanguage(request) {
     }
 
     // setting the language by cookie
-    if (cookiename && request.cookies[cookiename]) {
+    if (cookiename && request.cookies && request.cookies[cookiename]) {
       request.language = request.cookies[cookiename];
     }
 
