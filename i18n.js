@@ -79,7 +79,7 @@ i18n.expressBind = function(app, opt) {
 
 		// Express 3
 		if (res.locals) {
-			i18n.registerMethods(res.locals)
+			i18n.registerMethods(res.locals, req)
 		}
 
 		next();
@@ -91,11 +91,16 @@ i18n.expressBind = function(app, opt) {
 	}
 };
 
-i18n.registerMethods = function(helpers) {
+i18n.registerMethods = function(helpers, req) {
 	i18n.resMethods.forEach(function(method) {
-		helpers[method] = function(req) {
-			return req.i18n[method].bind(req.i18n);
-		};
+		if (req) {
+			helpers[method]	= req.i18n[method].bind(req.i18n);
+		} else {
+			helpers[method] = function(req) {
+				return req.i18n[method].bind(req.i18n);
+			};	
+		}
+		
 	});
 
 	return helpers;
