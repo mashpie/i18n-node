@@ -17,42 +17,29 @@ No extra parsing needed.
 	npm test
 
 ## Load
-in your app.js
 
 	// load modules
 	var express = require('express'),
 	    i18n = require("i18n");
 	
-now you are ready to use `i18n.__('Hello')`.
+now you are ready to use a global `i18n.__('Hello')`. **Global** assumes you share a common state of localizsation in any time and any part of your app. This is usually fine in cli-style scripts. When serving responses to http requests you'll need to make sure that scope is __NOT__ shared globally but attached to your request object.
 
 ## Configure
-minimal example, just setup two locales and register helpers to global scope:
+
+Minimal example, just setup two locales
 
     i18n.configure({
-        locales:['en', 'de'],
-        register: global
+        locales:['en', 'de']
     });
 
-### register helpers manually 
-configure i18n without register: global
+ optionally register helpers to _global_ scope in your cli. 
 
 	i18n.configure({
 	    locales:['en', 'de'],
+        register: global 
 	});
 
-to register view helpers on your own in **express 2.x**:
-
-	app.helpers({
-	  __: i18n.__,
-	  __n: i18n.__n
-	});
-
-to register view helpers on your own in **express 3.x**:
-
-	app.locals({
-	  __: i18n.__,
-	  __n: i18n.__n
-	});
+ **Be warned**: Globals are only intended to get used in cli-like apps. To avoid concurency issues in server-like apps you'll need to attach helpers on your own to any kind of request- or response-object 
 
 ### list of configuration options
 
@@ -77,9 +64,19 @@ to register view helpers on your own in **express 3.x**:
 
 	});
 
-### hook into express configure
+## Basic global use
 
-in an express app, you might use i18n.init to gather language settings of your visitors, ie:
+In your app, when registered global:
+
+	var greeting = __('Hello');
+
+in your app, when not registered to a specific object:
+
+	var greeting = i18n.__('Hello');
+
+## Example usage in express.js
+
+In an express app, you might use i18n.init to gather language settings of your visitors and also bind your helpers to response object honoring request objects locale, ie:
 
 	// Configuration
 	app.configure(function() {
@@ -88,35 +85,52 @@ in an express app, you might use i18n.init to gather language settings of your v
 
 	    // default: using 'accept-language' header to guess language settings
 	    app.use(i18n.init);
+
+	    // binding template helpers to request (Credits to https://github.com/enyo #12)
+		app.use(function(req, res, next) {
+		  res.locals.__ = function() {
+		    return i18n.__.apply(req, arguments);
+		  };
+		  res.locals.__n = function() {
+		    return i18n.__n.apply(req, arguments);
+		  };
+		});
+
 	    app.use(app.router);
 	    app.use(express.static(__dirname + '/public'));
 	});
-	
-## Use
 
-in your app
+in your app, when registered to a request object by `i18n.init`:
 
-	var greeting = __('Hello');
-	
+	app.get('/de', function(req, res){
+      var greeting = req.__('Hello');
+    });
+
+
 in your template (depending on your template compiler)
 	
 	<%= __('Hello') %>
 	
 	${__('Hello')}
 	
+
+## Output parsing of expressions
+
+As inspired by gettext there is currently support for sprintf-style expressions. Named parameters are on roadmap.
+
 ### sprintf support
 
 	var greeting = __('Hello %s, how are you today?', 'Marcus');
 	
-this puts **Hello Marcus, how are you today?**. You might add endless arguments and even nest it.
+this puts *Hello Marcus, how are you today?*. You might add endless arguments and even nest it.
 
 	var greeting = __('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend'));
 	
-which puts **Hello Marcus, how are you today? How was your weekend.**
+which puts *Hello Marcus, how are you today? How was your weekend.*
 
 ### variable support
 
-you might even use dynamic variables. They get added to the `en.js` file if not yet existing.
+you might even use dynamic variables as they get interpreted on the fly. Better make sure no user input finds it's way to that point as they all get added to the `en.js` file if not yet existing.
 
 	var greetings = ['Hi', 'Hello', 'Howdy'];        
     for (var i=0; i < greetings.length; i++) {
@@ -129,7 +143,7 @@ which puts
 	Hello
 	Howdy
 
-### plural support
+### basic plural support
 
 different plural froms are supported as response to `count`:
 
@@ -142,9 +156,11 @@ and again these could get nested:
 	var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, 'tree');
 	var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, 'tree');
 	
-putting **There is one monkey in the tree** or **There are 3 monkeys in the tree**
+putting *There is one monkey in the tree* or *There are 3 monkeys in the tree*
 
 ## Storage
+
+Will get modular support for different storage engines, currently just json files are stored in filesystem.
 
 ### json file
 
