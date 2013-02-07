@@ -95,20 +95,29 @@ i18n.__ = function (phrase) {
 
 i18n.__n = function (singular, plural, count) {
   var locale, msg;
+
+  // get locale from scope (deprecated) or object
   if (this && this.scope) {
     locale = this.scope.locale;
   }
   if (this && this.locale) {
     locale = this.locale;
   }
+
+  // get translation
   msg = translate(locale, singular, plural);
 
+  // parse translation and replace all digets '%d' by `count`
+  // this also replaces extra strings '%%s' to parseble '%s' for next step
+  // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
   if (parseInt(count, 10) > 1) {
     msg = vsprintf(msg.other, [count]);
   } else {
     msg = vsprintf(msg.one, [count]);
   }
 
+  // if we have extra arguments with strings to get replaced,
+  // an additional substition injects those strings afterwards
   if (arguments.length > 3) {
     msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
   }
@@ -162,7 +171,6 @@ i18n.overrideLocaleFromQuery = function (req) {
 // ===================
 // = private methods =
 // ===================
-
 // guess language setting based on http headers
 
 function guessLanguage(request) {

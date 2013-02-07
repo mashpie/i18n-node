@@ -114,6 +114,21 @@ describe('module api', function () {
       should.equal(singular, 'Im Baum sitzt ein Affe');
       should.equal(plural, 'Im Baum sitzen 3 Affen');
     });
+
+    it('output of extra strings will break when not masked by an extra % (%% issue #49)', function(){
+      i18n.setLocale('en');
+      var singular = __n('There is one monkey in the %s', 'There are %d monkeys in the %s', 1, __('tree')),
+          plural = __n('There is one monkey in the %s', 'There are %d monkeys in the %s', 3, __('tree'));
+      should.equal(singular, 'There is one monkey in the 1');
+      should.equal(plural, 'There are 3 monkeys in the undefined');
+
+      i18n.setLocale('de');
+      singular = __n('There is one monkey in the %s', 'There are %d monkeys in the %s', 1, __('tree'));
+      plural = __n('There is one monkey in the %s', 'There are %d monkeys in the %s', 3, __('tree'));
+      should.equal(singular, 'There is one monkey in the 1');
+      should.equal(plural, 'There are 3 monkeys in the undefined');
+    });
+
   });
 
   describe('translating variables values', function(){

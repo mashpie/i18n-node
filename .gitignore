@@ -2,3 +2,5 @@ node_modules/
 testlocales/
 .DS_Store
 /npm-debug.log
+/locales/en.json
+/locales/de.json
