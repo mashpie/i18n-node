@@ -254,6 +254,7 @@ In your app.js:
 
 ## Changelog
 
+* 0.4.4: fix typo
 * 0.4.3: fix issue with preferredLocale failing on useragents with no accept lang header
 * 0.4.2: fix some issues with cache init
 * 0.4.1: rename locale query string param to lang
