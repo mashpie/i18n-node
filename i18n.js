@@ -4,7 +4,7 @@
  * @link    https://github.com/jeresig/i18n-node
  * @license http://opensource.org/licenses/MIT
  *
- * @version 0.4.2
+ * @version 0.4.3
  */
 
 // dependencies
@@ -63,7 +63,7 @@ var i18n = module.exports = function(opt) {
 	}
 };
 
-i18n.version = "0.4.1";
+i18n.version = "0.4.3";
 
 i18n.localeCache = {};
 i18n.resMethods = ["__", "__n", "getLocale", "isPreferredLocale"];
@@ -190,11 +190,11 @@ i18n.prototype = {
 			return;
 		}
 
-		var accept = req.headers["accept-language"],
+		var accept = req.headers["accept-language"] || "",
 			self = this,
-			prefLocale;
+			prefLocale = this.defaultLocale;
 
-		accept.match(/(^|,\s*)([a-z]+)/g).forEach(function(locale) {
+		(accept.match(/(^|,\s*)([a-z]+)/g) |} []).forEach(function(locale) {
 			if (!prefLocale && self.locales[locale]) {
 				prefLocale = locale;
 			}
