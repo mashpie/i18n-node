@@ -94,6 +94,8 @@ In an express app, you might use i18n.init to gather language settings of your v
 		  res.locals.__n = function() {
 		    return i18n.__n.apply(req, arguments);
 		  };
+		  // do not forget this, otherwise your app will hang
+		  next();
 		});
 
 	    app.use(app.router);
