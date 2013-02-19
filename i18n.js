@@ -129,6 +129,9 @@ i18n.prototype = {
 	},
 
 	setLocale: function(locale) {
+		
+		if (!locale) return;
+		
 		if (!this.locales[locale]) {
 			if (this.devMode) {
 				console.warn("Locale (" + locale + ") not found.");
@@ -294,7 +297,7 @@ i18n.prototype = {
 
 			} else {
 				console.error('unable to write locales to file (either ' + tmp +
-					' or ' + target + ' are not writeable?): ', e);
+					' or ' + target + ' are not writeable?): ');
 			}
 
 		} catch (e) {
