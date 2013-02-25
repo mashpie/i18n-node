@@ -223,7 +223,7 @@ In your app.js:
 		I18n.expressBind(app, {
 			// setup some locales - other locales default to en silently
 			locales: ['en', 'de']
-		}));
+		});
 
 		// Set up the rest of the Express middleware
 		app.use(app.router);
