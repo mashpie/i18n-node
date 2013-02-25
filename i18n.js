@@ -110,6 +110,7 @@ i18n.prototype = {
 	defaultLocale: "en",
 	extension: ".js",
 	directory: "./locales",
+	cookiename: "lang",
 
 	__: function() {
 		var msg = this.translate(this.locale, arguments[0]);
@@ -188,6 +189,24 @@ i18n.prototype = {
 			}
 
 			this.setLocale(RegExp.$1);
+		}
+	},
+
+	setLocaleFromCookie: function(req) {
+		req = req || this.request;
+
+		if (!req || !req.cookies || !this.cookiename || !req.cookies[this.cookiename]) {
+			return;
+		}
+
+		var locale = req.cookies[this.cookiename].toLowerCase();
+
+		if (this.locales[locale]) {
+			if (this.devMode) {
+				console.log("Overriding locale from cookie: " + locale);
+			}
+
+			this.setLocale(locale);
 		}
 	},
 
