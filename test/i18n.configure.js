@@ -27,10 +27,6 @@ describe('Configuration settings:', function () {
 
   describe('when using a custom directory with a custom extension', function () {
 
-    it('getLocale should return configured default locale', function () {
-      should.equal('en', i18n.getLocale(), 'should return default setting');
-    });
-
     it('setting locales should return appropiate locale', function () {
       var my_setLocale = i18n.setLocale('de'),
           my_getLocale = i18n.getLocale();
