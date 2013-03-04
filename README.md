@@ -214,7 +214,7 @@ remember to turn off automatic locale file updates:
 
 ## Changelog
 
-* 0.3.8: fixed: #44, #49; merged: #47, #45; updated README
+* 0.3.8: fixed: #44, #49; merged: #47, #45, #50; updated: README
 * 0.3.7: tests by mocha.js, added `this.locale` to `__` and `__n` 
 * 0.3.6: travisCI, writeFileSync, devDependencies, jslint, MIT, fixed: #29, #9, merged: #25, #30, #43
 * 0.3.5: fixed some issues, prepared refactoring, prepared publishing to npm finally
