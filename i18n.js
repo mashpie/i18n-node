@@ -27,6 +27,7 @@ var i18n = exports;
 i18n.version = '0.3.8';
 
 i18n.configure = function (opt) {
+
   // you may register helpers in global scope, up to you
   if (typeof opt.register === 'object') {
     opt.register.__ = i18n.__;
@@ -54,6 +55,11 @@ i18n.configure = function (opt) {
   // where to store json files
   if (typeof opt.extension === 'string') {
     extension = opt.extension;
+  }
+
+  // setting defaultLocale
+  if (typeof opt.defaultLocale === 'string') {
+    defaultLocale = opt.defaultLocale;
   }
 
   // enabled some debug output
@@ -149,10 +155,10 @@ i18n.setLocale = function (arg1, arg2) {
 };
 
 i18n.getLocale = function (request) {
-  if (request === undefined) {
-    return defaultLocale;
+  if (request && request.locale) {
+    return request.locale;
   }
-  return request.locale;
+  return defaultLocale;
 };
 
 i18n.overrideLocaleFromQuery = function (req) {

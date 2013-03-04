@@ -11,6 +11,7 @@ describe('Configuration settings:', function () {
   beforeEach(function () {
     i18n.configure({
       locales: ['en', 'de'],
+      defaultLocale: 'en',
       register: testScope,
       directory: './testlocales',
       extension: '.json',
