@@ -11,7 +11,7 @@ i18n.configure({
 
 describe('module setup', function () {
   it('the version should be set', function () {
-    should.equal(i18n.version, '0.3.7');
+    should.equal(i18n.version, '0.3.8');
   });
 });
 

@@ -4,7 +4,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.3.7
+ * @version     0.3.8
  */
 
 // dependencies
@@ -24,7 +24,7 @@ var vsprintf = require('sprintf').vsprintf,
 // public exports
 var i18n = exports;
 
-i18n.version = '0.3.7';
+i18n.version = '0.3.8';
 
 i18n.configure = function (opt) {
   // you may register helpers in global scope, up to you
