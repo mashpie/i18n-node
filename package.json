@@ -23,6 +23,6 @@
     "node": ">=0.4.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -R spec"
   }
 }
