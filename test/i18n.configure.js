@@ -27,10 +27,15 @@ describe('Configuration settings:', function () {
 
   describe('when using a custom directory with a custom extension', function () {
 
-    it('the setLocale and getLocale should still be able to set current locale', function () {
+    it('getLocale should return configured default locale', function () {
       should.equal('en', i18n.getLocale(), 'should return default setting');
-      should.equal('de', i18n.setLocale('de'), 'should return the new setting');
-      should.equal('de', i18n.getLocale(), 'should return the new setting');
+    });
+
+    it('setting locales should return appropiate locale', function () {
+      var my_setLocale = i18n.setLocale('de'),
+          my_getLocale = i18n.getLocale();
+      should.equal('de', my_setLocale);
+      should.equal('de', my_getLocale);
     });
 
     it('and some basic translations should still work', function () {
