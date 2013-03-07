@@ -219,7 +219,7 @@ i18n.prototype = {
 
 		var accept = req.headers["accept-language"] || "",
 			self = this,
-			prefLocale = this.defaultLocale;
+			prefLocale;
 
 		(accept.match(/(^|,\s*)([a-z]+)/g) || []).forEach(function(locale) {
 			if (!prefLocale && self.locales[locale]) {
@@ -227,7 +227,7 @@ i18n.prototype = {
 			}
 		});
 
-		return prefLocale;
+		return prefLocale || this.defaultLocale;
 	},
 
 	// read locale file, translate a msg and write to fs if new
