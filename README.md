@@ -91,10 +91,10 @@ In an express app, you might use i18n.init to gather language settings of your v
 
 	    // binding template helpers to request (Credits to https://github.com/enyo #12)
 		app.use(function(req, res, next) {
-		  res.locals.__ = function() {
+		  res.locals.__ = res.__ = function() {
 		    return i18n.__.apply(req, arguments);
 		  };
-		  res.locals.__n = function() {
+		  res.locals.__n = res.__n = function() {
 		    return i18n.__n.apply(req, arguments);
 		  };
 		  // do not forget this, otherwise your app will hang
@@ -108,7 +108,7 @@ In an express app, you might use i18n.init to gather language settings of your v
 in your app, when registered to a request object by `i18n.init`:
 
 	app.get('/de', function(req, res){
-      var greeting = req.__('Hello');
+      var greeting = res.__('Hello');
     });
 
 
