@@ -33,6 +33,7 @@ i18n.configure = function i18nConfigure(opt) {
     opt.register.__ = i18n.__;
     opt.register.__n = i18n.__n;
     opt.register.getLocale = i18n.getLocale;
+    opt.register.setLocale = i18n.setLocale;
   }
 
   // sets a custom cookie name to parse locale settings from
@@ -118,19 +119,21 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   return msg;
 };
 
-// either gets called like
-// setLocale('en') or like
-// setLocale(req, 'en')
-i18n.setLocale = function i18nSetLocale(arg1, arg2) {
-  var target_locale = arg1,
+i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
+  var target_locale = locale_or_request,
       request;
-
-  if (arg2 && locales[arg2]) {
-    request = arg1;
-    target_locale = arg2;
+  // called like setLocale(req, 'en')
+  if (locale_or_request && typeof locale === 'string' && locales[locale]) {
+    request = locale_or_request;
+    target_locale = locale;
   }
-
+  // called like req.setLocale('en')
+  if (locale === undefined && typeof this.locale === 'string' && typeof locale_or_request === 'string') {
+    request = this;
+    target_locale = locale_or_request;
+  }
   if (locales[target_locale]) {
+    // called like setLocale('en')
     if (request === undefined) {
       defaultLocale = target_locale;
     }
@@ -142,9 +145,15 @@ i18n.setLocale = function i18nSetLocale(arg1, arg2) {
 };
 
 i18n.getLocale = function i18nGetLocale(request) {
+  // called like getLocale(req)
   if (request && request.locale) {
     return request.locale;
   }
+  // called like req.getLocale()
+  if (request === undefined && typeof this.locale === 'string') {
+    return this.locale;
+  }
+  // called like getLocale()
   return defaultLocale;
 };
 

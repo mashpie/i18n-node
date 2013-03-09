@@ -146,40 +146,75 @@ describe('Module API', function () {
       "request": "GET /test",
       __: i18n.__,
       __n: i18n.__n,
+      "locale": {}
     };
-    describe('i18nSetLocale and i18nGetLocale', function () {
-      it('should return the current local setting, when used with 2 args', function () {
-        i18n.setLocale(req, 'en').should.equal('en');
-      });
 
-      it('while getLocale should still return the previous global setting', function () {
-        i18n.getLocale().should.equal('de');
-      });
+    i18n.configure({
+      locales: ['en', 'de'],
+      register: req,
+      defaultLocale: 'en'
+    });
 
-      it('now getLocale should return local locale when used with local object as 1st arg', function () {
-        i18n.getLocale(req).should.equal('en');
+    describe('Object as parameter', function () {
+      describe('i18nSetLocale and i18nGetLocale', function () {
+        it('should return the current local setting, when used with 2 args', function () {
+          i18n.setLocale(req, 'en').should.equal('en');
+        });
+        it('while getLocale should still return the previous global setting', function () {
+          i18n.getLocale().should.equal('de');
+        });
+        it('now getLocale should return local locale when used with local object as 1st arg', function () {
+          i18n.getLocale(req).should.equal('en');
+        });
+      });
+      describe('i18nTranslate', function () {
+        it('has to use local translation in en', function () {
+          i18n.setLocale(req, 'en').should.equal('en');
+          req.__('Hello').should.equal('Hello');
+        });
+        it('while the global translation remains untouched', function () {
+          should.equal(__('Hello'), 'Hallo');
+        });
+        it('and has to use local translation in de', function () {
+          i18n.setLocale(req, 'de').should.equal('de');
+          req.__('Hello').should.equal('Hallo');
+        });
+        it('still the global translation remains untouched', function () {
+          should.equal(__('Hello'), 'Hallo');
+        });
       });
     });
 
-    describe('i18nTranslate', function () {
-      it('has to use local translation in en', function () {
-        i18n.setLocale(req, 'en').should.equal('en');
-        req.__('Hello').should.equal('Hello');
+    describe('Attached to object', function () {
+      describe('i18nSetLocale and i18nGetLocale', function () {
+        it('should return the current local setting, when used with 1 arg', function () {
+          req.setLocale('en').should.equal('en');
+        });
+        it('while getLocale should still return the previous global setting', function () {
+          i18n.getLocale().should.equal('de');
+        });
+        it('now getLocale should return local locale', function () {
+          req.getLocale().should.equal('en');
+        });
       });
-
-      it('while the global translation remains untouched', function () {
-        should.equal(__('Hello'), 'Hallo');
-      });
-
-      it('and has to use local translation in de', function () {
-        i18n.setLocale(req, 'de').should.equal('de');
-        req.__('Hello').should.equal('Hallo');
-      });
-
-      it('still the global translation remains untouched', function () {
-        should.equal(__('Hello'), 'Hallo');
+      describe('i18nTranslate', function () {
+        it('has to use local translation in en', function () {
+          req.setLocale('en').should.equal('en');
+          req.__('Hello').should.equal('Hello');
+        });
+        it('while the global translation remains untouched', function () {
+          should.equal(__('Hello'), 'Hallo');
+        });
+        it('and has to use local translation in de', function () {
+          req.setLocale('de').should.equal('de');
+          req.__('Hello').should.equal('Hallo');
+        });
+        it('still the global translation remains untouched', function () {
+          should.equal(__('Hello'), 'Hallo');
+        });
       });
     });
+
 
     describe('i18nTranslatePlural', function () {
       it('should return singular or plural form based on last parameter', function () {
