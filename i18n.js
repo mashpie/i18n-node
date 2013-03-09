@@ -26,7 +26,7 @@ var i18n = exports;
 
 i18n.version = '0.3.8';
 
-i18n.configure = function (opt) {
+i18n.configure = function i18nConfigure (opt) {
 
   // you may register helpers in global scope, up to you
   if (typeof opt.register === 'object') {
@@ -84,7 +84,7 @@ i18n.init = function i18nInit(request, response, next) {
   }
 };
 
-i18n.__ = function (phrase) {
+i18n.__ = function i18nTranslate(phrase) {
   var locale, msg;
   if (this && this.scope) {
     locale = this.scope.locale;
@@ -99,7 +99,7 @@ i18n.__ = function (phrase) {
   return msg;
 };
 
-i18n.__n = function (singular, plural, count) {
+i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   var locale, msg;
 
   // get locale from scope (deprecated) or object
@@ -134,7 +134,7 @@ i18n.__n = function (singular, plural, count) {
 // either gets called like
 // setLocale('en') or like
 // setLocale(req, 'en')
-i18n.setLocale = function (arg1, arg2) {
+i18n.setLocale = function i18nSetLocale(arg1, arg2) {
   var target_locale = arg1,
       request;
 
@@ -154,7 +154,7 @@ i18n.setLocale = function (arg1, arg2) {
   return i18n.getLocale(request);
 };
 
-i18n.getLocale = function (request) {
+i18n.getLocale = function i18nGetLocale(request) {
   if (request && request.locale) {
     return request.locale;
   }
