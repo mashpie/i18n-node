@@ -26,7 +26,7 @@ var i18n = exports;
 
 i18n.version = '0.3.8';
 
-i18n.configure = function i18nConfigure (opt) {
+i18n.configure = function i18nConfigure(opt) {
 
   // you may register helpers in global scope, up to you
   if (typeof opt.register === 'object') {
@@ -85,14 +85,11 @@ i18n.init = function i18nInit(request, response, next) {
 };
 
 i18n.__ = function i18nTranslate(phrase) {
-  var locale, msg;
-  if (this && this.scope) {
-    locale = this.scope.locale;
-  }
-  if (this && this.locale) {
-    locale = this.locale;
-  }
-  msg = translate(locale, phrase);
+  // get translated message with locale from scope (deprecated) or object
+  var msg = translate(getLocaleFromObject(this), phrase);
+
+  // if we have extra arguments with strings to get replaced,
+  // an additional substition injects those strings afterwards
   if (arguments.length > 1) {
     msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
   }
@@ -100,18 +97,8 @@ i18n.__ = function i18nTranslate(phrase) {
 };
 
 i18n.__n = function i18nTranslatePlural(singular, plural, count) {
-  var locale, msg;
-
-  // get locale from scope (deprecated) or object
-  if (this && this.scope) {
-    locale = this.scope.locale;
-  }
-  if (this && this.locale) {
-    locale = this.locale;
-  }
-
-  // get translation
-  msg = translate(locale, singular, plural);
+  // get translated message with locale from scope (deprecated) or object
+  var msg = translate(getLocaleFromObject(this), singular, plural);
 
   // parse translation and replace all digets '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
@@ -222,6 +209,19 @@ function guessLanguage(request) {
   }
 }
 
+// searches for locale in given object
+
+function getLocaleFromObject(obj) {
+  var locale;
+  if (obj && obj.scope) {
+    locale = obj.scope.locale;
+  }
+  if (obj && obj.locale) {
+    locale = obj.locale;
+  }
+  return locale;
+}
+
 // read locale file, translate a msg and write to fs if new
 
 function translate(locale, singular, plural) {
@@ -257,7 +257,7 @@ function translate(locale, singular, plural) {
 
 function read(locale) {
   var localeFile = {},
-      file = locate(locale);
+      file = getStorageFilePath(locale);
   try {
     if (verbose) {
       console.log('read ' + file + ' for locale: ' + locale);
@@ -307,7 +307,7 @@ function write(locale) {
 
   // writing to tmp and rename on success
   try {
-    target = locate(locale);
+    target = getStorageFilePath(locale);
     tmp = target + ".tmp";
     fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, "\t"), "utf8");
     stats = fs.statSync(tmp);
@@ -324,7 +324,7 @@ function write(locale) {
 
 // basic normalization of filepath
 
-function locate(locale) {
+function getStorageFilePath(locale) {
   var ext = extension || '.js';
   return path.normalize(directory + '/' + locale + ext);
 }
