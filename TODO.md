@@ -1,6 +1,5 @@
 Roadmap
 ========
-* switch from expresso to mocha for testing
 * better parsing of defaults (and adding more reasonable default settings)
 * lot's of more configure settings
 * better sanitation in all fs operations => plugin system for storage

@@ -3,6 +3,5 @@
 testlocales/
 test/
 locales/
-vows/
+i18n-cov.js
 coverage.html
-lib-cov
