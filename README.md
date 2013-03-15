@@ -50,7 +50,7 @@ Minimal example, just setup two locales
 	    // you may alter a site wide default locale
 	    defaultLocale: 'de',
 
-	    // sets a custom cookie name to parse locale settings from
+	    // sets a custom cookie name to parse locale settings from  - defaults to NULL
 	    cookie: 'yourcookiename',
 
 	    // where to store json files - defaults to './locales'
@@ -59,12 +59,11 @@ Minimal example, just setup two locales
 	    // whether to write new locale information to disk - defaults to true
 	    updateFiles: false,
 
-	    // setting extension of json files - defaults to '.js' (according to webtranslateit)
-	    extension: '.json',
+	    // setting extension of json files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
+	    extension: '.js',
 
 	    // enabled some debug output - defaults to false
 	    debug: true
-
 	});
 
 ## Basic global use
@@ -208,12 +207,6 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 		},
 		"tree": "Baum"
 	}
-
-remember to turn off automatic locale file updates:
-
-	i18n.configure({
-	    updateFiles: false
-	});
 
 ## Changelog
 
