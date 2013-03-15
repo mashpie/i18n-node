@@ -40,7 +40,7 @@ i18n.configure = function i18nConfigure(opt) {
   updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
 
   // where to store json files
-  extension = (typeof opt.extension === 'string') ? opt.extension : '.js';
+  extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
 
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
@@ -308,6 +308,23 @@ function write(locale) {
 
 // basic normalization of filepath
 function getStorageFilePath(locale) {
-  var ext = extension || '.js';
-  return path.normalize(directory + '/' + locale + ext);
+  // changed API to use .json as default, #16
+  var ext = extension || '.json',
+      filepath = path.normalize(directory + '/' + locale + ext),
+      filepathJS = path.normalize(directory + '/' + locale + '.js');
+  // use .js as fallback if already existing
+  try {
+    if (fs.statSync(filepathJS)) {
+      if (debug) {
+        console.log('using existing file ' + filepathJS);
+      }
+      extension = '.js';
+      return filepathJS;
+    }
+  } catch (e) {
+    if (debug) {
+      console.log('will write to ' + filepath);
+    }
+  }
+  return filepath;
 }

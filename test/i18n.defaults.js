@@ -4,7 +4,7 @@ var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n')
     should = require("should"),
     fs = require('fs');
 
-describe('Module Config', function () {
+describe('Module Defaults', function () {
 
   var testScope = {};
 
@@ -12,30 +12,29 @@ describe('Module Config', function () {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
-      directory: './customlocales',
-      extension: '.customextension',
+      directory: './defaultlocales'
     });
     testScope.__('Hello');
   });
 
   afterEach(function () {
-    var stats = fs.lstatSync('./customlocales');
+    var stats = fs.lstatSync('./defaultlocales');
     should.exist(stats);
     if (stats) {
-      fs.unlinkSync('./customlocales/de.customextension');
-      fs.unlinkSync('./customlocales/en.customextension');
-      fs.rmdirSync('./customlocales');
+      fs.unlinkSync('./defaultlocales/de.json');
+      fs.unlinkSync('./defaultlocales/en.json');
+      fs.rmdirSync('./defaultlocales');
     }
   });
 
   it('should be possible to setup a custom directory', function () {
-    var stats = fs.lstatSync('./customlocales');
+    var stats = fs.lstatSync('./defaultlocales');
     should.exist(stats);
   });
 
-  it('should be possible to read custom files with custom extensions', function () {
-    var statsde = fs.lstatSync('./customlocales/de.customextension'),
-        statsen = fs.lstatSync('./customlocales/en.customextension');
+  it('should be possible to read custom files with default a extension of .json (issue #16)', function () {
+    var statsde = fs.lstatSync('./defaultlocales/de.json'),
+        statsen = fs.lstatSync('./defaultlocales/en.json');
     should.exist(statsde);
     should.exist(statsen);
   });
