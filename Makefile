@@ -3,7 +3,7 @@ REPORTER = spec
 test:
 	@NODE_ENV=test mocha --reporter $(REPORTER)
 
-test-cov: lib-cov
+coverage: lib-cov
 	@EXPRESS_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
 
 lib-cov:

@@ -11,12 +11,9 @@ describe('Module Config', function () {
   beforeEach(function () {
     i18n.configure({
       locales: ['en', 'de'],
-      defaultLocale: 'en',
       register: testScope,
       directory: './testlocales',
       extension: '.json',
-      debug: false,
-      verbose: false
     });
   });
 

@@ -7,19 +7,13 @@
  * @version     0.3.8
  */
 
-// dependencies
+// dependencies and "private" vars
 var vsprintf = require('sprintf').vsprintf,
     fs = require('fs'),
     url = require('url'),
     path = require('path'),
     locales = {},
-    defaultLocale = 'en',
-    updateFiles = true,
-    cookiename = null,
-    debug = false,
-    verbose = false,
-    extension = '.js',
-    directory = './locales';
+    defaultLocale, updateFiles, cookiename, debug, extension, directory;
 
 // public exports
 var i18n = exports;
@@ -37,36 +31,22 @@ i18n.configure = function i18nConfigure(opt) {
   }
 
   // sets a custom cookie name to parse locale settings from
-  if (typeof opt.cookie === 'string') {
-    cookiename = opt.cookie;
-  }
+  cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
 
   // where to store json files
-  if (typeof opt.directory === 'string') {
-    directory = opt.directory;
-  } else {
-    directory = './locales';
-  }
+  directory = (typeof opt.directory === 'string') ? opt.directory : './locales';
 
   // write new locale information to disk
-  if (typeof opt.updateFiles === 'boolean') {
-    updateFiles = opt.updateFiles;
-  }
+  updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
 
   // where to store json files
-  if (typeof opt.extension === 'string') {
-    extension = opt.extension;
-  }
+  extension = (typeof opt.extension === 'string') ? opt.extension : '.js';
 
   // setting defaultLocale
-  if (typeof opt.defaultLocale === 'string') {
-    defaultLocale = opt.defaultLocale;
-  }
+  defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
 
   // enabled some debug output
-  if (opt.debug) {
-    debug = opt.debug;
-  }
+  debug = (typeof opt.debug === 'boolean') ? opt.debug : false;
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
@@ -173,8 +153,8 @@ i18n.overrideLocaleFromQuery = function (req) {
 // ===================
 // = private methods =
 // ===================
-// guess language setting based on http headers
 
+// guess language setting based on http headers
 function guessLanguage(request) {
   if (typeof request === 'object') {
     var language_header = request.headers['accept-language'],
@@ -219,7 +199,6 @@ function guessLanguage(request) {
 }
 
 // searches for locale in given object
-
 function getLocaleFromObject(obj) {
   var locale;
   if (obj && obj.scope) {
@@ -232,7 +211,6 @@ function getLocaleFromObject(obj) {
 }
 
 // read locale file, translate a msg and write to fs if new
-
 function translate(locale, singular, plural) {
   if (locale === undefined) {
     if (debug) {
@@ -263,12 +241,11 @@ function translate(locale, singular, plural) {
 }
 
 // try reading a file
-
 function read(locale) {
   var localeFile = {},
       file = getStorageFilePath(locale);
   try {
-    if (verbose) {
+    if (debug) {
       console.log('read ' + file + ' for locale: ' + locale);
     }
     localeFile = fs.readFileSync(file);
@@ -282,7 +259,7 @@ function read(locale) {
     // unable to read, so intialize that file
     // locales[locale] are already set in memory, so no extra read required
     // or locales[locale] are empty, which initializes an empty locale.json file
-    if (verbose) {
+    if (debug) {
       console.log('initializing ' + file);
     }
     write(locale);
@@ -290,7 +267,6 @@ function read(locale) {
 }
 
 // try writing a file in a created directory
-
 function write(locale) {
   var stats, target, tmp;
 
@@ -328,11 +304,9 @@ function write(locale) {
   } catch (e) {
     console.error('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
   }
-
 }
 
 // basic normalization of filepath
-
 function getStorageFilePath(locale) {
   var ext = extension || '.js';
   return path.normalize(directory + '/' + locale + ext);
