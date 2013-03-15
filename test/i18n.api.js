@@ -12,7 +12,7 @@ i18n.configure({
 
 describe('Module Setup', function () {
   it('should export a valid version', function () {
-    should.equal(i18n.version, '0.3.8');
+    should.equal(i18n.version, '0.3.9');
   });
 
   it('should export configure as i18nConfigure', function () {

@@ -210,6 +210,7 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 
 ## Changelog
 
+* 0.3.9: express.js usage, named api, jscoverage + more test, refactored configure, closed: #51, #20, #16, #49
 * 0.3.8: fixed: #44, #49; merged: #47, #45, #50; added: #33; updated: README
 * 0.3.7: tests by mocha.js, added `this.locale` to `__` and `__n` 
 * 0.3.6: travisCI, writeFileSync, devDependencies, jslint, MIT, fixed: #29, #9, merged: #25, #30, #43
