@@ -1,4 +1,3 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, indent: 2 */
 /**
  * @author      Created by Marcus Spiegel <marcus.spiegel@gmail.com> on 2011-03-25.
  * @link        https://github.com/mashpie/i18n-node
@@ -12,6 +11,9 @@ var vsprintf = require('sprintf').vsprintf,
     fs = require('fs'),
     url = require('url'),
     path = require('path'),
+    debug = require('debug')('i18n:debug'),
+    warn = require('debug')('i18n:warn'),
+    error = require('debug')('i18n:error'),
     locales = {},
     defaultLocale, updateFiles, cookiename, debug, extension, directory;
 
@@ -44,9 +46,6 @@ i18n.configure = function i18nConfigure(opt) {
 
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
-
-  // enabled some debug output
-  debug = (typeof opt.debug === 'boolean') ? opt.debug : false;
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
@@ -151,7 +150,10 @@ i18n.overrideLocaleFromQuery = function (req) {
 // ===================
 // = private methods =
 // ===================
-// guess language setting based on http headers
+/**
+ * guess language setting based on http headers
+ */
+
 function guessLanguage(request) {
   if (typeof request === 'object') {
     var language_header = request.headers['accept-language'],
@@ -195,7 +197,10 @@ function guessLanguage(request) {
   }
 }
 
-// searches for locale in given object
+/**
+ * searches for locale in given object
+ */
+
 function getLocaleFromObject(obj) {
   var locale;
   if (obj && obj.scope) {
@@ -207,7 +212,10 @@ function getLocaleFromObject(obj) {
   return locale;
 }
 
-// read locale file, translate a msg and write to fs if new
+/**
+ * read locale file, translate a msg and write to fs if new
+ */
+
 function translate(locale, singular, plural) {
   if (locale === undefined) {
     logWarn("WARN: No locale found - check the context of the call to __(). Using " + defaultLocale + " as current locale");
@@ -235,7 +243,10 @@ function translate(locale, singular, plural) {
   return locales[locale][singular];
 }
 
-// try reading a file
+/**
+ * try reading a file
+ */
+
 function read(locale) {
   var localeFile = {},
       file = getStorageFilePath(locale);
@@ -257,7 +268,10 @@ function read(locale) {
   }
 }
 
-// try writing a file in a created directory
+/**
+ * try writing a file in a created directory
+ */
+
 function write(locale) {
   var stats, target, tmp;
 
@@ -295,7 +309,10 @@ function write(locale) {
   }
 }
 
-// basic normalization of filepath
+/**
+ * basic normalization of filepath
+ */
+
 function getStorageFilePath(locale) {
   // changed API to use .json as default, #16
   var ext = extension || '.json',
@@ -314,14 +331,18 @@ function getStorageFilePath(locale) {
   return filepath;
 }
 
+/**
+ * Logging proxies
+ */
+
 function logDebug(msg) {
-  if (debug) console.log(msg);
+  debug(msg);
 }
 
 function logWarn(msg) {
-  if (debug) console.warn(msg);
+  warn(msg);
 }
 
 function logError(msg) {
-  if (debug) console.error(msg);
+  error(msg);
 }

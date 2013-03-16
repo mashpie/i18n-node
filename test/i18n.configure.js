@@ -10,7 +10,6 @@ describe('Module Config', function () {
 
   beforeEach(function () {
     i18n.configure({
-      // debug: true,
       locales: ['en', 'de'],
       register: testScope,
       directory: './customlocales',
