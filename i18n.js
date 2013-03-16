@@ -36,7 +36,7 @@ i18n.configure = function i18nConfigure(opt) {
   cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
 
   // where to store json files
-  directory = (typeof opt.directory === 'string') ? opt.directory : './locales';
+  directory = (typeof opt.directory === 'string') ? opt.directory : __dirname + path.sep + 'locales';
 
   // write new locale information to disk
   updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
@@ -316,8 +316,8 @@ function write(locale) {
 function getStorageFilePath(locale) {
   // changed API to use .json as default, #16
   var ext = extension || '.json',
-      filepath = path.normalize(directory + '/' + locale + ext),
-      filepathJS = path.normalize(directory + '/' + locale + '.js');
+      filepath = path.normalize(directory + path.sep + locale + ext),
+      filepathJS = path.normalize(directory + path.sep + locale + '.js');
   // use .js as fallback if already existing
   try {
     if (fs.statSync(filepathJS)) {
