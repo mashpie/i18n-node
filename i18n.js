@@ -15,6 +15,7 @@ var vsprintf = require('sprintf').vsprintf,
     warn = require('debug')('i18n:warn'),
     error = require('debug')('i18n:error'),
     locales = {},
+    pathsep = path.sep || '/', // ---> means win support will be available in 0.8.x and above
     defaultLocale, updateFiles, cookiename, debug, extension, directory;
 
 // public exports
@@ -36,7 +37,7 @@ i18n.configure = function i18nConfigure(opt) {
   cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
 
   // where to store json files
-  directory = (typeof opt.directory === 'string') ? opt.directory : __dirname + path.sep + 'locales';
+  directory = (typeof opt.directory === 'string') ? opt.directory : __dirname + pathsep + 'locales';
 
   // write new locale information to disk
   updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
@@ -316,8 +317,8 @@ function write(locale) {
 function getStorageFilePath(locale) {
   // changed API to use .json as default, #16
   var ext = extension || '.json',
-      filepath = path.normalize(directory + path.sep + locale + ext),
-      filepathJS = path.normalize(directory + path.sep + locale + '.js');
+      filepath = path.normalize(directory + pathsep + locale + ext),
+      filepathJS = path.normalize(directory + pathsep + locale + '.js');
   // use .js as fallback if already existing
   try {
     if (fs.statSync(filepathJS)) {
