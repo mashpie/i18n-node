@@ -6,6 +6,7 @@ var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n')
 
 i18n.configure({
   locales: ['en', 'de'],
+  directory: './locales',
   register: global
 });
 
@@ -151,6 +152,7 @@ describe('Module API', function () {
 
     i18n.configure({
       locales: ['en', 'de'],
+      directory: './locales',
       register: req
     });
 
