@@ -22,9 +22,11 @@ describe('Module Config', function () {
     var stats = fs.lstatSync('./customlocales');
     should.exist(stats);
     if (stats) {
-      fs.unlinkSync('./customlocales/de.customextension');
-      fs.unlinkSync('./customlocales/en.customextension');
-      fs.rmdirSync('./customlocales');
+      try {
+        fs.unlinkSync('./customlocales/de.customextension');
+        fs.unlinkSync('./customlocales/en.customextension');
+        fs.rmdirSync('./customlocales');
+      } catch (e) {}
     }
 
   });

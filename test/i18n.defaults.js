@@ -21,9 +21,11 @@ describe('Module Defaults', function () {
     var stats = fs.lstatSync('./defaultlocales');
     should.exist(stats);
     if (stats) {
-      fs.unlinkSync('./defaultlocales/de.json');
-      fs.unlinkSync('./defaultlocales/en.json');
-      fs.rmdirSync('./defaultlocales');
+      try {
+        fs.unlinkSync('./defaultlocales/de.json');
+        fs.unlinkSync('./defaultlocales/en.json');
+        fs.rmdirSync('./defaultlocales');
+      } catch (e) {}
     }
 
   });
