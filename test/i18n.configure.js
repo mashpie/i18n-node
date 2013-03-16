@@ -10,10 +10,11 @@ describe('Module Config', function () {
 
   beforeEach(function () {
     i18n.configure({
+      // debug: true,
       locales: ['en', 'de'],
       register: testScope,
       directory: './customlocales',
-      extension: '.customextension',
+      extension: '.customextension'
     });
     testScope.__('Hello');
   });
@@ -26,6 +27,7 @@ describe('Module Config', function () {
       fs.unlinkSync('./customlocales/en.customextension');
       fs.rmdirSync('./customlocales');
     }
+
   });
 
   it('should be possible to setup a custom directory', function () {

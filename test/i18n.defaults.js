@@ -25,6 +25,7 @@ describe('Module Defaults', function () {
       fs.unlinkSync('./defaultlocales/en.json');
       fs.rmdirSync('./defaultlocales');
     }
+
   });
 
   it('should be possible to setup a custom directory', function () {

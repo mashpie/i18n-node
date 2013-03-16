@@ -143,9 +143,7 @@ i18n.overrideLocaleFromQuery = function (req) {
   }
   var urlObj = url.parse(req.url, true);
   if (urlObj.query.locale) {
-    if (debug) {
-      console.log("Overriding locale from query: " + urlObj.query.locale);
-    }
+    logDebug("Overriding locale from query: " + urlObj.query.locale);
     i18n.setLocale(req, urlObj.query.locale.toLowerCase());
   }
 };
@@ -153,7 +151,6 @@ i18n.overrideLocaleFromQuery = function (req) {
 // ===================
 // = private methods =
 // ===================
-
 // guess language setting based on http headers
 function guessLanguage(request) {
   if (typeof request === 'object') {
@@ -213,9 +210,7 @@ function getLocaleFromObject(obj) {
 // read locale file, translate a msg and write to fs if new
 function translate(locale, singular, plural) {
   if (locale === undefined) {
-    if (debug) {
-      console.warn("WARN: No locale found - check the context of the call to $__. Using " + defaultLocale + " (set by request) as current locale");
-    }
+    logWarn("WARN: No locale found - check the context of the call to __(). Using " + defaultLocale + " as current locale");
     locale = defaultLocale;
   }
 
@@ -245,23 +240,19 @@ function read(locale) {
   var localeFile = {},
       file = getStorageFilePath(locale);
   try {
-    if (debug) {
-      console.log('read ' + file + ' for locale: ' + locale);
-    }
+    logDebug('read ' + file + ' for locale: ' + locale);
     localeFile = fs.readFileSync(file);
     try {
       // parsing filecontents to locales[locale]
       locales[locale] = JSON.parse(localeFile);
     } catch (parseError) {
-      console.error('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+      logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
     }
   } catch (readError) {
     // unable to read, so intialize that file
     // locales[locale] are already set in memory, so no extra read required
     // or locales[locale] are empty, which initializes an empty locale.json file
-    if (debug) {
-      console.log('initializing ' + file);
-    }
+    logDebug('initializing ' + file);
     write(locale);
   }
 }
@@ -279,9 +270,7 @@ function write(locale) {
   try {
     stats = fs.lstatSync(directory);
   } catch (e) {
-    if (debug) {
-      console.log('creating locales dir in: ' + directory);
-    }
+    logDebug('creating locales dir in: ' + directory);
     fs.mkdirSync(directory, parseInt('755', 8));
   }
 
@@ -299,10 +288,10 @@ function write(locale) {
     if (stats.isFile()) {
       fs.renameSync(tmp, target);
     } else {
-      console.error('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
+      logError('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
     }
   } catch (e) {
-    console.error('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
+    logError('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
   }
 }
 
@@ -315,16 +304,24 @@ function getStorageFilePath(locale) {
   // use .js as fallback if already existing
   try {
     if (fs.statSync(filepathJS)) {
-      if (debug) {
-        console.log('using existing file ' + filepathJS);
-      }
+      logDebug('using existing file ' + filepathJS);
       extension = '.js';
       return filepathJS;
     }
   } catch (e) {
-    if (debug) {
-      console.log('will write to ' + filepath);
-    }
+    logDebug('will write to ' + filepath);
   }
   return filepath;
+}
+
+function logDebug(msg) {
+  if (debug) console.log(msg);
+}
+
+function logWarn(msg) {
+  if (debug) console.warn(msg);
+}
+
+function logError(msg) {
+  if (debug) console.error(msg);
 }
