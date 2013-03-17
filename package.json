@@ -27,6 +27,6 @@
     "node": ">=0.4.0"
   },
   "scripts": {
-    "test": "make all"
+    "test": "make test"
   }
 }
