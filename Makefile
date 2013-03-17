@@ -9,4 +9,9 @@ coverage: lib-cov
 lib-cov:
 	@jscoverage i18n.js i18n-cov.js
 
-.PHONY: test
+examples:
+	@NODE_ENV=test mocha --reporter $(REPORTER) examples/*.test.js
+
+all: test examples
+
+.PHONY: test examples
