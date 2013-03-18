@@ -223,6 +223,12 @@ if you only want to get errors and warnings reported start your node server like
 
 Combine those settings with you existing application if any of you other modules or libs also uses __debug__
 
+## Examples
+
+* [plain node.js + http](https://gist.github.com/mashpie/5188567)
+* [express 3 + cookie](https://gist.github.com/mashpie/5124626)
+
+
 ## Changelog
 
 * 0.3.9: express.js usage, named api, jscoverage + more test, refactored configure, closed: #51, #20, #16, #49
