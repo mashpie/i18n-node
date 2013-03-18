@@ -1,23 +1,32 @@
+/**
+ * This example is intended to show a cookie usage in express setup and
+ * also to be run as integration test for concurrency issues.
+ *
+ * Please remove setTimeout(), if you intend to use it as a blueprint!
+ *
+ */
+
+// require modules
 var express = require('express'),
     i18n = require('../../i18n'),
+    url = require('url'),
     app = module.exports = express();
 
+// minimal config
 i18n.configure({
   locales: ['en', 'de'],
   cookie: 'yourcookiename',
   directory: __dirname+'/locales',
 });
 
-// app.initI18n = function (req, res) {
-//   res.__ = function () {
-//     return i18n.__.apply(req, arguments);
-//   };
-//   i18n.init(req, res);
-// };
-
 app.configure(function () {
+  // you'll need cookies
   app.use(express.cookieParser());
+
+  // init i18n module for this loop
   app.use(i18n.init);
+
+  // register helper to res
   app.use(function (req, res, next) {
     res.locals.__ = res.__ = function () {
       return i18n.__.apply(req, arguments);
@@ -31,19 +40,25 @@ app.configure(function () {
 });
 
 app.get('/test', function (req, res) {
-  var _ref = 0,
-      delay = (_ref = req.query.delay) != null ? _ref : 0;
+  // delay a response to simulate a long running process,
+  // while another request comes in with altered language settings
   return setTimeout(function () {
     res.send('<body>' + res.__('Hello') + '</body>');
-  }, delay);
+  }, app.getDelay(req, res));
 });
 
 app.get('/testfail', function (req, res) {
-  var _ref = 0,
-      delay = (_ref = req.query.delay) != null ? _ref : 0;
+  // delay a response to simulate a long running process,
+  // while another request comes in with altered language settings
   return setTimeout(function () {
     res.send('<body>' + i18n.__('Hello') + '</body>');
-  }, delay);
+  }, app.getDelay(req, res));
 });
 
+// simple param parsing
+app.getDelay = function (req, res) {
+  return url.parse(req.url, true).query.delay || 0;
+}
+
+// startup
 app.listen(3000);

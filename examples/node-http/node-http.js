@@ -1,3 +1,11 @@
+/**
+ * This example is intended to show a basic plain vanilla setup and
+ * also to be run as integration test for concurrency issues.
+ *
+ * Please remove setTimeout(), if you intend to use it as a blueprint!
+ *
+ */
+
 // require modules
 var http = require('http'),
     i18n = require('../../i18n'),
@@ -12,13 +20,13 @@ i18n.configure({
 
 // simple server
 app = http.createServer(function (req, res) {
-  var delay = app.getDelay(req, res),
-      message;
+  var delay = app.getDelay(req, res);
 
   // init & guess, see hepler below
   app.i18n(req, res);
 
-  // delay a response to let global i18n setting be altered meanwhile, => 'Hallo' with Accept-Languag: de
+  // delay a response to simulate a long running process,
+  // while another request comes in with altered language settings
   setTimeout(function () {
     res.end(res.__('Hello'));
   }, delay);
