@@ -1,12 +1,19 @@
 var express = require('express'),
-    i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n'),
+    i18n = require('../../i18n'),
     app = module.exports = express();
 
 i18n.configure({
   locales: ['en', 'de'],
   cookie: 'yourcookiename',
-  directory: './locales',
+  directory: __dirname+'/locales',
 });
+
+// app.initI18n = function (req, res) {
+//   res.__ = function () {
+//     return i18n.__.apply(req, arguments);
+//   };
+//   i18n.init(req, res);
+// };
 
 app.configure(function () {
   app.use(express.cookieParser());
