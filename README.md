@@ -30,9 +30,9 @@ Note: If you plan on using the module with Express.js, please view the on that, 
 
 ### `new I18n(options)`
 
-The `I18n` function is the return result from calling `require('i18n-2')`. You use this to instantiate an `I18n` instance and set any configuration options. You'll probably only do this if you're not using the `bindExpress` method.
+The `I18n` function is the return result from calling `require('i18n-2')`. You use this to instantiate an `I18n` instance and set any configuration options. You'll probably only do this if you're not using the `expressBind` method.
 
-### `I18n.bindExpress(app, options)`
+### `I18n.expressBind(app, options)`
 
 You'll use this method to attach the i18n functionality to the request object inside Express.js. The app argument should be your Express.js app and the options argument should be the same as if you were calling `new I18n(options)`. See **"Using with Express.js"** at the end of this README for more details.
 
@@ -185,7 +185,7 @@ These options are to be used with Express.js or another framework that provides 
 
 If you pass in a `request` object a new `i18n` property will be attached to it, containing the i18n instance.
 
-Note that you probably won't need to use `request` directly, if you use `bindExpress` it is taken care of automatically.
+Note that you probably won't need to use `request` directly, if you use `expressBind` it is taken care of automatically.
 
 Setting the `subdomain` option to `true` will run the `setLocaleFromSubdomain` method automatically on every request.
 
