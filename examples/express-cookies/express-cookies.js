@@ -36,7 +36,6 @@ app.configure(function () {
     };
     next();
   });
-  app.use(app.router);
 });
 
 app.get('/test', function (req, res) {

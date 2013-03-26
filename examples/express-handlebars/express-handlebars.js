@@ -38,7 +38,6 @@ app.configure(function () {
     res.locals.locale = req.locale;
     next();
   });
-  app.use(app.router);
 });
 
 // register hbs helpers in res.locals' context which provides this.locale

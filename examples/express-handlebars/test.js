@@ -40,10 +40,11 @@ visitLinks = function (asyncMethod) {
   });
 };
 
-describe('non concurrent template rendering in different languages', function () {
-  return visitLinks('series');
-});
-
-describe('concurrent template rendering in different languages', function () {
-  return visitLinks('parallel');
+describe('Using i18n in express 3.x with hbs 2.1.0 template engine', function () {
+  describe('non concurrent template rendering in different languages', function () {
+    return visitLinks('series');
+  });
+  describe('concurrent template rendering in different languages', function () {
+    return visitLinks('parallel');
+  });
 });

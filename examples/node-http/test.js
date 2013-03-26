@@ -14,7 +14,7 @@ var Browser = require('zombie'),
       }
     });
 
-describe('res.__() is able to handle concurrent request correctly', function(){
+describe('Using res.__() in a plain node.js setup http server to handle concurrent request correctly', function(){
     describe('serial requests', function () {
       visitLinks('series', 'test', EN, 'Hello', DE, 'Hallo');
     });
