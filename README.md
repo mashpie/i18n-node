@@ -228,6 +228,7 @@ Combine those settings with you existing application if any of you other modules
 * [plain node.js + http](https://gist.github.com/mashpie/5188567)
 * [express 3 + cookie](https://gist.github.com/mashpie/5124626)
 * [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
+* [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
 
 
 ## Changelog
