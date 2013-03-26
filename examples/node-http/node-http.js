@@ -44,7 +44,7 @@ app.i18n = function (req, res) {
 // simple param parsing
 app.getDelay = function (req, res) {
   return url.parse(req.url, true).query.delay || 0;
-}
+};
 
 // startup
 app.listen(3000, '127.0.0.1');

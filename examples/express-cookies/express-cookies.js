@@ -16,7 +16,7 @@ var express = require('express'),
 i18n.configure({
   locales: ['en', 'de'],
   cookie: 'yourcookiename',
-  directory: __dirname+'/locales',
+  directory: __dirname+'/locales'
 });
 
 app.configure(function () {
@@ -58,7 +58,7 @@ app.get('/testfail', function (req, res) {
 // simple param parsing
 app.getDelay = function (req, res) {
   return url.parse(req.url, true).query.delay || 0;
-}
+};
 
 // startup
 app.listen(3000);

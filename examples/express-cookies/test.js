@@ -15,7 +15,7 @@ describe('res.__() is able to handle concurrent request correctly', function(){
     describe('parallel requests', function () {
       visitLinks('parallel', 'test', EN, 'Hello', DE, 'Hallo');
     });
-})
+});
 
 describe('i18n.__() is NOT able to handle concurrent request correctly', function(){
     describe('serial requests', function () {
@@ -25,4 +25,4 @@ describe('i18n.__() is NOT able to handle concurrent request correctly', functio
     describe('parallel requests', function () {
       visitLinks('parallel', 'testfail', EN, 'Hello', DE, 'Hello');
     });
-})
+});

@@ -32,4 +32,4 @@ function visitLinks(asyncMethod, url, EN, textEN, DE, textDE) {
     done);
 
   });
-};
+}

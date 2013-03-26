@@ -16,7 +16,7 @@ var vsprintf = require('sprintf').vsprintf,
     error = require('debug')('i18n:error'),
     locales = {},
     pathsep = path.sep || '/', // ---> means win support will be available in 0.8.x and above
-    defaultLocale, updateFiles, cookiename, debug, extension, directory;
+    defaultLocale, updateFiles, cookiename, extension, directory;
 
 // public exports
 var i18n = exports;
