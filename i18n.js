@@ -31,6 +31,7 @@ i18n.configure = function i18nConfigure(opt) {
     opt.register.__n = i18n.__n;
     opt.register.getLocale = i18n.getLocale;
     opt.register.setLocale = i18n.setLocale;
+    opt.register.getCatalog = i18n.getCatalog;
   }
 
   // sets a custom cookie name to parse locale settings from
@@ -135,6 +136,42 @@ i18n.getLocale = function i18nGetLocale(request) {
   }
   // called like getLocale()
   return defaultLocale;
+};
+
+i18n.getCatalog = function i18nGetCatalog(locale_or_request, locale) {
+  var target_locale = locale_or_request;
+
+  // called like getCatalog(req)
+  if (typeof locale_or_request === 'object' && typeof locale_or_request.locale === 'string') {
+    target_locale = locale_or_request.locale;
+  }
+
+  // called like getCatalog(req, 'en')
+  if (typeof locale_or_request === 'object' && typeof locale === 'string') {
+    target_locale = locale;
+  }
+
+  // called like req.getCatalog()
+  if (locale === undefined && typeof this.locale === 'string') {
+    target_locale = this.locale;
+  }
+
+  // called like req.getCatalog('en')
+  if (locale === undefined && typeof locale_or_request === 'string') {
+    target_locale = locale_or_request;
+  }
+
+  // called like getCatalog()
+  if (target_locale === undefined || target_locale === '') {
+    return locales;
+  }
+
+  if (locales[target_locale]) {
+    return locales[target_locale];
+  } else {
+    logWarn('No catalog found for "' + target_locale + '"');
+    return false;
+  }
 };
 
 i18n.overrideLocaleFromQuery = function (req) {

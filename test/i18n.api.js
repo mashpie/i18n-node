@@ -46,7 +46,10 @@ describe('Module Setup', function () {
     should.equal(i18n.getLocale.name, 'i18nGetLocale');
   });
 
-  it('should export getCatalog as i18nGetCatalog');
+  it('should export getCatalog as i18nGetCatalog', function () {
+    should.equal(typeof i18n.getCatalog, 'function');
+    should.equal(i18n.getCatalog.name, 'i18nGetCatalog');
+  });
 });
 
 describe('Module API', function () {
@@ -65,10 +68,23 @@ describe('Module API', function () {
       });
     });
 
-    describe('i18nGetCatalog', function(){
-      it('should return all catalogs when invoked with empty parameters');
-      it('should return just the DE catalog when invoked with "de" as parameter');
-      it('should return just the EN catalog when invoked with "en" as parameter');
+    describe('i18nGetCatalog', function () {
+      it('should return all catalogs when invoked with empty parameters', function () {
+        var catalogs = i18n.getCatalog();
+        catalogs.should.have.property('en');
+        catalogs.en.should.have.property('Hello', 'Hello');
+        catalogs.should.have.property('de');
+        catalogs.de.should.have.property('Hello', 'Hallo');
+      });
+      it('should return just the DE catalog when invoked with "de" as parameter', function () {
+        i18n.getCatalog('en').should.have.property('Hello', 'Hello');
+      });
+      it('should return just the EN catalog when invoked with "en" as parameter', function () {
+        i18n.getCatalog('de').should.have.property('Hello', 'Hallo');
+      });
+      it('should return false when invoked with unsupported locale as parameter', function () {
+        i18n.getCatalog('oO').should.equal(false);
+      });
     });
 
     describe('i18nTranslate', function () {
@@ -176,10 +192,20 @@ describe('Module API', function () {
           i18n.getLocale(req).should.equal('en');
         });
       });
-      describe('i18nGetCatalog', function(){
-        it('should return the current catalog when invoked with empty parameters');
-        it('should return just the DE catalog when invoked with "de" as parameter');
-        it('should return just the EN catalog when invoked with "en" as parameter');
+      describe('i18nGetCatalog', function () {
+        it('should return the current catalog when invoked with empty parameters', function () {
+          i18n.setLocale(req, 'en');
+          i18n.getCatalog(req).should.have.property('Hello', 'Hello');
+        });
+        it('should return just the DE catalog when invoked with "de" as parameter', function () {
+          i18n.getCatalog(req, 'de').should.have.property('Hello', 'Hallo');
+        });
+        it('should return just the EN catalog when invoked with "en" as parameter', function () {
+          i18n.getCatalog(req, 'en').should.have.property('Hello', 'Hello');
+        });
+        it('should return false when invoked with unsupported locale as parameter', function () {
+          i18n.getCatalog(req, 'oO').should.equal(false);
+        });
       });
       describe('i18nTranslate', function () {
         it('has to use local translation in en', function () {
@@ -211,10 +237,20 @@ describe('Module API', function () {
           req.getLocale().should.equal('en');
         });
       });
-      describe('i18nGetCatalog', function(){
-        it('should return the current catalog when invoked with empty parameters');
-        it('should return just the DE catalog when invoked with "de" as parameter');
-        it('should return just the EN catalog when invoked with "en" as parameter');
+      describe('i18nGetCatalog', function () {
+        it('should return the current catalog when invoked with empty parameters', function () {
+          req.setLocale('en');
+          req.getCatalog().should.have.property('Hello', 'Hello');
+        });
+        it('should return just the DE catalog when invoked with "de" as parameter', function () {
+          req.getCatalog('de').should.have.property('Hello', 'Hallo');
+        });
+        it('should return just the EN catalog when invoked with "en" as parameter', function () {
+          req.getCatalog('en').should.have.property('Hello', 'Hello');
+        });
+        it('should return false when invoked with unsupported locale as parameter', function () {
+          req.getCatalog('oO').should.equal(false);
+        });
       });
       describe('i18nTranslate', function () {
         it('has to use local translation in en', function () {
