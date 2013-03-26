@@ -4,6 +4,7 @@ var Browser = require('zombie'),
     visitLinks = require('../testlib/visitLinks'),
     DE = new Browser(),
     EN = new Browser();
+
 EN.cookies('localhost', '/').set("yourcookiename", "en");
 DE.cookies('localhost', '/').set("yourcookiename", "de");
 

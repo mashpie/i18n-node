@@ -36,7 +36,7 @@ app.configure(function () {
     };
     next();
   });
-  return app.use(app.router);
+  app.use(app.router);
 });
 
 app.get('/test', function (req, res) {
