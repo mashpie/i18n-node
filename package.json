@@ -9,6 +9,7 @@
   },
   "author": "Marcus Spiegel <marcus.spiegel@gmail.com>",
   "main": "./index",
+  "keywords": ["template", "i18n", "l10n"],
   "directories": {
     "lib": "."
   },

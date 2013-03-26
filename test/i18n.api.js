@@ -45,6 +45,8 @@ describe('Module Setup', function () {
     should.equal(typeof i18n.getLocale, 'function');
     should.equal(i18n.getLocale.name, 'i18nGetLocale');
   });
+
+  it('should export getCatalog as i18nGetCatalog');
 });
 
 describe('Module API', function () {
@@ -61,6 +63,12 @@ describe('Module API', function () {
       it('and getLocale should return the new setting', function () {
         i18n.getLocale().should.equal('de');
       });
+    });
+
+    describe('i18nGetCatalog', function(){
+      it('should return all catalogs when invoked with empty parameters');
+      it('should return just the DE catalog when invoked with "de" as parameter');
+      it('should return just the EN catalog when invoked with "en" as parameter');
     });
 
     describe('i18nTranslate', function () {
@@ -168,6 +176,11 @@ describe('Module API', function () {
           i18n.getLocale(req).should.equal('en');
         });
       });
+      describe('i18nGetCatalog', function(){
+        it('should return the current catalog when invoked with empty parameters');
+        it('should return just the DE catalog when invoked with "de" as parameter');
+        it('should return just the EN catalog when invoked with "en" as parameter');
+      });
       describe('i18nTranslate', function () {
         it('has to use local translation in en', function () {
           i18n.setLocale(req, 'en').should.equal('en');
@@ -197,6 +210,11 @@ describe('Module API', function () {
         it('now getLocale should return local locale', function () {
           req.getLocale().should.equal('en');
         });
+      });
+      describe('i18nGetCatalog', function(){
+        it('should return the current catalog when invoked with empty parameters');
+        it('should return just the DE catalog when invoked with "de" as parameter');
+        it('should return just the EN catalog when invoked with "en" as parameter');
       });
       describe('i18nTranslate', function () {
         it('has to use local translation in en', function () {
