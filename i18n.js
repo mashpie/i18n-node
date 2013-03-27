@@ -15,6 +15,7 @@ var vsprintf = require('sprintf').vsprintf,
     warn = require('debug')('i18n:warn'),
     error = require('debug')('i18n:error'),
     locales = {},
+    api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in 0.8.x and above
     defaultLocale, updateFiles, cookiename, extension, directory;
 
@@ -27,11 +28,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // you may register helpers in global scope, up to you
   if (typeof opt.register === 'object') {
-    opt.register.__ = i18n.__;
-    opt.register.__n = i18n.__n;
-    opt.register.getLocale = i18n.getLocale;
-    opt.register.setLocale = i18n.setLocale;
-    opt.register.getCatalog = i18n.getCatalog;
+    api.forEach(function(method){
+      opt.register[method] = i18n[method];
+    });
   }
 
   // sets a custom cookie name to parse locale settings from
@@ -188,6 +187,7 @@ i18n.overrideLocaleFromQuery = function (req) {
 // ===================
 // = private methods =
 // ===================
+
 /**
  * guess language setting based on http headers
  */
