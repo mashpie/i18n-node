@@ -4,7 +4,7 @@
  * @link    https://github.com/jeresig/i18n-node
  * @license http://opensource.org/licenses/MIT
  *
- * @version 0.4.4
+ * @version 0.4.5
  */
 
 // dependencies
@@ -63,7 +63,7 @@ var i18n = module.exports = function(opt) {
 	}
 };
 
-i18n.version = "0.4.4";
+i18n.version = "0.4.5";
 
 i18n.localeCache = {};
 i18n.resMethods = ["__", "__n", "getLocale", "isPreferredLocale"];
