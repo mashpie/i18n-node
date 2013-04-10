@@ -16,7 +16,7 @@ var vsprintf = require('sprintf').vsprintf,
     error = require('debug')('i18n:error'),
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
-    pathsep = path.sep || '/', // ---> means win support will be available in 0.8.x and above
+    pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
     defaultLocale, updateFiles, cookiename, extension, directory;
 
 // public exports
@@ -28,9 +28,7 @@ i18n.configure = function i18nConfigure(opt) {
 
   // you may register helpers in global scope, up to you
   if (typeof opt.register === 'object') {
-    api.forEach(function(method){
-      opt.register[method] = i18n[method];
-    });
+    applyAPItoObject(opt.register);
   }
 
   // sets a custom cookie name to parse locale settings from
@@ -59,7 +57,22 @@ i18n.configure = function i18nConfigure(opt) {
 i18n.init = function i18nInit(request, response, next) {
   if (typeof request === 'object') {
     guessLanguage(request);
+
+    if (typeof response === 'object') {
+      applyAPItoObject(request, response);
+
+      // register locale to res.locals so hbs helpers know this.locale
+      if (!response.locale) response.locale = request.locale;
+
+      if (response.locals) {
+        applyAPItoObject(request, response.locals);
+
+        // register locale to res.locals so hbs helpers know this.locale
+        if (!response.locals.locale) response.locals.locale = request.locale;
+      }
+    }
   }
+
   if (typeof next === 'function') {
     next();
   }
@@ -102,17 +115,21 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
 i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
   var target_locale = locale_or_request,
       request;
+
   // called like setLocale(req, 'en')
   if (locale_or_request && typeof locale === 'string' && locales[locale]) {
     request = locale_or_request;
     target_locale = locale;
   }
+
   // called like req.setLocale('en')
   if (locale === undefined && typeof this.locale === 'string' && typeof locale_or_request === 'string') {
     request = this;
     target_locale = locale_or_request;
   }
+
   if (locales[target_locale]) {
+
     // called like setLocale('en')
     if (request === undefined) {
       defaultLocale = target_locale;
@@ -125,14 +142,17 @@ i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
 };
 
 i18n.getLocale = function i18nGetLocale(request) {
+
   // called like getLocale(req)
   if (request && request.locale) {
     return request.locale;
   }
+
   // called like req.getLocale()
   if (request === undefined && typeof this.locale === 'string') {
     return this.locale;
   }
+
   // called like getLocale()
   return defaultLocale;
 };
@@ -187,6 +207,23 @@ i18n.overrideLocaleFromQuery = function (req) {
 // ===================
 // = private methods =
 // ===================
+
+/**
+ * registers all public API methods to a given response object when not already declared
+ */
+
+function applyAPItoObject(request, response) {
+  // attach to itself if not provided
+  var object = response || request;
+  api.forEach(function (method) {
+    // be kind rewind, or better not touch anything already exiting
+    if (!object[method]) {
+      object[method] = function () {
+        return i18n[method].apply(request, arguments);
+      };
+    }
+  });
+}
 
 /**
  * guess language setting based on http headers
