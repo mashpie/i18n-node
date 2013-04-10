@@ -22,7 +22,7 @@ No extra parsing needed.
 	var express = require('express'),
 	    i18n = require("i18n");
 	
-now you are ready to use a global `i18n.__('Hello')`. **Global** assumes you share a common state of localizsation in any time and any part of your app. This is usually fine in cli-style scripts. When serving responses to http requests you'll need to make sure that scope is __NOT__ shared globally but attached to your request object.
+now you are ready to use a global `i18n.__('Hello')`. **Global** assumes you share a common state of localization in any time and any part of your app. This is usually fine in cli-style scripts. When serving responses to http requests you'll need to make sure that scope is __NOT__ shared globally but attached to your request object.
 
 ## Configure
 
@@ -31,15 +31,6 @@ Minimal example, just setup two locales
     i18n.configure({
         locales:['en', 'de']
     });
-
- optionally register helpers to _global_ scope in your cli. 
-
-	i18n.configure({
-	    locales:['en', 'de'],
-        register: global 
-	});
-
- **Be warned**: Globals are only intended to get used in cli-like apps. To avoid concurency issues in server-like apps you'll need to attach helpers on your own to any kind of request- or response-object 
 
 ### list of configuration options
 
@@ -65,11 +56,7 @@ Minimal example, just setup two locales
 
 ## Basic global use
 
-In your app, when registered global:
-
-	var greeting = __('Hello');
-
-in your app, when not registered to a specific object:
+In your app, when not registered to a specific object:
 
 	var greeting = i18n.__('Hello');
 
@@ -85,35 +72,55 @@ In an express app, you might use i18n.init to gather language settings of your v
 	    // default: using 'accept-language' header to guess language settings
 	    app.use(i18n.init);
 
-	    // binding template helpers to request (Credits to https://github.com/enyo #12)
-		app.use(function(req, res, next) {
-		  res.locals.__ = res.__ = function() {
-		    return i18n.__.apply(req, arguments);
-		  };
-		  res.locals.__n = res.__n = function() {
-		    return i18n.__n.apply(req, arguments);
-		  };
-		  // do not forget this, otherwise your app will hang
-		  next();
-		});
-
-	    app.use(app.router);
-	    app.use(express.static(__dirname + '/public'));
+	    [...]
 	});
 
-in your app, when registered to a request object by `i18n.init`:
+in your apps methods:
 
 	app.get('/de', function(req, res){
       var greeting = res.__('Hello');
     });
 
 
-in your template (depending on your template compiler)
+in your templates (depending on your template engine)
 	
 	<%= __('Hello') %>
 	
 	${__('Hello')}
 	
+
+## Obtionally manual attaching helpers for different template engines
+
+In general i18n has to be attached to the response object to let it's public api get accessible in your templates and methods. As of **0.4.0** i18n tries to do so internally via `i18n.init`, as if you were doing it in `app.configure` on your own:
+
+	app.use(function(req, res, next) {
+		// express helper for natively supported engines
+		res.locals.__ = res.__ = function() {
+			return i18n.__.apply(req, arguments);
+		};
+
+		[...]
+
+		next();
+	});
+
+Different engines need different implementations, so yours might miss or not work with the current default helpers. This one showing an example for mustache in express:
+
+	// register helper as a locals function wrapped as mustache expects
+	app.use(function (req, res, next) {
+		// mustache helper
+		res.locals.__ = function () {
+		  return function (text, render) {
+		    return i18n.__.apply(req, arguments);
+		  };
+		};		
+		
+		[...]
+
+		next();
+	});
+
+You could still setup your own implementation. Please refer to Examples below, post an issue or contribute your setup.
 
 ## Output parsing of expressions
 
@@ -233,6 +240,7 @@ Combine those settings with you existing application if any of you other modules
 
 ## Changelog
 
+* 0.4.0: stable release; closed: #22, #24, #4, #10, #54; added examples, clarified concurrency usage in different template engines, added `i18n.getCatalog`
 * 0.3.9: express.js usage, named api, jscoverage + more test, refactored configure, closed: #51, #20, #16, #49
 * 0.3.8: fixed: #44, #49; merged: #47, #45, #50; added: #33; updated: README
 * 0.3.7: tests by mocha.js, added `this.locale` to `__` and `__n` 

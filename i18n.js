@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.3.9
+ * @version     0.4.0
  */
 
 // dependencies and "private" vars
@@ -22,7 +22,7 @@ var vsprintf = require('sprintf').vsprintf,
 // public exports
 var i18n = exports;
 
-i18n.version = '0.3.9';
+i18n.version = '0.4.0';
 
 i18n.configure = function i18nConfigure(opt) {
 
