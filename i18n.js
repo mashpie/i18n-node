@@ -213,9 +213,11 @@ i18n.overrideLocaleFromQuery = function (req) {
  */
 
 function applyAPItoObject(request, response) {
+
   // attach to itself if not provided
   var object = response || request;
   api.forEach(function (method) {
+
     // be kind rewind, or better not touch anything already exiting
     if (!object[method]) {
       object[method] = function () {

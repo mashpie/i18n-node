@@ -26,16 +26,6 @@ app.configure(function () {
   // init i18n module for this loop
   app.use(i18n.init);
 
-  // register helper to res
-  app.use(function (req, res, next) {
-    res.locals.__ = res.__ = function () {
-      return i18n.__.apply(req, arguments);
-    };
-    res.locals.__n = res.__n = function () {
-      return i18n.__n.apply(req, arguments);
-    };
-    next();
-  });
 });
 
 app.get('/test', function (req, res) {

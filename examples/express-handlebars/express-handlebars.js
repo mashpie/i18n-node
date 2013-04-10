@@ -33,11 +33,6 @@ app.configure(function () {
   // init i18n module for this loop
   app.use(i18n.init);
 
-  // register locale to res.locals so hbs helpers know this.locale
-  app.use(function (req, res, next) {
-    res.locals.locale = req.locale;
-    next();
-  });
 });
 
 // register hbs helpers in res.locals' context which provides this.locale

@@ -22,8 +22,8 @@ i18n.configure({
 app = http.createServer(function (req, res) {
   var delay = app.getDelay(req, res);
 
-  // init & guess, see hepler below
-  app.i18n(req, res);
+  // init & guess
+  i18n.init(req, res);
 
   // delay a response to simulate a long running process,
   // while another request comes in with altered language settings
@@ -32,14 +32,6 @@ app = http.createServer(function (req, res) {
   }, delay);
 
 });
-
-// register helper to res and init i18n module for this loop
-app.i18n = function (req, res) {
-  res.__ = function () {
-    return i18n.__.apply(req, arguments);
-  };
-  i18n.init(req, res);
-};
 
 // simple param parsing
 app.getDelay = function (req, res) {

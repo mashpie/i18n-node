@@ -42,14 +42,6 @@ app.configure(function () {
       };
     };
 
-    // express helper
-    res.__ = function () {
-      return i18n.__.apply(req, arguments);
-    };
-    res.__n = function () {
-      return i18n.__n.apply(req, arguments);
-    };
-
     next();
   });
 });
