@@ -301,6 +301,12 @@ function translate(locale, singular, plural) {
 
   if (!locales[locale]) {
     read(locale);
+    if (!locales[locale]) {
+      if (debug) {
+        console.warn("WARN: Locale " + locale + " couldn't be read - check the context of the call to $__. Using " + defaultLocale + " (set by request) as current locale");
+      }
+      locale = defaultLocale;
+    }
   }
 
   if (plural) {
