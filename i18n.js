@@ -207,7 +207,6 @@ i18n.overrideLocaleFromQuery = function (req) {
 // ===================
 // = private methods =
 // ===================
-
 /**
  * registers all public API methods to a given response object when not already declared
  */
@@ -299,14 +298,16 @@ function translate(locale, singular, plural) {
     locale = defaultLocale;
   }
 
+  // attempt to read when defined as valid locale
   if (!locales[locale]) {
     read(locale);
-    if (!locales[locale]) {
-      if (debug) {
-        console.warn("WARN: Locale " + locale + " couldn't be read - check the context of the call to $__. Using " + defaultLocale + " (set by request) as current locale");
-      }
-      locale = defaultLocale;
-    }
+  }
+
+  // fallback to default when missed
+  if (!locales[locale]) {
+    logWarn("WARN: Locale " + locale + " couldn't be read - check the context of the call to $__. Using " + defaultLocale + " (default) as current locale");
+    locale = defaultLocale;
+    read(locale);
   }
 
   if (plural) {
