@@ -89,7 +89,7 @@ in your templates (depending on your template engine)
 	${__('Hello')}
 	
 
-## Obtionally manual attaching helpers for different template engines
+## Optionally manual attaching helpers for different template engines
 
 In general i18n has to be attached to the response object to let it's public api get accessible in your templates and methods. As of **0.4.0** i18n tries to do so internally via `i18n.init`, as if you were doing it in `app.configure` on your own:
 
