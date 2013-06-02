@@ -1,6 +1,6 @@
 # i18n
 
-Lightweight simple translation module with dynamic json storage. 
+Lightweight simple translation module with dynamic json storage. Supports plain vanilla node.js apps and should work with any framework (like _express_, _restify_ and probably more) that exposes an `app.use()` method passing in `res` and `req` objects.
 Uses common __('...') syntax in app and templates.
 Stores language files in json files compatible to [webtranslateit](http://webtranslateit.com/) json format.
 Adds new strings on-the-fly when first used in your app.
@@ -88,6 +88,14 @@ in your templates (depending on your template engine)
 	
 	${__('Hello')}
 	
+
+## Examples for common setups
+
+* [plain node.js + http](https://gist.github.com/mashpie/5188567)
+* [plain node.js + restify](https://gist.github.com/mashpie/5694251)
+* [express 3 + cookie](https://gist.github.com/mashpie/5124626)
+* [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
+* [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
 
 ## Optionally manual attaching helpers for different template engines
 
@@ -229,14 +237,6 @@ if you only want to get errors and warnings reported start your node server like
 	$ DEBUG=i18n:warn,i18n:error node app.js
 
 Combine those settings with you existing application if any of you other modules or libs also uses __debug__
-
-## Examples
-
-* [plain node.js + http](https://gist.github.com/mashpie/5188567)
-* [express 3 + cookie](https://gist.github.com/mashpie/5124626)
-* [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
-* [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
-
 
 ## Changelog
 
