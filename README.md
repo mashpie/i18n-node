@@ -54,7 +54,7 @@ Minimal example, just setup two locales
 	    extension: '.js',
 	});
 
-## Basic global use
+## Example usage in gobal scope
 
 In your app, when not registered to a specific object:
 
@@ -96,6 +96,74 @@ in your templates (depending on your template engine)
 * [express 3 + cookie](https://gist.github.com/mashpie/5124626)
 * [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
 * [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
+
+## API
+
+### __()
+
+Translates a single phrase and adds it to locales if unknown. Returns translated parsed and substituted string.
+
+	// template and global (this.locale == 'de')
+	__('Hello'); // Hallo
+	__('Hello %s', Marcus); // Hallo Marcus
+
+	// scoped via req object (req.locale == 'de')
+	req.__('Hello'); // Hallo
+	req.__('Hello %s', Marcus); // Hallo Marcus
+
+	// passing specific locale
+	__({phrase: 'Hello', locale: 'fr'}); // Salut
+	__({phrase: 'Hello', 'Hello %s', locale: 'fr'}, Marcus); // Salut Marcus
+
+### __n()
+
+Plurals translation of a single phrase. Singular and plural forms will get added to locales if unknown. Returns translated parsed and substituted string based on `count` parameter.
+
+	// template and global (this.locale == 'de')
+	__n("%s cat", "%s cats", 1); // 1 Katze
+	__n("%s cat", "%s cats", 3); // 3 Katzen
+
+	// scoped via req object (req.locale == 'de')
+	req.__n("%s cat", "%s cats", 1); // 1 Katze
+	req.__n("%s cat", "%s cats", 3); // 3 Katzen
+
+	// passing specific locale
+	__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 1); // 1 chat
+	__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 3); // 3 chat
+
+	__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
+	__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
+
+### setLocale()
+
+Setting the current locale (ie.: `en`) globally or in current scope.
+
+	setLocale('de');
+	setLocale(req, 'de');
+	req.setLocale('de');
+
+### getLocale()
+
+Getting the current locale (ie.: `en`) from current scope or globally.
+
+	getLocale(); // --> de
+	getLocale(req); // --> de
+	req.getLocale(); // --> de
+
+### getCatalog()
+
+Returns a whole catalog optionally based on current scope and locale.
+
+	getCatalog(); // returns all locales
+	getCatalog('de'); // returns just 'de'
+
+	getCatalog(req); // returns all locales
+	getCatalog(req, 'de'); // returns just 'de'
+
+	req.getCatalog(); // returns all locales
+	req.getCatalog('de'); // returns just 'de'
+
+
 
 ## Optionally manual attaching helpers for different template engines
 
@@ -161,7 +229,7 @@ which puts
 
 ### basic plural support
 
-different plural froms are supported as response to `count`:
+two different plural forms are supported as response to `count`:
 
 	var singular = __n('%s cat', '%s cats', 1);
     var plural = __n('%s cat', '%s cats', 3);
