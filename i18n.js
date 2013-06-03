@@ -79,8 +79,19 @@ i18n.init = function i18nInit(request, response, next) {
 };
 
 i18n.__ = function i18nTranslate(phrase) {
-  // get translated message with locale from scope (deprecated) or object
-  var msg = translate(getLocaleFromObject(this), phrase);
+  var msg;
+
+  // called like __({phrase: "Hello", locale: "en"})
+  if (typeof phrase === 'object') {
+    if (typeof phrase.locale === 'string' && typeof phrase.phrase === 'string') {
+      msg = translate(phrase.locale, phrase.phrase);
+    }
+  }
+  // called like __("Hello")
+  else {
+    // get translated message with locale from scope (deprecated) or object
+    msg = translate(getLocaleFromObject(this), phrase);
+  }
 
   // if we have extra arguments with strings to get replaced,
   // an additional substition injects those strings afterwards
@@ -91,9 +102,27 @@ i18n.__ = function i18nTranslate(phrase) {
 };
 
 i18n.__n = function i18nTranslatePlural(singular, plural, count) {
-  // get translated message with locale from scope (deprecated) or object
-  var msg = translate(getLocaleFromObject(this), singular, plural);
+  var msg;
 
+  // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
+  if (typeof singular === 'object') {
+    if (typeof singular.locale === 'string' && typeof singular.singular === 'string' && typeof singular.plural === 'string') {
+      msg = translate(singular.locale, singular.singular, singular.plural);
+    }
+    if(typeof plural === 'number'){
+      count = plural;
+    }
+
+    // called like __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3})
+    if(typeof singular.count === 'number' || typeof singular.count === 'string'){
+      count = singular.count;
+    }
+  }
+  // called like __n('%s cat', '%s cats', 3)
+  else {
+    // get translated message with locale from scope (deprecated) or object
+    msg = translate(getLocaleFromObject(this), singular, plural);
+  }
   // parse translation and replace all digets '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
   // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29

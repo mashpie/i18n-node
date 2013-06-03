@@ -118,6 +118,29 @@ describe('Module API', function () {
         }
       });
 
+      it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
+        should.equal(__({
+          phrase: "Hello",
+          locale: "en"
+        }), 'Hello');
+        should.equal(__({
+          phrase: "Hello",
+          locale: "de"
+        }), 'Hallo');
+        should.equal(__({
+          locale: "en",
+          phrase: "Hello"
+        }), 'Hello');
+        should.equal(__({
+          locale: "de",
+          phrase: "Hello"
+        }), 'Hallo');
+        i18n.setLocale('de');
+        should.equal(__('Hello'), 'Hallo');
+        i18n.setLocale('en');
+        should.equal(__('Hello'), 'Hello');
+      });
+
     });
 
     describe('i18nTranslatePlural', function () {
@@ -161,6 +184,41 @@ describe('Module API', function () {
         plural = __n('There is one monkey in the %s', 'There are %d monkeys in the %s', 3, __('tree'));
         should.equal(singular, 'There is one monkey in the 1');
         should.equal(plural, 'There are 3 monkeys in the undefined');
+      });
+
+      it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function(){
+        i18n.setLocale('en');
+        var singular = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 1),
+            plural = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 3);
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 1);
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3);
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
+
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 1});
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3});
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
+
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: 1});
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: 3});
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "en", count: "1"});
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "en", count: "3"});
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
+
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: "1"});
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: "3"});
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        i18n.setLocale('de');
       });
     });
   });
@@ -222,6 +280,45 @@ describe('Module API', function () {
         it('still the global translation remains untouched', function () {
           should.equal(__('Hello'), 'Hallo');
         });
+        it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
+          i18n.setLocale(req, 'en').should.equal('en');
+          should.equal(req.__({
+            phrase: "Hello",
+            locale: "en"
+          }), 'Hello');
+          should.equal(req.__({
+            phrase: "Hello",
+            locale: "de"
+          }), 'Hallo');
+          should.equal(req.__({
+            locale: "en",
+            phrase: "Hello"
+          }), 'Hello');
+          should.equal(req.__({
+            locale: "de",
+            phrase: "Hello"
+          }), 'Hallo');
+          req.__('Hello').should.equal('Hello');
+
+          i18n.setLocale(req, 'de').should.equal('de');
+          should.equal(req.__({
+            phrase: "Hello",
+            locale: "en"
+          }), 'Hello');
+          should.equal(req.__({
+            phrase: "Hello",
+            locale: "de"
+          }), 'Hallo');
+          should.equal(req.__({
+            locale: "en",
+            phrase: "Hello"
+          }), 'Hello');
+          should.equal(req.__({
+            locale: "de",
+            phrase: "Hello"
+          }), 'Hallo');
+          req.__('Hello').should.equal('Hallo');
+        });
       });
     });
 
@@ -266,6 +363,47 @@ describe('Module API', function () {
         });
         it('still the global translation remains untouched', function () {
           should.equal(__('Hello'), 'Hallo');
+        });
+        it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
+          req.setLocale('en').should.equal('en');
+
+          should.equal(req.__({
+            phrase: "Hello",
+            locale: "en"
+          }), 'Hello');
+          should.equal(req.__({
+            phrase: "Hello",
+            locale: "de"
+          }), 'Hallo');
+          should.equal(req.__({
+            locale: "en",
+            phrase: "Hello"
+          }), 'Hello');
+          should.equal(req.__({
+            locale: "de",
+            phrase: "Hello"
+          }), 'Hallo');
+          req.__('Hello').should.equal('Hello');
+
+          req.setLocale('de').should.equal('de');
+
+          should.equal(req.__({
+            phrase: "Hello",
+            locale: "en"
+          }), 'Hello');
+          should.equal(req.__({
+            phrase: "Hello",
+            locale: "de"
+          }), 'Hallo');
+          should.equal(req.__({
+            locale: "en",
+            phrase: "Hello"
+          }), 'Hello');
+          should.equal(req.__({
+            locale: "de",
+            phrase: "Hello"
+          }), 'Hallo');
+          req.__('Hello').should.equal('Hallo');
         });
       });
     });
@@ -312,6 +450,41 @@ describe('Module API', function () {
         plural = req.__n('There is one monkey in the %s', 'There are %d monkeys in the %s', 3, req.__('tree'));
         should.equal(singular, 'There is one monkey in the 1');
         should.equal(plural, 'There are 3 monkeys in the undefined');
+      });
+
+      it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function(){
+        i18n.setLocale(req, 'en');
+        var singular = req.__n({singular: "%s cat", plural: "%s cats", locale: "de"}, 1),
+            plural = req.__n({singular: "%s cat", plural: "%s cats", locale: "de"}, 3);
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        singular = req.__n({singular: "%s cat", plural: "%s cats", locale: "en"}, 1);
+        plural = req.__n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3);
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
+
+        singular = req.__n({singular: "%s cat", plural: "%s cats", locale: "en", count: 1});
+        plural = req.__n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3});
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
+
+        singular = req.__n({singular: "%s cat", plural: "%s cats", locale: "de", count: 1});
+        plural = req.__n({singular: "%s cat", plural: "%s cats", locale: "de", count: 3});
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        singular = req.__n({singular: "%s cat", plural: "%s cats", locale: "en", count: "1"});
+        plural = req.__n({singular: "%s cat", plural: "%s cats", locale: "en", count: "3"});
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
+
+        singular = req.__n({singular: "%s cat", plural: "%s cats", locale: "de", count: "1"});
+        plural = req.__n({singular: "%s cat", plural: "%s cats", locale: "de", count: "3"});
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        i18n.setLocale(req, 'de');
       });
     });
   });
