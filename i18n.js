@@ -17,7 +17,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent;
 
 // public exports
 var i18n = exports;
@@ -39,6 +39,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // write new locale information to disk
   updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
+
+  // what to use as the indentation unit (ex: "\t", "  ")
+  indent = (typeof opt.indent === 'string') ? opt.indent : "\t";
 
   // where to store json files
   extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
@@ -410,7 +413,7 @@ function write(locale) {
   try {
     target = getStorageFilePath(locale);
     tmp = target + ".tmp";
-    fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, "\t"), "utf8");
+    fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), "utf8");
     stats = fs.statSync(tmp);
     if (stats.isFile()) {
       fs.renameSync(tmp, target);
