@@ -286,7 +286,7 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 		},
 		"There is one monkey in the %%s": {
 			"one": "Im %%s sitzt ein Affe",
-			"other": "Im Baum sitzen %d Affen"
+			"other": "Im %%s sitzen %d Affen"
 		},
 		"tree": "Baum"
 	}
