@@ -108,15 +108,15 @@ Translates a single phrase and adds it to locales if unknown. Returns translated
 
 	// template and global (this.locale == 'de')
 	__('Hello'); // Hallo
-	__('Hello %s', Marcus); // Hallo Marcus
+	__('Hello %s', 'Marcus'); // Hallo Marcus
 
 	// scoped via req object (req.locale == 'de')
 	req.__('Hello'); // Hallo
-	req.__('Hello %s', Marcus); // Hallo Marcus
+	req.__('Hello %s', 'Marcus'); // Hallo Marcus
 
 	// passing specific locale
 	__({phrase: 'Hello', locale: 'fr'}); // Salut
-	__({phrase: 'Hello', 'Hello %s', locale: 'fr'}, Marcus); // Salut Marcus
+	__({phrase: 'Hello %s', locale: 'fr'}, 'Marcus'); // Salut Marcus
 
 ### __n()
 

@@ -135,6 +135,14 @@ describe('Module API', function () {
           locale: "de",
           phrase: "Hello"
         }), 'Hallo');
+
+        // passing specific locale
+        should.equal(__({phrase: 'Hello', locale: 'de'}), 'Hallo');
+        should.equal(__({phrase: 'Hello %s', locale: 'de'}, 'Marcus'), 'Hallo Marcus');
+
+        should.equal(__({phrase: 'Hello', locale: 'en'}), 'Hello');
+        should.equal(__({phrase: 'Hello %s', locale: 'en'}, 'Marcus'), 'Hello Marcus');
+
         i18n.setLocale('de');
         should.equal(__('Hello'), 'Hallo');
         i18n.setLocale('en');
