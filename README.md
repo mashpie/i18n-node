@@ -311,6 +311,7 @@ Combine those settings with you existing application if any of you other modules
 
 ## Changelog
 
+* 0.4.1: stable release; merged/closed: #57, #60, #67 typo fixes; added more examples and new features: #53, #65, #66 - and some more api reference 
 * 0.4.0: stable release; closed: #22, #24, #4, #10, #54; added examples, clarified concurrency usage in different template engines, added `i18n.getCatalog`
 * 0.3.9: express.js usage, named api, jscoverage + more test, refactored configure, closed: #51, #20, #16, #49
 * 0.3.8: fixed: #44, #49; merged: #47, #45, #50; added: #33; updated: README
