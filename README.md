@@ -94,11 +94,14 @@ in your templates (depending on your template engine)
 
 ## Examples for common setups
 
+See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples) inside `/examples` or browse these gists:
+
 * [plain node.js + http](https://gist.github.com/mashpie/5188567)
 * [plain node.js + restify](https://gist.github.com/mashpie/5694251)
 * [express 3 + cookie](https://gist.github.com/mashpie/5124626)
 * [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
 * [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
+* [express 3 + jade 0.3 (+ cookie)](https://gist.github.com/hankwang/5994144)
 
 ## API
 
