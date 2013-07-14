@@ -26,10 +26,11 @@ now you are ready to use a global `i18n.__('Hello')`. **Global** assumes you sha
 
 ## Configure
 
-Minimal example, just setup two locales
+Minimal example, just setup two locales and a project specific directory
 
     i18n.configure({
-        locales:['en', 'de']
+        locales:['en', 'de'],
+        directory: __dirname + '/locales'
     });
 
 ### list of configuration options
@@ -44,7 +45,7 @@ Minimal example, just setup two locales
 	    // sets a custom cookie name to parse locale settings from  - defaults to NULL
 	    cookie: 'yourcookiename',
 
-	    // where to store json files - defaults to './locales'
+	    // where to store json files - defaults to './locales' relative to modules directory
 	    directory: './mylocales',
 
 	    // whether to write new locale information to disk - defaults to true
