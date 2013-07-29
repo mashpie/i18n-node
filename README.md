@@ -114,6 +114,22 @@ Will then do:
 
 	setLocale('de')
 
+### `setLocaleFromCookie([request])`
+
+To be used with Express.js or another framework that provides a `request` object. This method takes a request object, looks at it's cookies property and tries to find a cookie named `cookieName` (default: `lang`).
+
+See [Using with Express.js](#using-with-expressjs) for a complete example.
+
+For example:
+
+	console.log(req.cookies.lang)
+	=> 'de'
+	setLocaleFromCookie()
+
+Will then do:
+
+	setLocale('de')
+
 ### `isPreferredLocale()`
 
 To be used with Express.js or another framework that provides a `request` object. This method works if a `request` option has been specified when the i18n object was instantiated.
@@ -222,7 +238,16 @@ In your app.js:
 		// And attach helper methods for use in templates
 		I18n.expressBind(app, {
 			// setup some locales - other locales default to en silently
-			locales: ['en', 'de']
+			locales: ['en', 'de'],
+			// change the cookie name from 'lang' to 'locale'
+			cookieName: 'locale'
+		});
+		
+		// This is how you'd set a locale from req.cookies.
+		// Don't forget to set the cookie either on the client or in your Express app.
+		app.use(function(req, res, next) {
+			req.i18n.setLocaleFromCookie();
+			next();
 		});
 
 		// Set up the rest of the Express middleware
