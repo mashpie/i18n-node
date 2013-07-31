@@ -49,6 +49,9 @@ i18n.configure = function i18nConfigure(opt) {
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
 
+  // support regions, 'de-de', 'de-at', 'zh-tw', 'zh-cn' ...
+  supportRegion = (typeof opt.supportRegion === 'boolean') ? opt.supportRegion : false;
+
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
     opt.locales.forEach(function (l) {
@@ -169,7 +172,19 @@ i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
     else {
       request.locale = target_locale;
     }
+  } else if (supportRegion) {
+    request = (typeof target_locale === 'object') ? target_locale : request;
+    locale = (locale === undefined) ? target_locale : locale;
+
+    if (locale !== locale.split('-')[0]) {
+      if (request === undefined) {
+        return i18n.setLocale(locale.split('-')[0]);
+      } else {
+        return i18n.setLocale(request, locale.split('-')[0]);
+      }
+    }
   }
+
   return i18n.getLocale(request);
 };
 
@@ -269,9 +284,9 @@ function guessLanguage(request) {
         regions = [];
 
     request.languages = [defaultLocale];
-    request.regions = [defaultLocale];
     request.language = defaultLocale;
-    request.region = defaultLocale;
+    request.regions = [];
+    request.region = '';
 
     if (language_header) {
       language_header.split(',').forEach(function (l) {
@@ -282,6 +297,8 @@ function guessLanguage(request) {
         }
         if (lr[1]) {
           regions.push(lr[1].toLowerCase());
+        } else {
+          regions.push('');
         }
       });
 
@@ -293,6 +310,11 @@ function guessLanguage(request) {
       if (regions.length > 0) {
         request.regions = regions;
         request.region = regions[0];
+      }
+
+      // support Region
+      if (supportRegion && request.region) {
+        request.language = request.language + '-' + request.region;
       }
     }
 
@@ -372,6 +394,7 @@ function read(locale) {
     try {
       // parsing filecontents to locales[locale]
       locales[locale] = JSON.parse(localeFile);
+      if (supportRegion && !locales[locale.split('-')[0]]) locales[locale.split('-')[0]] = locales[locale];
     } catch (parseError) {
       logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
     }
