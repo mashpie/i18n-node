@@ -5,7 +5,7 @@
   "homepage": "http://github.com/mashpie/i18n-node",
   "repository": {
     "type": "git",
-    "url": "http://github.com/mashpie/i18n-node.git"
+    "url": "http://github.com/cjroth/i18n-node.git"
   },
   "author": "Marcus Spiegel <marcus.spiegel@gmail.com>",
   "main": "./index",
