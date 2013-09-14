@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "sprintf": ">=0.1.1",
+    "js-yaml": "2.1.0",
     "debug": "*"
   },
   "devDependencies": {
