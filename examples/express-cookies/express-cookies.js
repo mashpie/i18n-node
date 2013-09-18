@@ -14,7 +14,7 @@ var express = require('express'),
 
 // minimal config
 i18n.configure({
-  locales: ['en', 'de'],
+  locales: ['en', 'de', 'ar'],
   cookie: 'yourcookiename',
   directory: __dirname+'/locales'
 });
