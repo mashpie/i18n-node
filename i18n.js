@@ -221,7 +221,7 @@ i18n.prototype = {
 			self = this,
 			prefLocale;
 
-		(accept.match(/(^|,\s*)([a-z]+)/g) || []).forEach(function(locale) {
+		(accept.match(/(^|,\s*)([a-zA-Z-]+)/g) || []).forEach(function(locale) {
 			if (!prefLocale && self.locales[locale]) {
 				prefLocale = locale;
 			}
