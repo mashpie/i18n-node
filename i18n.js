@@ -14,6 +14,7 @@ var vsprintf = require('sprintf').vsprintf,
     debug = require('debug')('i18n:debug'),
     warn = require('debug')('i18n:warn'),
     error = require('debug')('i18n:error'),
+    Mustache = require('mustache'),
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
@@ -98,7 +99,12 @@ i18n.__ = function i18nTranslate(phrase) {
 
   // if we have extra arguments with strings to get replaced,
   // an additional substition injects those strings afterwards
-  if (arguments.length > 1) {
+  if (arguments[1] !== null && typeof arguments[1] === "object") {
+    msg = Mustache.render(msg, arguments[1]);
+    if (arguments.length > 2) {
+        msg = vsprintf(msg, Array.prototype.slice.call(arguments, 2));
+    }
+  } else if (arguments.length > 1) {
     msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
   }
   return msg;
@@ -137,9 +143,14 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
 
   // if we have extra arguments with strings to get replaced,
   // an additional substition injects those strings afterwards
-  if (arguments.length > 3) {
+  if (arguments[3] !== null && typeof arguments[3] === "object") {
+    msg = Mustache.render(msg, arguments[3]);
+    if (arguments.length > 4) {
+        msg = vsprintf(msg, Array.prototype.slice.call(arguments, 2));
+    }
+  } else if (arguments.length > 3) {
     msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
-  }
+  }  
 
   return msg;
 };
