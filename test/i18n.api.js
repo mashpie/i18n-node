@@ -98,7 +98,7 @@ describe('Module API', function () {
       it('should return en translations as expected, using mustached messages', function () {
         i18n.setLocale('en');
         should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hello Marcus');
-        should.equal(__('Hello {{name}}, how was your %s?', { name: 'Marcus' }, __('weekend')), 'Hello Marcus, how was your weekend?');
+        should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hello Marcus, how was your weekend?');
       });
 
       it('should return de translations as expected', function () {
@@ -111,7 +111,7 @@ describe('Module API', function () {
       it('should return de translations as expected, using mustached messages', function () {
         i18n.setLocale('de');
         should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hallo Marcus');
-        should.equal(__('Hello {{name}}, how was your %s?', { name: 'Marcus' }, __('weekend')), 'Hallo Marcus, wie war dein Wochenende?');
+        should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hallo Marcus, wie war dein Wochenende?');
       });
 
       it('should also return translations when iterating thru variables values', function () {
