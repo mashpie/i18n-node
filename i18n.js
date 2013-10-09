@@ -84,6 +84,7 @@ i18n.init = function i18nInit(request, response, next) {
 
 i18n.__ = function i18nTranslate(phrase) {
   var msg, namedValues, args;
+  
   // Accept an object with named values as the last parameter
   // And collect all other arguments, except the first one in args
   if (
@@ -131,6 +132,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   if (
     arguments.length >= 2 &&
     arguments[arguments.length - 1] !== null && 
+    typeof arguments[arguments.length - 1] === "object"
   ) {
     namedValues = arguments[arguments.length - 1];
     args = arguments.length >= 5 ? Array.prototype.slice.call(arguments, 3, -1) : [];
@@ -185,7 +187,6 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   
   // if we have extra arguments with strings to get replaced,
   // an additional substition injects those strings afterwards
-    msg = Mustache.render(msg, arguments[3]);
   if ((/%/).test(msg) && args && args.length > 0) {
     msg = vsprintf(msg, args);
   }
