@@ -221,12 +221,18 @@ i18n.prototype = {
 			regExp= new RegExp("(^|,\s*)([a-z-]+)", "gi"),
 			self = this,
 			prefLocale,
-			locale;
+			locale, parts;
 
 		while(match = regExp.exec(accept)){
 			locale = match[2];
-			if (!prefLocale && self.locales[locale]) {
-				prefLocale = locale;
+			parts = locale.split('-');
+
+			if(!prefLocale){
+				if (self.locales[locale]) {
+					prefLocale = locale;
+				}else if((parts.length > 1) && self.locales[parts[0]]){
+					prefLocale = parts[0];
+				}
 			}
 		}
 
