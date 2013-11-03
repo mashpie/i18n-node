@@ -54,7 +54,8 @@ Minimal example, just setup two locales and a project specific directory
 	    // what to use as the indentation unit - defaults to "\t"
 	    indent: "\t",
 
-	    // setting extension of json files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
+	    // setting extension of locale files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
+	    // supported formats are: .json, .yml
 	    extension: '.js',
 	});
 

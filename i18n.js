@@ -11,6 +11,7 @@ var vsprintf = require('sprintf').vsprintf,
     fs = require('fs'),
     url = require('url'),
     path = require('path'),
+    jsyaml = require('js-yaml'),
     debug = require('debug')('i18n:debug'),
     warn = require('debug')('i18n:warn'),
     error = require('debug')('i18n:error'),
@@ -42,6 +43,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // what to use as the indentation unit (ex: "\t", "  ")
   indent = (typeof opt.indent === 'string') ? opt.indent : "\t";
+    if (opt.extension === '.yaml') {
+        opt.extension = '.yml';
+    }
 
   // where to store json files
   extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
@@ -368,12 +372,18 @@ function read(locale) {
       file = getStorageFilePath(locale);
   try {
     logDebug('read ' + file + ' for locale: ' + locale);
-    localeFile = fs.readFileSync(file);
+    localeFile = fs.readFileSync(file).toString();
     try {
       // parsing filecontents to locales[locale]
-      locales[locale] = JSON.parse(localeFile);
+        switch (extension) {
+          case '.yml':
+            locales[locale] = jsyaml.load(localeFile);
+            break;
+          default:
+            locales[locale] = JSON.parse(localeFile);
+        }
     } catch (parseError) {
-      logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+      logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid '+extension+'?): ', e);
     }
   } catch (readError) {
     // unable to read, so intialize that file
@@ -413,7 +423,15 @@ function write(locale) {
   try {
     target = getStorageFilePath(locale);
     tmp = target + ".tmp";
-    fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), "utf8");
+    var fileContents = '';
+    switch (extension) {
+      case '.yml':
+        fileContents = jsyaml.dump(locales[locale]);
+          break;
+      default:
+        fileContents = JSON.stringify(locales[locale], null, indent);
+    }
+    fs.writeFileSync(tmp, fileContents, "utf8");
     stats = fs.statSync(tmp);
     if (stats.isFile()) {
       fs.renameSync(tmp, target);
@@ -434,16 +452,14 @@ function getStorageFilePath(locale) {
   var ext = extension || '.json',
       filepath = path.normalize(directory + pathsep + locale + ext),
       filepathJS = path.normalize(directory + pathsep + locale + '.js');
-  // use .js as fallback if already existing
-  try {
-    if (fs.statSync(filepathJS)) {
-      logDebug('using existing file ' + filepathJS);
-      extension = '.js';
-      return filepathJS;
-    }
-  } catch (e) {
-    logDebug('will write to ' + filepath);
+  if (fs.existsSync(filepath)){
+    return filepath;
   }
+  // use .js as fallback if already existing
+  if (fs.existsSync(filepathJS)){
+    return filepathJS;
+  }
+  // return path nonetheless
   return filepath;
 }
 
