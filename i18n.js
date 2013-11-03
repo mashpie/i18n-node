@@ -453,8 +453,6 @@ function getStorageFilePath(locale) {
       filepath = path.normalize(directory + pathsep + locale + ext),
       filepathJS = path.normalize(directory + pathsep + locale + '.js');
 
-
-
   if (fileExists(filepath)){
     return filepath;
   }
