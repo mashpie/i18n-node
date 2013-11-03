@@ -452,15 +452,28 @@ function getStorageFilePath(locale) {
   var ext = extension || '.json',
       filepath = path.normalize(directory + pathsep + locale + ext),
       filepathJS = path.normalize(directory + pathsep + locale + '.js');
-  if (fs.existsSync(filepath)){
+
+
+
+  if (fileExists(filepath)){
     return filepath;
   }
   // use .js as fallback if already existing
-  if (fs.existsSync(filepathJS)){
+  if (fileExists(filepathJS)){
+    extension = '.js';
     return filepathJS;
   }
   // return path nonetheless
   return filepath;
+}
+
+function fileExists(filepath) {
+  try {
+    if (fs.statSync(filepath)) {
+      return true;
+    }
+  } catch (e) {}
+  return false;
 }
 
 /**
