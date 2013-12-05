@@ -373,7 +373,7 @@ function read(locale) {
       // parsing filecontents to locales[locale]
       locales[locale] = JSON.parse(localeFile);
     } catch (parseError) {
-      logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+      logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', parseError);
     }
   } catch (readError) {
     // unable to read, so intialize that file
@@ -418,7 +418,7 @@ function write(locale) {
     if (stats.isFile()) {
       fs.renameSync(tmp, target);
     } else {
-      logError('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
+      logError('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ');
     }
   } catch (e) {
     logError('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
