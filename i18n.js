@@ -373,7 +373,7 @@ function read(locale) {
       // parsing filecontents to locales[locale]
       locales[locale] = JSON.parse(localeFile);
     } catch (parseError) {
-      logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+      logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', parseError);
     }
   } catch (readError) {
     // unable to read, so intialize that file
