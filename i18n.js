@@ -15,7 +15,7 @@ var vsprintf = require('sprintf').vsprintf,
     warn = require('debug')('i18n:warn'),
     error = require('debug')('i18n:error'),
     locales = {},
-    api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
+    api = ['__', '__n', '__f' 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
     defaultLocale, updateFiles, cookiename, extension, directory, indent;
 
@@ -142,6 +142,23 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   }
 
   return msg;
+};
+
+i18n.__f = function i18nTranslateUsingFile(phrase) {
+  // get translated filename with locale from scope (deprecated) or object
+  var msg = translate(getLocaleFromObject(this), phrase);
+
+  //reads the file
+  var fileContent = fs.readFileSync("./" + msg, 'utf8');
+
+  // if we have extra arguments with strings to get replaced,
+  // an additional substition injects those strings afterwards
+  if (arguments.length > 1) {
+    fileContent = vsprintf(fileContent, Array.prototype.slice.call(arguments, 1));
+  }
+
+  //return file content
+  return fileContent;
 };
 
 i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
