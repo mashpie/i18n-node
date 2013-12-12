@@ -293,6 +293,13 @@ function guessLanguage(request) {
       if (regions.length > 0) {
         request.regions = regions;
         request.region = regions[0];
+
+        // to test if having region translation
+        if (request.region && request.language && locales[ request.language + "-" + request.region]){
+          //logDebug("set region") ;
+          request.language = request.language + "-" + request.region;
+        }
+
       }
     }
 
