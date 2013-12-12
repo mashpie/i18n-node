@@ -36,6 +36,11 @@ describe('Module Setup', function () {
     should.equal(i18n.__n.name, 'i18nTranslatePlural');
   });
 
+  it('should export __f as i18nTranslateUsingFile', function () {
+    should.equal(typeof i18n.__f, 'function');
+    should.equal(i18n.__f.name, 'i18nTranslateUsingFile');
+  });
+
   it('should export setLocale as i18nSetLocale', function () {
     should.equal(typeof i18n.setLocale, 'function');
     should.equal(i18n.setLocale.name, 'i18nSetLocale');
@@ -229,6 +234,14 @@ describe('Module API', function () {
         i18n.setLocale('de');
       });
     });
+  });
+
+  describe('i18nTranslateUsingFile', function () {
+    it('should return en translations as expected', function () {
+      i18n.setLocale('en');
+      should.equal(__f('test.file'), 'This is a test text\n');
+      should.equal(__f('test.file.rep', 'Nico'), 'Hello Nico, how are you today?\n');
+    });      
   });
 
 

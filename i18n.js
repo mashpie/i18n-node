@@ -15,7 +15,7 @@ var vsprintf = require('sprintf').vsprintf,
     warn = require('debug')('i18n:warn'),
     error = require('debug')('i18n:error'),
     locales = {},
-    api = ['__', '__n', '__f' 'getLocale', 'setLocale', 'getCatalog'],
+    api = ['__', '__n', '__f', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
     defaultLocale, updateFiles, cookiename, extension, directory, indent;
 

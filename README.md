@@ -141,6 +141,13 @@ Plurals translation of a single phrase. Singular and plural forms will get added
 	__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
 	__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
 
+### __n()
+
+File translations. Returns the content of the specified file with replacements.
+
+	// template and global (entry.test == '/locales/file.txt')
+	__f("entry.test", "arg1"); // file content with arg1 on %s
+
 ### setLocale()
 
 Setting the current locale (ie.: `en`) globally or in current scope.

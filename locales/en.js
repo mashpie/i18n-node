@@ -18,5 +18,7 @@
 		"one": "There is one monkey in the %s",
 		"other": "There are %d monkeys in the %s"
 	},
-	"Hello %s": "Hello %s"
+	"Hello %s": "Hello %s",
+	"test.file": "/locales/files/test.txt",
+	"test.file.rep": "/locales/files/test.rep.txt"
 }
