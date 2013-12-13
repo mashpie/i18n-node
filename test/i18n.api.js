@@ -241,9 +241,10 @@ describe('Module API', function () {
       i18n.setLocale('en');
       should.equal(__f('test.file'), 'This is a test text\n');
       should.equal(__f('test.file.rep', 'Nico'), 'Hello Nico, how are you today?\n');
-    });      
+	  i18n.setLocale('de');
+    });
+	
   });
-
 
   describe('Local Scope', function () {
     var req = {
