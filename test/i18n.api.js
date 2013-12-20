@@ -95,11 +95,23 @@ describe('Module API', function () {
         should.equal(__('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend')), 'Hello Marcus, how are you today? How was your weekend.');
       });
 
+      it('should return en translations as expected, using mustached messages', function () {
+        i18n.setLocale('en');
+        should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hello Marcus');
+        should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hello Marcus, how was your weekend?');
+      });
+
       it('should return de translations as expected', function () {
         i18n.setLocale('de');
         should.equal(__('Hello'), 'Hallo');
         should.equal(__('Hello %s, how are you today?', 'Marcus'), 'Hallo Marcus, wie geht es dir heute?');
         should.equal(__('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend')), 'Hallo Marcus, wie geht es dir heute? Wie war dein Wochenende.');
+      });
+
+      it('should return de translations as expected, using mustached messages', function () {
+        i18n.setLocale('de');
+        should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hallo Marcus');
+        should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hallo Marcus, wie war dein Wochenende?');
       });
 
       it('should also return translations when iterating thru variables values', function () {
@@ -138,10 +150,12 @@ describe('Module API', function () {
 
         // passing specific locale
         should.equal(__({phrase: 'Hello', locale: 'de'}), 'Hallo');
-        should.equal(__({phrase: 'Hello %s', locale: 'de'}, 'Marcus'), 'Hallo Marcus');
+        should.equal(__({phrase: 'Hello %s', locale: 'de'}, 'Marcus'), 'Hallo Marcus');        
+        should.equal(__({phrase: 'Hello {{name}}', locale: 'de'}, { name: 'Marcus' }), 'Hallo Marcus');
 
         should.equal(__({phrase: 'Hello', locale: 'en'}), 'Hello');
         should.equal(__({phrase: 'Hello %s', locale: 'en'}, 'Marcus'), 'Hello Marcus');
+        should.equal(__({phrase: 'Hello {{name}}', locale: 'en'}, { name: 'Marcus' }), 'Hello Marcus');
 
         i18n.setLocale('de');
         should.equal(__('Hello'), 'Hallo');
