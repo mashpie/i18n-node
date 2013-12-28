@@ -18,20 +18,13 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent,
+    customReader;
 
 // public exports
 var i18n = exports;
 
 i18n.version = '0.4.1';
-
-i18n.loader = function (locale) {
-    if (typeof reader === 'function') {
-        reader(locale, locales);
-    } else {
-        read(locale);
-    }
-}
 
 i18n.configure = function i18nConfigure(opt) {
 
@@ -58,9 +51,9 @@ i18n.configure = function i18nConfigure(opt) {
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
   
-  // setting the locale reader function
-  reader = (typeof opt.reader === 'function') ? opt.reader : null;
-
+  // setting custom reader function
+  customReader = (typeof opt.reader === 'function') ? opt.reader : null;
+   
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
     opt.locales.forEach(function (l) {
@@ -69,7 +62,7 @@ i18n.configure = function i18nConfigure(opt) {
   } 
   // execute function and pass the loader callback
   else if (typeof opt.locales === 'function') {
-      opt.locales(i18n.loader);
+      opt.locales(readerProxy);
   }
 };
 
@@ -543,6 +536,18 @@ function replacePlaceholders(msg, placeholders) {
     }
     
     return msg;
+}
+
+/**
+ * Reader proxy function. 
+ * Invokes a custom reader function if configured or reverts to the default one.
+ */
+function readerProxy (locale) {
+    if (typeof customReader === 'function') {
+        customReader(locale, locales);
+    } else {
+        read(locale);
+    }
 }
 
 /**
