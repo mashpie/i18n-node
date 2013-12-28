@@ -25,6 +25,14 @@ var i18n = exports;
 
 i18n.version = '0.4.1';
 
+i18n.loader = function (locale) {
+    if (typeof reader === 'function') {
+        reader(locale, locales);
+    } else {
+        read(locale);
+    }
+}
+
 i18n.configure = function i18nConfigure(opt) {
 
   // you may register helpers in global scope, up to you
@@ -49,12 +57,19 @@ i18n.configure = function i18nConfigure(opt) {
 
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+  
+  // setting the locale reader function
+  reader = (typeof opt.reader === 'function') ? opt.reader : null;
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
     opt.locales.forEach(function (l) {
       read(l);
-    });
+    });    
+  } 
+  // execute function and pass the loader callback
+  else if (typeof opt.locales === 'function') {
+      opt.locales(i18n.loader);
   }
 };
 
@@ -106,7 +121,7 @@ i18n.__ = function i18nTranslate(phrase) {
     }
   }
   // called like __("Hello")
-  else {
+  else {      
     // get translated message with locale from scope (deprecated) or object
     msg = translate(getLocaleFromObject(this), phrase);
   }
@@ -117,9 +132,14 @@ i18n.__ = function i18nTranslate(phrase) {
   }
 
   // if we have extra arguments with values to get replaced,
-  // an additional substition injects those strings afterwards
+  // an additional substition injects those strings afterwards  
   if ((/%/).test(msg) && args && args.length > 0) {
     msg = vsprintf(msg, args);
+  }
+  
+  // symfony style %text% placeholders
+  if ((/%.*%/).test(msg)) {
+      msg = replacePlaceholders(msg, namedValues);         
   }
   
   return msg;
@@ -191,6 +211,11 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     msg = vsprintf(msg, args);
   }
 
+  // symfony style %text% placeholders
+  if ((/%.*%/).test(msg)) {
+      msg = replacePlaceholders(msg, namedValues);         
+  }
+  
   return msg;
 };
 
@@ -502,6 +527,22 @@ function getStorageFilePath(locale) {
     logDebug('will write to ' + filepath);
   }
   return filepath;
+}
+
+/**
+ * Replaces Symfony style %text% placeholders.
+ * 
+ * @param {String} msg
+ * @param {Object} placeholders
+ * @returns {String}
+ */
+function replacePlaceholders(msg, placeholders) {
+    for (var key in placeholders) {
+        var regExp = new RegExp('%' + key + '%');        
+        msg = msg.replace(regExp, placeholders[key]);
+    }
+    
+    return msg;
 }
 
 /**
