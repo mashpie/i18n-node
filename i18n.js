@@ -57,7 +57,7 @@ i18n.configure = function i18nConfigure(opt) {
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
     opt.locales.forEach(function (l) {
-      read(l);
+      readerProxy(l);
     });    
   } 
   // execute function and pass the loader callback
