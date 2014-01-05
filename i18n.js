@@ -436,6 +436,13 @@ function read(locale) {
     // unable to read, so intialize that file
     // locales[locale] are already set in memory, so no extra read required
     // or locales[locale] are empty, which initializes an empty locale.json file
+    
+    // since the current invalid locale could exist, we should back it up
+    if (fs.existsSync(file)) {
+      logDebug('backing up invalid locale ' + locale + ' to ' + file + '.invalid');
+      fs.renameSync(file, file + '.invalid');
+    }
+    
     logDebug('initializing ' + file);
     write(locale);
   }
