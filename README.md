@@ -7,12 +7,13 @@ Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
 [![Build Status](https://secure.travis-ci.org/mashpie/i18n-node.png?branch=master)](http://travis-ci.org/mashpie/i18n-node) [![NPM version](https://badge.fury.io/js/i18n.png)](http://badge.fury.io/js/i18n)
+[![Dependency Status](https://gemnasium.com/mashpie/i18n-node.png)](https://gemnasium.com/mashpie/i18n-node)
 
 ## Install
 
 	npm install i18n
-	
-## Test 
+
+## Test
 
 	npm test
 
@@ -21,7 +22,7 @@ No extra parsing needed.
 	// load modules
 	var express = require('express'),
 	    i18n = require("i18n");
-	
+
 now you are ready to use a global `i18n.__('Hello')`. **Global** assumes you share a common state of localization in any time and any part of your app. This is usually fine in cli-style scripts. When serving responses to http requests you'll need to make sure that scope is __NOT__ shared globally but attached to your request object.
 
 ## Configure
@@ -87,11 +88,11 @@ in your apps methods:
 
 
 in your templates (depending on your template engine)
-	
+
 	<%= __('Hello') %>
-	
+
 	${__('Hello')}
-	
+
 
 ## Examples for common setups
 
@@ -114,7 +115,7 @@ Translates a single phrase and adds it to locales if unknown. Returns translated
 	__('Hello'); // Hallo
 	__('Hello %s', 'Marcus'); // Hallo Marcus
 	__('Hello {{name}}', { name: 'Marcus' }); // Hallo Marcus
-  
+
 
 	// scoped via req object (req.locale == 'de')
 	req.__('Hello'); // Hallo
@@ -152,7 +153,7 @@ Setting the current locale (ie.: `en`) globally or in current scope.
 	setLocale('de');
 	setLocale(req, 'de');
 	req.setLocale('de');
-	
+
 To change the initial locale (when you set it on `i18n.init()`) for all the user session (eg.: you have a language
 selector on your web page to let the user select the preferred language), you have some options.
 You could set it via `res.setLocale('de')` on each loop before load the each page.
@@ -212,8 +213,8 @@ Different engines need different implementations, so yours might miss or not wor
 		  return function (text, render) {
 		    return i18n.__.apply(req, arguments);
 		  };
-		};		
-		
+		};
+
 		[...]
 
 		next();
@@ -228,11 +229,11 @@ As inspired by gettext there is currently support for sprintf-style expressions.
 ### sprintf support
 
 	var greeting = __('Hello %s, how are you today?', 'Marcus');
-	
+
 this puts *Hello Marcus, how are you today?*. You might add endless arguments and even nest it.
 
 	var greeting = __('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend'));
-	
+
 which puts *Hello Marcus, how are you today? How was your weekend.*
 
 ### mustache support
@@ -240,23 +241,23 @@ which puts *Hello Marcus, how are you today? How was your weekend.*
 You may also use [mustach](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the second parameter. You can still pass unnamed parameters by adding additional arguments.
 
 	var greeting = __('Hello {{name}}, how are you today?', { name: 'Marcus' });
-	
+
 this puts *Hello Marcus, how are you today?*. You might also combine it with sprintf arguments and also nest it.
 
 	var greeting = __('Hello {{name}}, how was your %s.', { name: 'Marcus' }, __('weekend'));
-	
+
 which puts *Hello Marcus, how was your weekend.*
 
 ### variable support
 
 you might even use dynamic variables as they get interpreted on the fly. Better make sure no user input finds it's way to that point as they all get added to the `en.js` file if not yet existing.
 
-	var greetings = ['Hi', 'Hello', 'Howdy'];        
+	var greetings = ['Hi', 'Hello', 'Howdy'];
     for (var i=0; i < greetings.length; i++) {
         console.log( __(greetings[i]) );
     };
 
-which puts 
+which puts
 
 	Hi
 	Hello
@@ -274,7 +275,7 @@ and again these could get nested:
 
 	var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, 'tree');
 	var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, 'tree');
-	
+
 putting *There is one monkey in the tree* or *There are 3 monkeys in the tree*
 
 ## Storage
@@ -343,11 +344,11 @@ Combine those settings with you existing application if any of you other modules
 
 ## Changelog
 
-* 0.4.1: stable release; merged/closed: #57, #60, #67 typo fixes; added more examples and new features: #53, #65, #66 - and some more api reference 
+* 0.4.1: stable release; merged/closed: #57, #60, #67 typo fixes; added more examples and new features: #53, #65, #66 - and some more api reference
 * 0.4.0: stable release; closed: #22, #24, #4, #10, #54; added examples, clarified concurrency usage in different template engines, added `i18n.getCatalog`
 * 0.3.9: express.js usage, named api, jscoverage + more test, refactored configure, closed: #51, #20, #16, #49
 * 0.3.8: fixed: #44, #49; merged: #47, #45, #50; added: #33; updated: README
-* 0.3.7: tests by mocha.js, added `this.locale` to `__` and `__n` 
+* 0.3.7: tests by mocha.js, added `this.locale` to `__` and `__n`
 * 0.3.6: travisCI, writeFileSync, devDependencies, jslint, MIT, fixed: #29, #9, merged: #25, #30, #43
 * 0.3.5: fixed some issues, prepared refactoring, prepared publishing to npm finally
 * 0.3.4: merged pull request #13 from Fuitad/master and updated README
@@ -356,7 +357,7 @@ Combine those settings with you existing application if any of you other modules
 * 0.3.0: added configure and init with express support (calling guessLanguage() via 'accept-language')
 * 0.2.0: added plurals
 * 0.1.0: added tests
-* 0.0.1: start 
+* 0.0.1: start
 
 ## Licensed under MIT
 
