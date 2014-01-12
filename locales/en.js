@@ -18,5 +18,7 @@
 		"one": "There is one monkey in the %s",
 		"other": "There are %d monkeys in the %s"
 	},
-	"Hello %s": "Hello %s"
+	"Hello %s": "Hello %s",
+	"Hello {{name}}": "Hello {{name}}",
+	"Hello {{name}}, how was your %s?": "Hello {{name}}, how was your %s?"
 }

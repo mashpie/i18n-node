@@ -113,14 +113,18 @@ Translates a single phrase and adds it to locales if unknown. Returns translated
 	// template and global (this.locale == 'de')
 	__('Hello'); // Hallo
 	__('Hello %s', 'Marcus'); // Hallo Marcus
+	__('Hello {{name}}', { name: 'Marcus' }); // Hallo Marcus
+  
 
 	// scoped via req object (req.locale == 'de')
 	req.__('Hello'); // Hallo
 	req.__('Hello %s', 'Marcus'); // Hallo Marcus
+	req.__('Hello {{name}}', { name: 'Marcus' }); // Hallo Marcus
 
 	// passing specific locale
 	__({phrase: 'Hello', locale: 'fr'}); // Salut
 	__({phrase: 'Hello %s', locale: 'fr'}, 'Marcus'); // Salut Marcus
+	__({phrase: 'Hello {{name}}, locale: 'fr'}, { name: 'Marcus' }); // Salut Marcus
 
 ### __n()
 
@@ -148,6 +152,18 @@ Setting the current locale (ie.: `en`) globally or in current scope.
 	setLocale('de');
 	setLocale(req, 'de');
 	req.setLocale('de');
+	
+To change the initial locale (when you set it on `i18n.init()`) for all the user session (eg.: you have a language
+selector on your web page to let the user select the preferred language), you have some options.
+You could set it via `res.setLocale('de')` on each loop before load the each page.
+Or you could manage it via any session middleware or by setting a cookie in the client and let i18n read it's value.
+
+In the last case you will need to enable cookies (eg. for express will be `app.use(express.cookieParser())`) and then
+you can use the `i18n.configure.cookie` to let i18n which language must use. Simply use the same cookie name when setting it in the user preferred language, like here:
+
+	res.cookie('yourcookiename', 'de', { maxAge: 900000, httpOnly: true });
+
+After this and until the cookie expires, i18n will get the value of the cookie and will set that language instead of default for every page.
 
 ### getLocale()
 
@@ -218,6 +234,18 @@ this puts *Hello Marcus, how are you today?*. You might add endless arguments an
 	var greeting = __('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend'));
 	
 which puts *Hello Marcus, how are you today? How was your weekend.*
+
+### mustache support
+
+You may also use [mustach](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the second parameter. You can still pass unnamed parameters by adding additional arguments.
+
+	var greeting = __('Hello {{name}}, how are you today?', { name: 'Marcus' });
+	
+this puts *Hello Marcus, how are you today?*. You might also combine it with sprintf arguments and also nest it.
+
+	var greeting = __('Hello {{name}}, how was your %s.', { name: 'Marcus' }, __('weekend'));
+	
+which puts *Hello Marcus, how was your weekend.*
 
 ### variable support
 

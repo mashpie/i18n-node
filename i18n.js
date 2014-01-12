@@ -14,6 +14,7 @@ var vsprintf = require('sprintf').vsprintf,
     debug = require('debug')('i18n:debug'),
     warn = require('debug')('i18n:warn'),
     error = require('debug')('i18n:error'),
+    Mustache = require('mustache'),
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
@@ -82,8 +83,22 @@ i18n.init = function i18nInit(request, response, next) {
 };
 
 i18n.__ = function i18nTranslate(phrase) {
-  var msg;
-
+  var msg, namedValues, args;
+  
+  // Accept an object with named values as the last parameter
+  // And collect all other arguments, except the first one in args
+  if (
+    arguments.length > 1 &&
+    arguments[arguments.length - 1] !== null && 
+    typeof arguments[arguments.length - 1] === "object"
+  ) {
+    namedValues = arguments[arguments.length - 1];
+    args = Array.prototype.slice.call(arguments, 1, -1);
+  } else {
+    namedValues = {};
+    args = arguments.length >= 2 ? Array.prototype.slice.call(arguments, 1) : [];
+  }
+  
   // called like __({phrase: "Hello", locale: "en"})
   if (typeof phrase === 'object') {
     if (typeof phrase.locale === 'string' && typeof phrase.phrase === 'string') {
@@ -96,49 +111,84 @@ i18n.__ = function i18nTranslate(phrase) {
     msg = translate(getLocaleFromObject(this), phrase);
   }
 
-  // if we have extra arguments with strings to get replaced,
-  // an additional substition injects those strings afterwards
-  if (arguments.length > 1) {
-    msg = vsprintf(msg, Array.prototype.slice.call(arguments, 1));
+  // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
+  if ((/{{.*}}/).test(msg)) {
+    msg = Mustache.render(msg, namedValues);
   }
+
+  // if we have extra arguments with values to get replaced,
+  // an additional substition injects those strings afterwards
+  if ((/%/).test(msg) && args && args.length > 0) {
+    msg = vsprintf(msg, args);
+  }
+  
   return msg;
 };
 
 i18n.__n = function i18nTranslatePlural(singular, plural, count) {
-  var msg;
-
+  var msg, namedValues, args = [];
+  
+  // Accept an object with named values as the last parameter
+  if (
+    arguments.length >= 2 &&
+    arguments[arguments.length - 1] !== null && 
+    typeof arguments[arguments.length - 1] === "object"
+  ) {
+    namedValues = arguments[arguments.length - 1];
+    args = arguments.length >= 5 ? Array.prototype.slice.call(arguments, 3, -1) : [];
+  } else {
+    namedValues = {};
+    args = arguments.length >= 4 ? Array.prototype.slice.call(arguments, 3) : [];
+  }
+  
   // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
   if (typeof singular === 'object') {
     if (typeof singular.locale === 'string' && typeof singular.singular === 'string' && typeof singular.plural === 'string') {
       msg = translate(singular.locale, singular.singular, singular.plural);
     }
-    if(typeof plural === 'number'){
+    args.unshift(count);
+    // some template engines pass all values as strings -> so we try to convert them to numbers
+    if (typeof plural === 'number' || parseInt(plural, 10)+"" === plural) {
       count = plural;
     }
 
     // called like __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3})
     if(typeof singular.count === 'number' || typeof singular.count === 'string'){
       count = singular.count;
+      args.unshift(plural);      
     }
   }
-  // called like __n('%s cat', '%s cats', 3)
   else {
+    // called like  __n('cat', 3)
+    if (typeof plural === 'number' || parseInt(plural, 10)+"" === plural) {
+      count = plural;
+      args.unshift(count);
+      args.unshift(plural);
+    }
+    // called like __n('%s cat', '%s cats', 3)
     // get translated message with locale from scope (deprecated) or object
     msg = translate(getLocaleFromObject(this), singular, plural);
   }
+  if (count == null) count = namedValues.count;
+
   // parse translation and replace all digets '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
   // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
-  if (parseInt(count, 10) > 1) {
-    msg = vsprintf(msg.other, [count]);
+  if (count > 1) {
+    msg = vsprintf(msg.other, [parseInt(count, 10)]);
   } else {
-    msg = vsprintf(msg.one, [count]);
+    msg = vsprintf(msg.one, [parseInt(count, 10)]);
   }
-
+  
+  // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
+  if ((/{{.*}}/).test(msg)) {
+    msg = Mustache.render(msg, namedValues);
+  }
+  
   // if we have extra arguments with strings to get replaced,
   // an additional substition injects those strings afterwards
-  if (arguments.length > 3) {
-    msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
+  if ((/%/).test(msg) && args && args.length > 0) {
+    msg = vsprintf(msg, args);
   }
 
   return msg;
@@ -293,6 +343,13 @@ function guessLanguage(request) {
       if (regions.length > 0) {
         request.regions = regions;
         request.region = regions[0];
+
+        // to test if having region translation
+        if (request.region && request.language && locales[ request.language + "-" + request.region]){
+          //logDebug("set region") ;
+          request.language = request.language + "-" + request.region;
+        }
+
       }
     }
 
@@ -379,6 +436,13 @@ function read(locale) {
     // unable to read, so intialize that file
     // locales[locale] are already set in memory, so no extra read required
     // or locales[locale] are empty, which initializes an empty locale.json file
+    
+    // since the current invalid locale could exist, we should back it up
+    if (fs.existsSync(file)) {
+      logDebug('backing up invalid locale ' + locale + ' to ' + file + '.invalid');
+      fs.renameSync(file, file + '.invalid');
+    }
+    
     logDebug('initializing ' + file);
     write(locale);
   }
