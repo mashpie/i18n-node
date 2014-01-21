@@ -20,5 +20,9 @@
 	},
 	"Hello %s": "Hello %s",
 	"Hello {{name}}": "Hello {{name}}",
-	"Hello {{name}}, how was your %s?": "Hello {{name}}, how was your %s?"
+	"Hello {{name}}, how was your %s?": "Hello {{name}}, how was your %s?",
+  "format":{
+    "date":"MM/DD/YYYY",
+    "time":"h:mm:ss a"
+  }
 }
