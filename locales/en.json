@@ -21,8 +21,16 @@
 	"Hello %s": "Hello %s",
 	"Hello {{name}}": "Hello {{name}}",
 	"Hello {{name}}, how was your %s?": "Hello {{name}}, how was your %s?",
-  "format":{
-    "date":"MM/DD/YYYY",
-    "time":"h:mm:ss a"
-  }
+	"format": {
+		"date": "MM/DD/YYYY",
+		"time": "h:mm:ss a"
+	},
+	"greeting": {
+		"formal": "Hello",
+		"informal": "Hi",
+		"placeholder": {
+			"formal": "Hello %s",
+			"informal": "Hi %s"
+		}
+	},
 }

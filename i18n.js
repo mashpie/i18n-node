@@ -18,7 +18,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation;
 
 // public exports
 var i18n = exports;
@@ -49,6 +49,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+
+  // enable object notation?
+  objectNotation = (typeof opt.objectNotation === 'boolean') ? opt.objectNotation : false;
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
@@ -409,10 +412,25 @@ function translate(locale, singular, plural) {
     }
   }
 
-  if (!locales[locale][singular]) {
-    locales[locale][singular] = singular;
-    write(locale);
+  // Handle object lookup notation
+  if( objectNotation && /.+\..+/.test( singular ) ) {
+    var emptyObject = {};
+    var translationFragment = singular.split( '.' ).reduce( function(object,index){
+      if( !object.hasOwnProperty(index)){
+        object[index] = emptyObject;
+      }
+      return object[index];
+    }, locales[locale]);
+    if(emptyObject === translationFragment) translationFragment = singular;
+    if(translationFragment) return translationFragment;
+
+  } else {
+    if (!locales[locale][singular]) {
+      locales[locale][singular] = singular;
+      write(locale);
+    }
   }
+
   return locales[locale][singular];
 }
 
