@@ -402,36 +402,114 @@ function translate(locale, singular, plural) {
     read(locale);
   }
 
+  var accessor = localeAccessor(locale,singular);
+  var mutator = localeMutator(locale,singular);
+
   if (plural) {
-    if (!locales[locale][singular]) {
-      locales[locale][singular] = {
+    if (!accessor()) {
+      mutator( {
         'one': singular,
         'other': plural
-      };
+      } );
       write(locale);
     }
   }
 
+  if (!accessor()) {
+    mutator(singular);
+    write(locale);
+  }
+
+  return accessor();
+}
+
+/**
+ * Allows delayed access to translations nested inside objects.
+ * @param {String} locale The locale to use.
+ * @param {String} singular The singular term to look up.
+ * @param plural
+ * @param {Boolean=true} [allowDelayedTraversal] Is delayed traversal of the tree allowed?
+ * This parameter is used internally. It allows to signal the accessor that
+ * a translation was not found in the initial lookup and that an invocation
+ * of the accessor may trigger another traversal of the tree.
+ * @returns {Function}
+ */
+function localeAccessor(locale,singular,plural,allowDelayedTraversal) {
   // Handle object lookup notation
+  // TODO: Replace regex with indexOf (if that's faster)
   if( objectNotation && /.+\..+/.test( singular ) ) {
-    var emptyObject = {};
-    var translationFragment = singular.split( '.' ).reduce( function(object,index){
-      if( !object.hasOwnProperty(index)){
-        object[index] = emptyObject;
+    // If delayed traversal wasn't specifically forbidden, it is allowed.
+    if( typeof allowDelayedTraversal == "undefined" ) allowDelayedTraversal = true;
+    // The accessor we're trying to find and which we want to return.
+    var accessor = null;
+    // An accessor that return null.
+    var nullAccessor = function(){ return null; }
+    // Do we need to retraverse the tree upon invocation of the accessor?
+    var reTraverse = false;
+    // Split the provided term and run the callback for each subterm.
+    singular.split( '.' ).reduce( function(object,index) {
+      // Make the accessor return null.
+      accessor = nullAccessor;
+      // If our current target object (in the locale tree) doesn't exist or
+      // it doesn't have the next subterm as a member...
+      if( null === object || !object.hasOwnProperty(index)) {
+        // ...remember that we need retraversal (because we didn't find our target).
+        reTraverse = allowDelayedTraversal;
+        // Return null to avoid deeper iterations.
+        return null;
       }
+      // We can traverse deeper, so we generate an accessor for this current level.
+      accessor = function(){ return object[index]; }
+      // Return a reference to the next deeper level in the locale tree.
       return object[index];
+
     }, locales[locale]);
-    if(emptyObject === translationFragment) translationFragment = singular;
-    if(translationFragment) return translationFragment;
+    // Return the requested accessor.
+    return function() {
+      // If we need to retraverse (because we didn't find our target term)...
+      return ( reTraverse )
+        // ...traverse again and return the new result (but don't allow further iterations)...
+        ? localeAccessor(locale,singular,plural,false)()
+        // ...or return the previously found accessor if it was already valid.
+        : accessor();
+    };
 
   } else {
-    if (!locales[locale][singular]) {
-      locales[locale][singular] = singular;
-      write(locale);
-    }
+    // No object notation, just return an accessor that performs array lookup.
+    return function() {
+      return locales[locale][singular];
+    };
   }
+}
 
-  return locales[locale][singular];
+function localeMutator(locale,singular,plural,allowBranching) {
+  // Handle object lookup notation
+  // TODO: Replace regex with indexOf (if that's faster)
+  if( objectNotation && /.+\..+/.test( singular ) ) {
+    if( typeof allowBranching == "undefined" ) allowBranching = false;
+    var accessor = null;
+    var reTraverse = false;
+    var translationFragment = singular.split( '.' ).reduce( function(object,index){
+      accessor = function(value){ return null; }
+      if( null === object || !object.hasOwnProperty(index)) {
+        if( allowBranching ) {
+          object[index] = {};
+        } else {
+          reTraverse = true;
+          return null;
+        }
+      }
+      accessor = function(value){ return object[index] = value; };
+      return object[index];
+
+    }, locales[locale]);
+    return function(value){
+      return ( reTraverse ) ? localeMutator(locale,singular,plural,true)(value) : accessor(value);
+    };
+
+  } else {
+    return function(value){return locales[locale][singular] = value; };
+  }
 }
 
 /**
