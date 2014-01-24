@@ -428,11 +428,12 @@ function translate(locale, singular, plural) {
  * @param {String} locale The locale to use.
  * @param {String} singular The singular term to look up.
  * @param plural
- * @param {Boolean=true} [allowDelayedTraversal] Is delayed traversal of the tree allowed?
+ * @param {Boolean} [allowDelayedTraversal=true] Is delayed traversal of the tree allowed?
  * This parameter is used internally. It allows to signal the accessor that
  * a translation was not found in the initial lookup and that an invocation
  * of the accessor may trigger another traversal of the tree.
- * @returns {Function}
+ * @returns {Function} A function that, when invoked, returns the current value stored
+ * in the object at the requested location.
  */
 function localeAccessor(locale,singular,plural,allowDelayedTraversal) {
   // Handle object lookup notation
@@ -442,9 +443,9 @@ function localeAccessor(locale,singular,plural,allowDelayedTraversal) {
     if( typeof allowDelayedTraversal == "undefined" ) allowDelayedTraversal = true;
     // The accessor we're trying to find and which we want to return.
     var accessor = null;
-    // An accessor that return null.
+    // An accessor that returns null.
     var nullAccessor = function(){ return null; }
-    // Do we need to retraverse the tree upon invocation of the accessor?
+    // Do we need to re-traverse the tree upon invocation of the accessor?
     var reTraverse = false;
     // Split the provided term and run the callback for each subterm.
     singular.split( '.' ).reduce( function(object,index) {
@@ -466,7 +467,7 @@ function localeAccessor(locale,singular,plural,allowDelayedTraversal) {
     }, locales[locale]);
     // Return the requested accessor.
     return function() {
-      // If we need to retraverse (because we didn't find our target term)...
+      // If we need to re-traverse (because we didn't find our target term)...
       return ( reTraverse )
         // ...traverse again and return the new result (but don't allow further iterations)...
         ? localeAccessor(locale,singular,plural,false)()
@@ -482,33 +483,72 @@ function localeAccessor(locale,singular,plural,allowDelayedTraversal) {
   }
 }
 
+/**
+ * Allows delayed mutation of a translation nested inside objects.
+ * @description Construction of the mutator will attempt to locate the requested term
+ * inside the object, but if part of the branch does not exist yet, it will not be
+ * created until the mutator is actually invoked. At that point, re-traversal of the
+ * tree is performed and missing parts along the branch will be created.
+ * @param {String} locale The locale to use.
+ * @param {String} singular The singular term to look up.
+ * @param plural
+ * @param [Boolean} [allowBranching=false] Is the mutator allowed to create previously
+ * non-existent branches along the requested locale path?
+ * @returns {Function} A function that takes one argument. When the function is
+ * invoked, the targeted translation term will be set to the given value inside the locale table.
+ */
 function localeMutator(locale,singular,plural,allowBranching) {
   // Handle object lookup notation
   // TODO: Replace regex with indexOf (if that's faster)
   if( objectNotation && /.+\..+/.test( singular ) ) {
+    // If branching wasn't specifically allowed, disable it.
     if( typeof allowBranching == "undefined" ) allowBranching = false;
+    // This will become the function we want to return.
     var accessor = null;
+    // An accessor that takes one argument and returns null.
+    var nullAccessor = function(value){ return null; }
+    // Are we going to need to re-traverse the tree when the mutator is invoked?
     var reTraverse = false;
-    var translationFragment = singular.split( '.' ).reduce( function(object,index){
-      accessor = function(value){ return null; }
+    // Split the provided term and run the callback for each subterm.
+    singular.split( '.' ).reduce( function(object,index){
+      // Make the mutator do nothing.
+      accessor = nullAccessor;
+      // If our current target object (in the locale tree) doesn't exist or
+      // it doesn't have the next subterm as a member...
       if( null === object || !object.hasOwnProperty(index)) {
+        // ...check if we're allowed to create new branches.
         if( allowBranching ) {
+          // If we are allowed to, create a new object along the path.
           object[index] = {};
         } else {
+          // If we aren't allowed, remember that we need to re-traverse later on and...
           reTraverse = true;
+          // ...return null to make the next iteration bail our early on.
           return null;
         }
       }
+      // Generate a mutator for the current level.
       accessor = function(value){ return object[index] = value; };
+      // Return a reference to the next deeper level in the locale tree.
       return object[index];
 
     }, locales[locale]);
+
+    // Return the final mutator.
     return function(value){
-      return ( reTraverse ) ? localeMutator(locale,singular,plural,true)(value) : accessor(value);
+      // If we need to re-traverse the tree...
+      return ( reTraverse )
+        // ...invoke the search again, but allow branching this time (because here the mutator is being invoked)...
+        ? localeMutator(locale,singular,plural,true)(value)
+        /// ...otherwise, just change the value directly.
+        : accessor(value);
     };
 
   } else {
-    return function(value){return locales[locale][singular] = value; };
+    // No object notation, just return a mutator that performs array lookup and changes the value.
+    return function(value){
+      return locales[locale][singular] = value;
+    };
   }
 }
 
