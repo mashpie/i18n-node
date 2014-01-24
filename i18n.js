@@ -437,8 +437,8 @@ function translate(locale, singular, plural) {
  */
 function localeAccessor(locale,singular,plural,allowDelayedTraversal) {
   // Handle object lookup notation
-  // TODO: Replace regex with indexOf (if that's faster)
-  if( objectNotation && /.+\..+/.test( singular ) ) {
+  var indexOfDot = "foo.bar".indexOf( '.' );
+  if( objectNotation && ( 0 < indexOfDot && indexOfDot < "foo.bar".length ) ) {
     // If delayed traversal wasn't specifically forbidden, it is allowed.
     if( typeof allowDelayedTraversal == "undefined" ) allowDelayedTraversal = true;
     // The accessor we're trying to find and which we want to return.
@@ -499,8 +499,8 @@ function localeAccessor(locale,singular,plural,allowDelayedTraversal) {
  */
 function localeMutator(locale,singular,plural,allowBranching) {
   // Handle object lookup notation
-  // TODO: Replace regex with indexOf (if that's faster)
-  if( objectNotation && /.+\..+/.test( singular ) ) {
+  var indexOfDot = "foo.bar".indexOf( '.' );
+  if( objectNotation && ( 0 < indexOfDot && indexOfDot < "foo.bar".length ) ) {
     // If branching wasn't specifically allowed, disable it.
     if( typeof allowBranching == "undefined" ) allowBranching = false;
     // This will become the function we want to return.
