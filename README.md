@@ -259,7 +259,7 @@ In your app.js:
 
 	module.exports = {
 		index: function(req, res) {
-			req.render("index", {
+			res.render("index", {
 				title: req.i18n.__("My Site Title"),
 				desc: req.i18n.__("My Site Description")
 			});
