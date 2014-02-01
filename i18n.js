@@ -218,16 +218,25 @@ i18n.prototype = {
 		}
 
 		var accept = req.headers["accept-language"] || "",
+			regExp= new RegExp("(^|,\s*)([a-z-]+)", "gi"),
 			self = this,
-			prefLocale;
+			prefLocale,
+			locale, parts;
 
-		(accept.match(/(^|,\s*)([a-z]+)/g) || []).forEach(function(locale) {
-			if (!prefLocale && self.locales[locale]) {
-				prefLocale = locale;
+		while(match = regExp.exec(accept)){
+			locale = match[2];
+			parts = locale.split('-');
+
+			if(!prefLocale){
+				if (self.locales[locale]) {
+					prefLocale = locale;
+				}else if((parts.length > 1) && self.locales[parts[0]]){
+					prefLocale = parts[0];
+				}
 			}
-		});
+		}
 
-		return prefLocale || this.defaultLocale;
+		return prefLocale || this.defaultLocale;		
 	},
 
 	// read locale file, translate a msg and write to fs if new
