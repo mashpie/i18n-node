@@ -4,7 +4,7 @@
  * @link    https://github.com/jeresig/i18n-node
  * @license http://opensource.org/licenses/MIT
  *
- * @version 0.4.5
+ * @version 0.4.6
  */
 
 // dependencies
@@ -63,7 +63,7 @@ var i18n = module.exports = function(opt) {
 	}
 };
 
-i18n.version = "0.4.5";
+i18n.version = "0.4.6";
 
 i18n.localeCache = {};
 i18n.resMethods = ["__", "__n", "getLocale", "isPreferredLocale"];
@@ -218,25 +218,24 @@ i18n.prototype = {
 		}
 
 		var accept = req.headers["accept-language"] || "",
-			regExp= new RegExp("(^|,\s*)([a-z-]+)", "gi"),
+			regExp = /(^|,\s*)([a-z-]+)/gi,
 			self = this,
-			prefLocale,
-			locale, parts;
+			prefLocale;
 
-		while(match = regExp.exec(accept)){
-			locale = match[2];
-			parts = locale.split('-');
+		while ((match = regExp.exec(accept))){
+			var locale = match[2];
+			var parts = locale.split("-");
 
-			if(!prefLocale){
+			if (!prefLocale) {
 				if (self.locales[locale]) {
 					prefLocale = locale;
-				}else if((parts.length > 1) && self.locales[parts[0]]){
+				} else if (parts.length > 1 && self.locales[parts[0]]) {
 					prefLocale = parts[0];
 				}
 			}
 		}
 
-		return prefLocale || this.defaultLocale;		
+		return prefLocale || this.defaultLocale;
 	},
 
 	// read locale file, translate a msg and write to fs if new
