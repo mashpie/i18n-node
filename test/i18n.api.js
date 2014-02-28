@@ -4,7 +4,7 @@
 var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n'),
     should = require("should");
 
-i18n.configure({
+var middleware = i18n({
   locales: ['en', 'de'],
   directory: './locales',
   register: global
@@ -24,6 +24,7 @@ describe('Module Setup', function () {
   it('should export init as i18nInit', function () {
     should.equal(typeof i18n.init, 'function');
     should.equal(i18n.init.name, 'i18nInit');
+	should.equal(i18n.init, middleware);
   });
 
   it('should export __ as i18nTranslate', function () {
