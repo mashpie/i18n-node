@@ -18,7 +18,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent, postTranslate;
 
 // public exports
 var i18n = exports;
@@ -49,6 +49,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+
+  // do a post processing from the translated string
+  postTranslate = (typeof opt.postTranslate === 'function') ? opt.postTranslate : null;
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
@@ -84,6 +87,7 @@ i18n.init = function i18nInit(request, response, next) {
 
 i18n.__ = function i18nTranslate(phrase) {
   var msg, namedValues, args;
+  var locale, phrase_;
   
   // Accept an object with named values as the last parameter
   // And collect all other arguments, except the first one in args
@@ -102,14 +106,17 @@ i18n.__ = function i18nTranslate(phrase) {
   // called like __({phrase: "Hello", locale: "en"})
   if (typeof phrase === 'object') {
     if (typeof phrase.locale === 'string' && typeof phrase.phrase === 'string') {
-      msg = translate(phrase.locale, phrase.phrase);
+	  locale = phrase.locale;
+	  phrase_ = phrase.phrase;
     }
   }
   // called like __("Hello")
   else {
     // get translated message with locale from scope (deprecated) or object
-    msg = translate(getLocaleFromObject(this), phrase);
+	locale = getLocaleFromObject(this);
+	phrase_ = phrase;
   }
+  msg = translate(locale, phrase_);
 
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
   if ((/{{.*}}/).test(msg)) {
@@ -121,12 +128,17 @@ i18n.__ = function i18nTranslate(phrase) {
   if ((/%/).test(msg) && args && args.length > 0) {
     msg = vsprintf(msg, args);
   }
+
+  if (postTranslate) {
+	  msg = postTranslate(msg, { locale: locale, phrase: phrase_ });
+  }
   
   return msg;
 };
 
 i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   var msg, namedValues, args = [];
+  var locale, phrase_, singular_, plural_;
   
   // Accept an object with named values as the last parameter
   if (
@@ -144,7 +156,9 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
   if (typeof singular === 'object') {
     if (typeof singular.locale === 'string' && typeof singular.singular === 'string' && typeof singular.plural === 'string') {
-      msg = translate(singular.locale, singular.singular, singular.plural);
+	  locale = singular.locale;
+	  singular_ = singular.singular;
+	  plural_ = singular.plural;
     }
     args.unshift(count);
     // some template engines pass all values as strings -> so we try to convert them to numbers
@@ -167,8 +181,11 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     }
     // called like __n('%s cat', '%s cats', 3)
     // get translated message with locale from scope (deprecated) or object
-    msg = translate(getLocaleFromObject(this), singular, plural);
+	locale = getLocaleFromObject(this);
+	singular_ = singular;
+	plural_ = plural;
   }
+  msg = translate(locale, singular_, plural_);
   if (count == null) count = namedValues.count;
 
   // parse translation and replace all digets '%d' by `count`
@@ -176,8 +193,10 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
   if (count > 1) {
     msg = vsprintf(msg.other, [parseInt(count, 10)]);
+	phrase_ = plural_;
   } else {
     msg = vsprintf(msg.one, [parseInt(count, 10)]);
+	phrase_ = singular_;
   }
   
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
@@ -189,6 +208,10 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   // an additional substition injects those strings afterwards
   if ((/%/).test(msg) && args && args.length > 0) {
     msg = vsprintf(msg, args);
+  }
+
+  if (postTranslate) {
+	  msg = postTranslate(msg, { locale: locale, phrase: phrase_, count: count, singular: singular_, plural: plural_ });
   }
 
   return msg;
