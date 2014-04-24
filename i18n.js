@@ -50,7 +50,7 @@ i18n.configure = function i18nConfigure(opt) {
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
 
-  // auto reload locale files on changes
+  // auto reload locale files when changed
   autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : true;
 
   // implicitly read all locales
@@ -59,7 +59,7 @@ i18n.configure = function i18nConfigure(opt) {
       read(l);
     });
 
-    // auto reload locale files
+    // auto reload locale files when changed
     if (autoReload) {
       // watch changes of locale files (it's called twice because fs.watch is still unstable)
       fs.watch(directory, function (event, filename) {
