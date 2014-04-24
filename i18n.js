@@ -27,6 +27,9 @@ i18n.version = '0.4.1';
 
 i18n.configure = function i18nConfigure(opt) {
 
+  // store options for later use
+  this.opt = opt;
+  
   // you may register helpers in global scope, up to you
   if (typeof opt.register === 'object') {
     applyAPItoObject(opt.register);
@@ -51,11 +54,7 @@ i18n.configure = function i18nConfigure(opt) {
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
 
   // implicitly read all locales
-  if (typeof opt.locales === 'object') {
-    opt.locales.forEach(function (l) {
-      read(l);
-    });
-  }
+  this.reload();
 };
 
 i18n.init = function i18nInit(request, response, next) {
@@ -79,6 +78,19 @@ i18n.init = function i18nInit(request, response, next) {
 
   if (typeof next === 'function') {
     next();
+  }
+};
+
+i18n.reload = function(locale) {
+  if (typeof this.opt.locales === 'object') {
+    if (locale && (this.opt.locales[locale] || this.opt.locales.indexOf(locale) > -1)) {
+      read(locale);
+    } else {
+      // implicitly read all locales
+      this.opt.locales.forEach(function (l) {
+        read(l);
+      });
+    }
   }
 };
 
