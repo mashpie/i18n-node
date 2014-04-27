@@ -199,7 +199,7 @@ i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
       request;
 
   // called like setLocale(req, 'en')
-  if (locale_or_request && typeof locale === 'string' && locales[locale]) {
+  if (locale_or_request && typeof locale === 'string') {
     request = locale_or_request;
     target_locale = locale;
   }
@@ -220,6 +220,12 @@ i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
       request.locale = target_locale;
     }
   }
+  else{
+    if ((request !== undefined)) {
+      request.locale = defaultLocale;
+    }
+  }
+
   return i18n.getLocale(request);
 };
 
