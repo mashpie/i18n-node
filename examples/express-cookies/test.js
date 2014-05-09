@@ -1,7 +1,7 @@
 require('./express-cookies');
 
 var Browser = require('zombie'),
-    visitLinks = require('../testlib/visitLinks'),
+    visitLinks = require('../testlib/visitlinks'),
     DE = new Browser(),
     EN = new Browser();
     AR = new Browser();
