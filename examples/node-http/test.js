@@ -1,7 +1,7 @@
 require('./node-http');
 
 var Browser = require('zombie'),
-    visitLinks = require('../testlib/visitLinks'),
+    visitLinks = require('../testlib/visitlinks'),
     DE = new Browser({
       headers: {
         'accept-language': 'de'
