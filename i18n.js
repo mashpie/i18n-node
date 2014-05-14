@@ -69,7 +69,7 @@ i18n.init = function i18nInit(request, response, next) {
       if (!response.locale) response.locale = request.locale;
 
       if (response.locals) {
-//        applyAPItoObject(request, response.locals); -> this applied api to response.locals
+//        applyAPItoObject(request, response.locals); ->this applied api to response.locals
 //        if it exist (var object = response || request;)
           applyAPItoObject(request);
 
