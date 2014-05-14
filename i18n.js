@@ -69,11 +69,15 @@ i18n.init = function i18nInit(request, response, next) {
       if (!response.locale) response.locale = request.locale;
 
       if (response.locals) {
-          applyAPItoObject(request);
+          applyAPItoObject(request, response.locals);
 
         // register locale to res.locals so hbs helpers know this.locale
         if (!response.locals.locale) response.locals.locale = request.locale;
       }
+    }
+    
+    if (typeof request === 'object') {
+        applyAPItoObject(request);
     }
   }
 
