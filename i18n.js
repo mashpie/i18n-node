@@ -18,12 +18,13 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
+    packageData = require('./package.json'),
     defaultLocale, updateFiles, cookiename, extension, directory, indent;
 
 // public exports
 var i18n = exports;
 
-i18n.version = '0.4.1';
+i18n.version = packageData.version;
 
 i18n.configure = function i18nConfigure(opt) {
 
