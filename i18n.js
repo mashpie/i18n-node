@@ -422,14 +422,46 @@ function translate(locale, singular, plural) {
  */
 
 function read(locale) {
-  var localeFile = {},
-      file = getStorageFilePath(locale);
+  var localeParts = locale.split('-'),
+      localeFilePath = getStorageFilePath(locale),
+      localeFile,
+      localeData,
+      languageFilePath,
+      languageFile,
+      finalData = {};
+
+  if(localeParts.length === 2){
+    languageFilePath = getStorageFilePath(localeParts[0]);
+
+    if (fs.existsSync(languageFilePath)) {
+      logDebug('read ' + languageFilePath + ' for base lanuage: ' + localeParts[0]);
+      languageFile = fs.readFileSync(languageFilePath);
+
+      try {
+        finalData = JSON.parse(languageFile);
+      } catch (parseException) {
+        logDebug('backing up invalid language ' + localeParts[0] + ' to ' + languageFilePath + '.invalid');
+        fs.renameSync(languageFilePath, languageFilePath + '.invalid');
+        write(localeParts[0]);
+      }
+    }
+  }
+
   try {
-    logDebug('read ' + file + ' for locale: ' + locale);
-    localeFile = fs.readFileSync(file);
+    logDebug('read ' + localeFilePath + ' for locale: ' + locale);
+    localeFile = fs.readFileSync(localeFilePath);
     try {
-      // parsing filecontents to locales[locale]
-      locales[locale] = JSON.parse(localeFile);
+      // parsing filecontents to localeData
+      localeData = JSON.parse(localeFile);
+
+      // extend base lanuage data with localeData
+      for(var key in localeData){
+        finalData[key] = localeData[key];
+      }
+
+      // set to locales[locale]
+      locales[locale] = finalData;
+
     } catch (parseError) {
       logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', parseError);
     }
