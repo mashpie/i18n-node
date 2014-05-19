@@ -332,7 +332,7 @@ function guessLanguage(request) {
           languages.push(lr[0].toLowerCase());
         }
         if (lr[1]) {
-          regions.push(lr[1].toLowerCase());
+          regions.push(lr[1].toUpperCase());
         }
       });
 
