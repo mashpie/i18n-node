@@ -18,12 +18,13 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
+    packageData = require('./package.json'),
     defaultLocale, updateFiles, cookiename, extension, directory, indent;
 
 // public exports
 var i18n = exports;
 
-i18n.version = '0.4.1';
+i18n.version = packageData.version;
 
 i18n.configure = function i18nConfigure(opt) {
 
@@ -84,12 +85,12 @@ i18n.init = function i18nInit(request, response, next) {
 
 i18n.__ = function i18nTranslate(phrase) {
   var msg, namedValues, args;
-  
+
   // Accept an object with named values as the last parameter
   // And collect all other arguments, except the first one in args
   if (
     arguments.length > 1 &&
-    arguments[arguments.length - 1] !== null && 
+    arguments[arguments.length - 1] !== null &&
     typeof arguments[arguments.length - 1] === "object"
   ) {
     namedValues = arguments[arguments.length - 1];
@@ -98,7 +99,7 @@ i18n.__ = function i18nTranslate(phrase) {
     namedValues = {};
     args = arguments.length >= 2 ? Array.prototype.slice.call(arguments, 1) : [];
   }
-  
+
   // called like __({phrase: "Hello", locale: "en"})
   if (typeof phrase === 'object') {
     if (typeof phrase.locale === 'string' && typeof phrase.phrase === 'string') {
@@ -121,17 +122,17 @@ i18n.__ = function i18nTranslate(phrase) {
   if ((/%/).test(msg) && args && args.length > 0) {
     msg = vsprintf(msg, args);
   }
-  
+
   return msg;
 };
 
 i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   var msg, namedValues, args = [];
-  
+
   // Accept an object with named values as the last parameter
   if (
     arguments.length >= 2 &&
-    arguments[arguments.length - 1] !== null && 
+    arguments[arguments.length - 1] !== null &&
     typeof arguments[arguments.length - 1] === "object"
   ) {
     namedValues = arguments[arguments.length - 1];
@@ -140,7 +141,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     namedValues = {};
     args = arguments.length >= 4 ? Array.prototype.slice.call(arguments, 3) : [];
   }
-  
+
   // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
   if (typeof singular === 'object') {
     if (typeof singular.locale === 'string' && typeof singular.singular === 'string' && typeof singular.plural === 'string') {
@@ -155,7 +156,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     // called like __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3})
     if(typeof singular.count === 'number' || typeof singular.count === 'string'){
       count = singular.count;
-      args.unshift(plural);      
+      args.unshift(plural);
     }
   }
   else {
@@ -179,12 +180,12 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   } else {
     msg = vsprintf(msg.one, [parseInt(count, 10)]);
   }
-  
+
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
   if ((/{{.*}}/).test(msg)) {
     msg = Mustache.render(msg, namedValues);
   }
-  
+
   // if we have extra arguments with strings to get replaced,
   // an additional substition injects those strings afterwards
   if ((/%/).test(msg) && args && args.length > 0) {
@@ -331,7 +332,7 @@ function guessLanguage(request) {
           languages.push(lr[0].toLowerCase());
         }
         if (lr[1]) {
-          regions.push(lr[1].toLowerCase());
+          regions.push(lr[1].toUpperCase());
         }
       });
 
@@ -421,14 +422,46 @@ function translate(locale, singular, plural) {
  */
 
 function read(locale) {
-  var localeFile = {},
-      file = getStorageFilePath(locale);
+  var localeParts = locale.split('-'),
+      localeFilePath = getStorageFilePath(locale),
+      localeFile,
+      localeData,
+      languageFilePath,
+      languageFile,
+      finalData = {};
+
+  if(localeParts.length === 2){
+    languageFilePath = getStorageFilePath(localeParts[0]);
+
+    if (fs.existsSync(languageFilePath)) {
+      logDebug('read ' + languageFilePath + ' for base lanuage: ' + localeParts[0]);
+      languageFile = fs.readFileSync(languageFilePath);
+
+      try {
+        finalData = JSON.parse(languageFile);
+      } catch (parseException) {
+        logDebug('backing up invalid language ' + localeParts[0] + ' to ' + languageFilePath + '.invalid');
+        fs.renameSync(languageFilePath, languageFilePath + '.invalid');
+        write(localeParts[0]);
+      }
+    }
+  }
+
   try {
-    logDebug('read ' + file + ' for locale: ' + locale);
-    localeFile = fs.readFileSync(file);
+    logDebug('read ' + localeFilePath + ' for locale: ' + locale);
+    localeFile = fs.readFileSync(localeFilePath);
     try {
-      // parsing filecontents to locales[locale]
-      locales[locale] = JSON.parse(localeFile);
+      // parsing filecontents to localeData
+      localeData = JSON.parse(localeFile);
+
+      // extend base lanuage data with localeData
+      for(var key in localeData){
+        finalData[key] = localeData[key];
+      }
+
+      // set to locales[locale]
+      locales[locale] = finalData;
+
     } catch (parseError) {
       logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', parseError);
     }
@@ -436,13 +469,13 @@ function read(locale) {
     // unable to read, so intialize that file
     // locales[locale] are already set in memory, so no extra read required
     // or locales[locale] are empty, which initializes an empty locale.json file
-    
+
     // since the current invalid locale could exist, we should back it up
     if (fs.existsSync(file)) {
       logDebug('backing up invalid locale ' + locale + ' to ' + file + '.invalid');
       fs.renameSync(file, file + '.invalid');
     }
-    
+
     logDebug('initializing ' + file);
     write(locale);
   }
