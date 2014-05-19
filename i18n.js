@@ -84,12 +84,12 @@ i18n.init = function i18nInit(request, response, next) {
 
 i18n.__ = function i18nTranslate(phrase) {
   var msg, namedValues, args;
-  
+
   // Accept an object with named values as the last parameter
   // And collect all other arguments, except the first one in args
   if (
     arguments.length > 1 &&
-    arguments[arguments.length - 1] !== null && 
+    arguments[arguments.length - 1] !== null &&
     typeof arguments[arguments.length - 1] === "object"
   ) {
     namedValues = arguments[arguments.length - 1];
@@ -98,7 +98,7 @@ i18n.__ = function i18nTranslate(phrase) {
     namedValues = {};
     args = arguments.length >= 2 ? Array.prototype.slice.call(arguments, 1) : [];
   }
-  
+
   // called like __({phrase: "Hello", locale: "en"})
   if (typeof phrase === 'object') {
     if (typeof phrase.locale === 'string' && typeof phrase.phrase === 'string') {
@@ -121,17 +121,17 @@ i18n.__ = function i18nTranslate(phrase) {
   if ((/%/).test(msg) && args && args.length > 0) {
     msg = vsprintf(msg, args);
   }
-  
+
   return msg;
 };
 
 i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   var msg, namedValues, args = [];
-  
+
   // Accept an object with named values as the last parameter
   if (
     arguments.length >= 2 &&
-    arguments[arguments.length - 1] !== null && 
+    arguments[arguments.length - 1] !== null &&
     typeof arguments[arguments.length - 1] === "object"
   ) {
     namedValues = arguments[arguments.length - 1];
@@ -140,7 +140,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     namedValues = {};
     args = arguments.length >= 4 ? Array.prototype.slice.call(arguments, 3) : [];
   }
-  
+
   // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
   if (typeof singular === 'object') {
     if (typeof singular.locale === 'string' && typeof singular.singular === 'string' && typeof singular.plural === 'string') {
@@ -155,7 +155,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     // called like __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3})
     if(typeof singular.count === 'number' || typeof singular.count === 'string'){
       count = singular.count;
-      args.unshift(plural);      
+      args.unshift(plural);
     }
   }
   else {
@@ -179,12 +179,12 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   } else {
     msg = vsprintf(msg.one, [parseInt(count, 10)]);
   }
-  
+
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
   if ((/{{.*}}/).test(msg)) {
     msg = Mustache.render(msg, namedValues);
   }
-  
+
   // if we have extra arguments with strings to get replaced,
   // an additional substition injects those strings afterwards
   if ((/%/).test(msg) && args && args.length > 0) {
@@ -436,13 +436,13 @@ function read(locale) {
     // unable to read, so intialize that file
     // locales[locale] are already set in memory, so no extra read required
     // or locales[locale] are empty, which initializes an empty locale.json file
-    
+
     // since the current invalid locale could exist, we should back it up
     if (fs.existsSync(file)) {
       logDebug('backing up invalid locale ' + locale + ' to ' + file + '.invalid');
       fs.renameSync(file, file + '.invalid');
     }
-    
+
     logDebug('initializing ' + file);
     write(locale);
   }

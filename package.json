@@ -9,13 +9,18 @@
   },
   "author": "Marcus Spiegel <marcus.spiegel@gmail.com>",
   "main": "./index",
-  "keywords": ["template", "i18n", "l10n"],
+  "keywords": [
+    "template",
+    "i18n",
+    "l10n"
+  ],
   "directories": {
     "lib": "."
   },
   "dependencies": {
-    "sprintf": ">=0.1.1",
-    "debug": "*"
+    "debug": "*",
+    "mustache": "*",
+    "sprintf": ">=0.1.1"
   },
   "devDependencies": {
     "mocha": ">=1.8.1",
