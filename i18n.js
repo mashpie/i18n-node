@@ -402,21 +402,39 @@ function translate(locale, singular, plural) {
     read(locale);
   }
 
+  var defaultSingular = singular;
+  var defaultPlural = plural;
+  if( objectNotation ) {
+    var indexOfColon = singular.indexOf(':');
+    // We compare against 0 instead of -1 because we don't really expect the string to start with ':'.
+    if( 0 < indexOfColon ) {
+      defaultSingular = singular.substring(indexOfColon + 1);
+      singular = singular.substring(0, indexOfColon);
+    }
+    if( plural ) {
+      indexOfColon = plural.indexOf(':');
+      if( 0 < indexOfColon ) {
+        defaultPlural = plural.substring(indexOfColon + 1);
+        plural = plural.substring(0, indexOfColon);
+      }
+    }
+  }
+
   var accessor = localeAccessor(locale,singular);
   var mutator = localeMutator(locale,singular);
 
   if (plural) {
     if (!accessor()) {
       mutator( {
-        'one': singular,
-        'other': plural
+        'one': defaultSingular || singular,
+        'other': defaultPlural || plural
       } );
       write(locale);
     }
   }
 
   if (!accessor()) {
-    mutator(singular);
+    mutator(defaultSingular || singular);
     write(locale);
   }
 
