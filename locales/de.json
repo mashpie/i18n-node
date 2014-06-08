@@ -9,6 +9,10 @@
 		"one": "%s Katze",
 		"other": "%s Katzen"
 	},
+	"cat": {
+		"one": "%s Katze",
+		"other": "%s Katzen"
+	},
 	"There is one monkey in the %%s": {
 		"one": "Im %%s sitzt ein Affe",
 		"other": "Im Baum sitzen %d Affen"
@@ -24,5 +28,5 @@
 	"format": {
 		"date": "DD.MM.YYYY",
 		"time": "hh:mm:ss"
-	},
+	}
 }

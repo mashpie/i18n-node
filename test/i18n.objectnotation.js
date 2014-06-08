@@ -40,5 +40,15 @@ describe('Object Notation', function () {
       should.equal(__('greeting.placeholder.informal', 'Marcus'), 'Hi Marcus');
       should.throws(__('greeting.placeholder.loud', 'Marcus'));
     });
+
+    it('should provide proper pluralization support, using object traversal notation', function () {
+      i18n.setLocale('en');
+      var singular = __n({singular: "cat", plural: "cat", locale: "de"}, 1),
+        plural = __n({singular: "cat", plural: "cat", locale: "de"}, 3);
+      should.equal(singular, '1 Katze');
+      should.equal(plural, '3 Katzen');
+    });
   });
+
+
 });
