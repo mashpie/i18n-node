@@ -57,6 +57,9 @@ Minimal example, just setup two locales and a project specific directory
 
 	    // setting extension of json files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
 	    extension: '.js',
+	    
+	    // enable object notation
+	    objectNotation: false
 	});
 
 ## Example usage in gobal scope
@@ -341,6 +344,52 @@ if you only want to get errors and warnings reported start your node server like
 	$ DEBUG=i18n:warn,i18n:error node app.js
 
 Combine those settings with you existing application if any of you other modules or libs also uses __debug__
+
+## Object notation
+
+In addition to the traditional, linear translation lists, i18n also supports hierarchical translation catalogs.
+
+To enable this feature, be sure to set `objectNotation` to `true` in your `configure()` call.
+ 
+Instead of calling `__("Hello")` you might call `__("greeting.formal")` to retrieve a formal greeting from a translation document like this one:
+
+    "greeting": {
+        "formal": "Hello",
+        "informal": "Hi",
+        "placeholder": {
+            "formal": "Hello %s",
+            "informal": "Hi %s"
+        }
+    }
+    
+In the document, the translation terms, which include placeholders, are nested inside the "greeting" translation. They can be accessed and used in the same way, like so `__('greeting.placeholder.informal', 'Marcus')`.
+
+### Pluralization
+
+Object notation also supports pluralization. When making use of it, the "one" and "other" entries are used implicitly for an object in the translation document. For example, consider the following document:
+
+    "cat": {
+        "one": "Katze",
+        "other": "Katzen"
+    }
+
+When accessing these, you would use `__n("cat", "cat", 3)` to tell i18n to use both the singular and plural form of the "cat" entry. Naturally, you could also access these members explicitly with `__("cat.one")` and `__("cat.other")`.
+
+### Defaults
+
+When starting a project from scratch, your translation documents will probably be empty. i18n takes care of filling your translation documents for you. Whenever you use an unknown object, it is added to the translation documents.
+
+By default, when using object notation, the provided string literal will be inserted and returned as the default string. As an example, this is what the "greeting" object shown earlier would look like by default:
+
+    "greeting": {
+        "formal": "greeting.formal",
+        "informal": "greeting.informal"
+    }
+    
+In case you would prefer to have a default string automatically inserted and returned, you can provide that default string by appending it to your object literal, delimited by a `:`. For example:
+
+    __("greeting.formal:Hello")
+    __("greeting.placeholder.informal:Hi %s")
 
 ## Changelog
 
