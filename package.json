@@ -25,6 +25,7 @@
     "async": "*",
     "hbs": "*",
     "consolidate": "*",
+    "mustache": "*",
     "restify": "*"
   },
   "engines": {
