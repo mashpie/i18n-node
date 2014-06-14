@@ -32,7 +32,7 @@ app.get('/test', function (req, res) {
   // delay a response to simulate a long running process,
   // while another request comes in with altered language settings
   setTimeout(function () {
-    res.send('<body>' + res.__('Hello') + '</body>');
+    res.send('<body>res: ' + res.__('Hello') + ' req: ' + req.__('Hello') + '</body>');
   }, app.getDelay(req, res));
 });
 

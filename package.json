@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "sprintf": ">=0.1.1",
+    "mustache": "*",
     "debug": "*"
   },
   "devDependencies": {
@@ -25,7 +26,6 @@
     "async": "*",
     "hbs": "*",
     "consolidate": "*",
-    "mustache": "*",
     "restify": "*"
   },
   "engines": {

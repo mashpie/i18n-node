@@ -13,19 +13,19 @@ AR.cookies('localhost', '/').set("yourcookiename", "ar");
 describe('Using i18n in express 3.x with cookieParser', function () {
   describe('res.__() is able to handle concurrent request correctly', function () {
     describe('serial requests', function () {
-      visitLinks('series', 'test', EN, 'Hello', DE, 'Hallo');
+      visitLinks('series', 'test', EN, 'res: Hello req: Hello', DE, 'res: Hallo req: Hallo');
     });
 
     describe('parallel requests', function () {
-      visitLinks('parallel', 'test', EN, 'Hello', DE, 'Hallo');
+      visitLinks('parallel', 'test', EN, 'res: Hello req: Hello', DE, 'res: Hallo req: Hallo');
     });
 
     describe('serial requests AR', function () {
-      visitLinks('series', 'test', EN, 'Hello', AR, 'مرحبا');
+      visitLinks('series', 'test', EN, 'res: Hello req: Hello', AR, 'res: مرحبا req: مرحبا');
     });
 
     describe('parallel requests AR', function () {
-      visitLinks('parallel', 'test', EN, 'Hello', AR, 'مرحبا');
+      visitLinks('parallel', 'test', EN, 'res: Hello req: Hello', AR, 'res: مرحبا req: مرحبا');
     });
 
   });
