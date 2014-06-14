@@ -18,7 +18,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation;
 
 // public exports
 var i18n = exports;
@@ -49,6 +49,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+
+  // enable object notation?
+  objectNotation = (typeof opt.objectNotation === 'boolean') ? opt.objectNotation : false;
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
@@ -399,21 +402,170 @@ function translate(locale, singular, plural) {
     read(locale);
   }
 
+  var defaultSingular = singular;
+  var defaultPlural = plural;
+  if( objectNotation ) {
+    var indexOfColon = singular.indexOf(':');
+    // We compare against 0 instead of -1 because we don't really expect the string to start with ':'.
+    if( 0 < indexOfColon ) {
+      defaultSingular = singular.substring(indexOfColon + 1);
+      singular = singular.substring(0, indexOfColon);
+    }
+    if( plural ) {
+      indexOfColon = plural.indexOf(':');
+      if( 0 < indexOfColon ) {
+        defaultPlural = plural.substring(indexOfColon + 1);
+        plural = plural.substring(0, indexOfColon);
+      }
+    }
+  }
+
+  var accessor = localeAccessor(locale,singular);
+  var mutator = localeMutator(locale,singular);
+
   if (plural) {
-    if (!locales[locale][singular]) {
-      locales[locale][singular] = {
-        'one': singular,
-        'other': plural
-      };
+    if (!accessor()) {
+      mutator( {
+        'one': defaultSingular || singular,
+        'other': defaultPlural || plural
+      } );
       write(locale);
     }
   }
 
-  if (!locales[locale][singular]) {
-    locales[locale][singular] = singular;
+  if (!accessor()) {
+    mutator(defaultSingular || singular);
     write(locale);
   }
-  return locales[locale][singular];
+
+  return accessor();
+}
+
+/**
+ * Allows delayed access to translations nested inside objects.
+ * @param {String} locale The locale to use.
+ * @param {String} singular The singular term to look up.
+ * @param {Boolean} [allowDelayedTraversal=true] Is delayed traversal of the tree allowed?
+ * This parameter is used internally. It allows to signal the accessor that
+ * a translation was not found in the initial lookup and that an invocation
+ * of the accessor may trigger another traversal of the tree.
+ * @returns {Function} A function that, when invoked, returns the current value stored
+ * in the object at the requested location.
+ */
+function localeAccessor(locale,singular,allowDelayedTraversal) {
+  // Handle object lookup notation
+  var indexOfDot = singular.indexOf( '.' );
+  if( objectNotation && ( 0 < indexOfDot && indexOfDot < singular.length ) ) {
+    // If delayed traversal wasn't specifically forbidden, it is allowed.
+    if( typeof allowDelayedTraversal == "undefined" ) allowDelayedTraversal = true;
+    // The accessor we're trying to find and which we want to return.
+    var accessor = null;
+    // An accessor that returns null.
+    var nullAccessor = function(){ return null; };
+    // Do we need to re-traverse the tree upon invocation of the accessor?
+    var reTraverse = false;
+    // Split the provided term and run the callback for each subterm.
+    singular.split( '.' ).reduce( function(object,index) {
+      // Make the accessor return null.
+      accessor = nullAccessor;
+      // If our current target object (in the locale tree) doesn't exist or
+      // it doesn't have the next subterm as a member...
+      if( null === object || !object.hasOwnProperty(index)) {
+        // ...remember that we need retraversal (because we didn't find our target).
+        reTraverse = allowDelayedTraversal;
+        // Return null to avoid deeper iterations.
+        return null;
+      }
+      // We can traverse deeper, so we generate an accessor for this current level.
+      accessor = function(){ return object[index]; }
+      // Return a reference to the next deeper level in the locale tree.
+      return object[index];
+
+    }, locales[locale]);
+    // Return the requested accessor.
+    return function() {
+      // If we need to re-traverse (because we didn't find our target term)...
+      return ( reTraverse )
+        // ...traverse again and return the new result (but don't allow further iterations)...
+        ? localeAccessor(locale,singular,false)()
+        // ...or return the previously found accessor if it was already valid.
+        : accessor();
+    };
+
+  } else {
+    // No object notation, just return an accessor that performs array lookup.
+    return function() {
+      return locales[locale][singular];
+    };
+  }
+}
+
+/**
+ * Allows delayed mutation of a translation nested inside objects.
+ * @description Construction of the mutator will attempt to locate the requested term
+ * inside the object, but if part of the branch does not exist yet, it will not be
+ * created until the mutator is actually invoked. At that point, re-traversal of the
+ * tree is performed and missing parts along the branch will be created.
+ * @param {String} locale The locale to use.
+ * @param {String} singular The singular term to look up.
+ * @param [Boolean} [allowBranching=false] Is the mutator allowed to create previously
+ * non-existent branches along the requested locale path?
+ * @returns {Function} A function that takes one argument. When the function is
+ * invoked, the targeted translation term will be set to the given value inside the locale table.
+ */
+function localeMutator(locale,singular,allowBranching) {
+  // Handle object lookup notation
+  var indexOfDot = singular.indexOf( '.' );
+  if( objectNotation && ( 0 < indexOfDot && indexOfDot < singular.length ) ) {
+    // If branching wasn't specifically allowed, disable it.
+    if( typeof allowBranching == "undefined" ) allowBranching = false;
+    // This will become the function we want to return.
+    var accessor = null;
+    // An accessor that takes one argument and returns null.
+    var nullAccessor = function(){ return null; };
+    // Are we going to need to re-traverse the tree when the mutator is invoked?
+    var reTraverse = false;
+    // Split the provided term and run the callback for each subterm.
+    singular.split( '.' ).reduce( function(object,index){
+      // Make the mutator do nothing.
+      accessor = nullAccessor;
+      // If our current target object (in the locale tree) doesn't exist or
+      // it doesn't have the next subterm as a member...
+      if( null === object || !object.hasOwnProperty(index)) {
+        // ...check if we're allowed to create new branches.
+        if( allowBranching ) {
+          // If we are allowed to, create a new object along the path.
+          object[index] = {};
+        } else {
+          // If we aren't allowed, remember that we need to re-traverse later on and...
+          reTraverse = true;
+          // ...return null to make the next iteration bail our early on.
+          return null;
+        }
+      }
+      // Generate a mutator for the current level.
+      accessor = function(value){ return object[index] = value; };
+      // Return a reference to the next deeper level in the locale tree.
+      return object[index];
+
+    }, locales[locale]);
+
+    // Return the final mutator.
+    return function(value){
+      // If we need to re-traverse the tree...
+      return ( reTraverse )
+        // ...invoke the search again, but allow branching this time (because here the mutator is being invoked)...
+        ? localeMutator(locale,singular,true)(value)
+        /// ...otherwise, just change the value directly.
+        : accessor(value);
+    };
+
+  } else {
+    // No object notation, just return a mutator that performs array lookup and changes the value.
+    return function(value){
+      return locales[locale][singular] = value;
+    };
+  }
 }
 
 /**
