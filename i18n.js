@@ -78,6 +78,10 @@ i18n.init = function i18nInit(request, response, next) {
         if (!response.locals.locale) response.locals.locale = request.locale;
       }
     }
+    
+    if (typeof request === 'object') {
+        applyAPItoObject(request);
+    }
   }
 
   if (typeof next === 'function') {
