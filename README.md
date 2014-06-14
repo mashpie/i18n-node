@@ -57,7 +57,7 @@ Minimal example, just setup two locales and a project specific directory
 
 	    // setting extension of json files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
 	    extension: '.js',
-	    
+
 	    // enable object notation
 	    objectNotation: false
 	});
@@ -107,6 +107,7 @@ See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples)
 * [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
 * [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
 * [express 3 + jade 0.3 (+ cookie)](https://gist.github.com/hankwang/5994144)
+* [express 4 + + cookie](https://gist.github.com/mashpie/08e5a0ee764f7b6b1355)
 
 ## API
 
@@ -350,7 +351,7 @@ Combine those settings with you existing application if any of you other modules
 In addition to the traditional, linear translation lists, i18n also supports hierarchical translation catalogs.
 
 To enable this feature, be sure to set `objectNotation` to `true` in your `configure()` call.
- 
+
 Instead of calling `__("Hello")` you might call `__("greeting.formal")` to retrieve a formal greeting from a translation document like this one:
 
     "greeting": {
@@ -361,7 +362,7 @@ Instead of calling `__("Hello")` you might call `__("greeting.formal")` to retri
             "informal": "Hi %s"
         }
     }
-    
+
 In the document, the translation terms, which include placeholders, are nested inside the "greeting" translation. They can be accessed and used in the same way, like so `__('greeting.placeholder.informal', 'Marcus')`.
 
 ### Pluralization
@@ -385,7 +386,7 @@ By default, when using object notation, the provided string literal will be inse
         "formal": "greeting.formal",
         "informal": "greeting.informal"
     }
-    
+
 In case you would prefer to have a default string automatically inserted and returned, you can provide that default string by appending it to your object literal, delimited by a `:`. For example:
 
     __("greeting.formal:Hello")

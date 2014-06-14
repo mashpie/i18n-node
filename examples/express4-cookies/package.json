@@ -1,0 +1,24 @@
+{
+  "name": "i18n-express4-coockies",
+  "description": "example / regression: usage in express",
+  "version": "0.0.1",
+  "homepage": "http://github.com/mashpie/i18n-node",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/mashpie/i18n-node.git"
+  },
+  "author": "Marcus Spiegel <marcus.spiegel@gmail.com>",
+  "dependencies": {
+    "express": ">=4.0.0",
+    "cookie-parser": "^1.1.0"
+  },
+  "devDependencies": {
+    "mocha": ">=1.8.1",
+    "should": ">=1.2.1",
+    "zombie": "<2.0.0",
+    "async": "*",
+    "hbs": "*",
+    "consolidate": "*",
+    "restify": "*"
+  }
+}
