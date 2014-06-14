@@ -23,7 +23,7 @@ var vsprintf = require('sprintf').vsprintf,
 // public exports
 var i18n = exports;
 
-i18n.version = '0.4.1';
+i18n.version = '0.5.0';
 
 i18n.configure = function i18nConfigure(opt) {
 

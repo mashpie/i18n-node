@@ -7,13 +7,13 @@ var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n')
 describe('Object Notation', function () {
 
   beforeEach(function () {
-  i18n.configure({
-                   locales: ['en', 'de'],
-                   directory: './locales',
-                   register: global,
-                   updateFiles:true,
-                   objectNotation:true
-                 });
+    i18n.configure({
+      locales: ['en', 'de'],
+      directory: './locales',
+      register: global,
+      updateFiles:true,
+      objectNotation:true
+    });
   });
 
   describe('Date/Time patterns', function () {

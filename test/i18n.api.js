@@ -13,7 +13,7 @@ i18n.configure({
 
 describe('Module Setup', function () {
   it('should export a valid version', function () {
-    should.equal(i18n.version, '0.4.1');
+    should.equal(i18n.version, '0.5.0');
   });
 
   it('should export configure as i18nConfigure', function () {
@@ -150,7 +150,7 @@ describe('Module API', function () {
 
         // passing specific locale
         should.equal(__({phrase: 'Hello', locale: 'de'}), 'Hallo');
-        should.equal(__({phrase: 'Hello %s', locale: 'de'}, 'Marcus'), 'Hallo Marcus');        
+        should.equal(__({phrase: 'Hello %s', locale: 'de'}, 'Marcus'), 'Hallo Marcus');
         should.equal(__({phrase: 'Hello {{name}}', locale: 'de'}, { name: 'Marcus' }), 'Hallo Marcus');
 
         should.equal(__({phrase: 'Hello', locale: 'en'}), 'Hello');

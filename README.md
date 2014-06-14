@@ -242,7 +242,7 @@ which puts *Hello Marcus, how are you today? How was your weekend.*
 
 ### mustache support
 
-You may also use [mustach](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the second parameter. You can still pass unnamed parameters by adding additional arguments.
+You may also use [mustache](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the second parameter. You can still pass unnamed parameters by adding additional arguments.
 
 	var greeting = __('Hello {{name}}, how are you today?', { name: 'Marcus' });
 
@@ -394,6 +394,7 @@ In case you would prefer to have a default string automatically inserted and ret
 
 ## Changelog
 
+* 0.5.0: feature release; added {{mustache}} parsing by #85, added "object.notation" by #110, fixed buggy req.__() implementation by #111 and closed 13 issues
 * 0.4.1: stable release; merged/closed: #57, #60, #67 typo fixes; added more examples and new features: #53, #65, #66 - and some more api reference
 * 0.4.0: stable release; closed: #22, #24, #4, #10, #54; added examples, clarified concurrency usage in different template engines, added `i18n.getCatalog`
 * 0.3.9: express.js usage, named api, jscoverage + more test, refactored configure, closed: #51, #20, #16, #49
@@ -411,7 +412,7 @@ In case you would prefer to have a default string automatically inserted and ret
 
 ## Licensed under MIT
 
-Copyright (c) 2011-2013 Marcus Spiegel <marcus.spiegel@gmail.com>
+Copyright (c) 2011-2014 Marcus Spiegel <marcus.spiegel@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
