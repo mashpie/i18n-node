@@ -345,6 +345,11 @@ describe('Module API', function () {
           i18n.setLocale(req, 'en');
           i18n.getLocale(req).should.equal('en');
         });
+        it('should return the default local setting, when used with 2 args and an unsupported local, when req.locale is undefined', function() {
+          req.locale = undefined;
+          i18n.setLocale(req, 'he').should.equal('de');
+          req.locale.should.equal('de');
+        });
       });
       describe('i18nGetCatalog', function () {
         it('should return the current catalog when invoked with empty parameters', function () {
