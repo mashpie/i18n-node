@@ -332,33 +332,30 @@ function guessLanguage(request) {
     request.region = defaultLocale;
 
     if (language_header) {
-      language_header.split(',').forEach(function (l) {
-        var header = l.split(';', 1)[0],
-            lr = header.split('-', 2);
-        if (lr[0]) {
-          languages.push(lr[0].toLowerCase());
-        }
-        if (lr[1]) {
-          regions.push(lr[1].toLowerCase());
-        }
-      });
+      var accepted_languages = getAcceptedLanguagesFromHeader(language_header),
+          match, fallbackMatch;
+      for (var i = 0, len = accepted_languages.length; i < len; i++) {
+        var lang = accepted_languages[i],
+            lr = lang.split('-', 2),
+            parentLang = lr[0],
+            region = lr[1];
 
-      if (languages.length > 0) {
-        request.languages = languages;
-        request.language = languages[0];
+        languages.push(parentLang.toLowerCase());
+        if (region) {
+          regions.push(region.toLowerCase());
+        }
+
+        if (!match && locales[lang]) {
+          match = lang;
+        }
+
+        if (!fallbackMatch && locales[parentLang]) {
+          fallbackMatch = parentLang;
+        }
       }
 
-      if (regions.length > 0) {
-        request.regions = regions;
-        request.region = regions[0];
-
-        // to test if having region translation
-        if (request.region && request.language && locales[ request.language + "-" + request.region]){
-          //logDebug("set region") ;
-          request.language = request.language + "-" + request.region;
-        }
-
-      }
+      request.language = match || fallbackMatch || request.language;
+      request.region = regions[0] || request.region;
     }
 
     // setting the language by cookie
@@ -368,6 +365,30 @@ function guessLanguage(request) {
 
     i18n.setLocale(request, request.language);
   }
+}
+
+/**
+ * Get a sorted list of accepted languages from the HTTP Accept-Language header
+ */
+function getAcceptedLanguagesFromHeader(header) {
+  var languages = header.split(','),
+      preferences = {};
+  return languages.map(function parseLanguagePreference(item) {
+    var preferenceParts = item.trim().split(';q=');
+    if (preferenceParts.length < 2) {
+      preferenceParts[1] = 1.0;
+    } else {
+      var quality = parseFloat(preferenceParts[1])
+      preferenceParts[1] = quality ? quality : 0.0;
+    }
+    preferences[preferenceParts[0]] = preferenceParts[1];
+
+    return preferenceParts[0];
+  }).filter(function(lang) {
+    return preferences[lang] > 0;
+  }).sort(function sortLanguages(a, b) {
+    return preferences[b] - preferences[a];
+  });
 }
 
 /**

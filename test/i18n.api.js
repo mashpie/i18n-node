@@ -239,8 +239,6 @@ describe('Module API', function () {
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: "3"});
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
-
-        i18n.setLocale('de');
       });
     });
   });
@@ -248,27 +246,103 @@ describe('Module API', function () {
 
   describe('Local Scope', function () {
     var req = {
-      "request": "GET /test",
+      request: "GET /test",
       __: i18n.__,
       __n: i18n.__n,
-      "locale": {}
+      locale: {},
+      headers: {}
     };
 
+    beforeEach(function() {
+      i18n.configure({
+      locales: ['en', 'de', 'en-GB'],
+        defaultLocale: 'en',
+        directory: './locales',
+        register: req
+      });
+    })
+
     i18n.configure({
-      locales: ['en', 'de'],
+      locales: ['en', 'de', 'en-GB'],
+      defaultLocale: 'en',
       directory: './locales',
       register: req
     });
 
+    describe('i18nInit', function() {
+      beforeEach(function() {
+        req.headers = {};
+        delete req.languages;
+        delete req.language;
+        delete req.locale;
+        delete req.region;
+        delete req.regions;
+      });
+
+      it('should set language to first-choice language from header when first choice is available', function() {
+        req.headers['accept-language'] = 'de,en;q=0.8';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('de');
+      });
+      it('should set regional language to first choice from header when first choice is available', function() {
+        req.headers['accept-language'] = 'en-GB,en;q=0.8';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('en-GB');
+      });
+      it('should set fallback language from header when first choice is not available', function() {
+        req.headers['accept-language'] = 'zh,de;q=0.8,en;q=0.4';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('de');
+      });
+      it('should set fallback regional language from header when first choice is not available', function() {
+        req.headers['accept-language'] = 'zh,en-GB;q=0.8,de;q=0.4';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('en-GB');
+      });
+      it('should set fallback language from header when first choice regional language is not available', function() {
+        req.headers['accept-language'] = 'en-CA,en;q=0.9,fr;q=0.5';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('en');
+      });
+      it('should set default language when no available language is found in header', function() {
+        req.headers['accept-language'] = 'zh,sv;q=0.8,ja;q=0.6';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('en');
+      });
+      it('should set default language when an available language is specified with zero quality factor', function() {
+        req.headers['accept-language'] = 'da,de;q=0';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('en');
+      });
+      it('should set correct fallback language when quality factors are specified out of order', function() {
+        req.headers['accept-language'] = 'pt,en;q=0.1,de;q=0.9';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('de');
+      });
+      it('should set fallback language from regional language when no exact match in header', function() {
+        req.headers['accept-language'] = 'de-CH,fr;q=0.8';
+        i18n.init(req);
+        i18n.getLocale(req).should.equal('de');
+      });
+    });
+
     describe('Object as parameter', function () {
       describe('i18nSetLocale and i18nGetLocale', function () {
+        beforeEach(function() {
+          i18n.setLocale('de');
+        });
+        afterEach(function() {
+          i18n.setLocale('en');
+        });
         it('should return the current local setting, when used with 2 args', function () {
           i18n.setLocale(req, 'en').should.equal('en');
         });
         it('while getLocale should still return the previous global setting', function () {
+          i18n.setLocale(req, 'en');
           i18n.getLocale().should.equal('de');
         });
         it('now getLocale should return local locale when used with local object as 1st arg', function () {
+          i18n.setLocale(req, 'en');
           i18n.getLocale(req).should.equal('en');
         });
       });
@@ -288,11 +362,18 @@ describe('Module API', function () {
         });
       });
       describe('i18nTranslate', function () {
+        beforeEach(function() {
+          i18n.setLocale('de');
+        });
+        afterEach(function() {
+          i18n.setLocale('en');
+        });
         it('has to use local translation in en', function () {
           i18n.setLocale(req, 'en').should.equal('en');
           req.__('Hello').should.equal('Hello');
         });
         it('while the global translation remains untouched', function () {
+          i18n.setLocale(req, 'en');
           should.equal(__('Hello'), 'Hallo');
         });
         it('and has to use local translation in de', function () {
@@ -300,6 +381,7 @@ describe('Module API', function () {
           req.__('Hello').should.equal('Hallo');
         });
         it('still the global translation remains untouched', function () {
+          i18n.setLocale(req, 'en');
           should.equal(__('Hello'), 'Hallo');
         });
         it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
@@ -346,13 +428,21 @@ describe('Module API', function () {
 
     describe('Attached to object', function () {
       describe('i18nSetLocale and i18nGetLocale', function () {
+        beforeEach(function() {
+          i18n.setLocale('de');
+        });
+        afterEach(function() {
+          i18n.setLocale('en');
+        });
         it('should return the current local setting, when used with 1 arg', function () {
           req.setLocale('en').should.equal('en');
         });
         it('while getLocale should still return the previous global setting', function () {
+          req.setLocale('en');
           i18n.getLocale().should.equal('de');
         });
         it('now getLocale should return local locale', function () {
+          req.setLocale('en');
           req.getLocale().should.equal('en');
         });
       });
@@ -372,11 +462,18 @@ describe('Module API', function () {
         });
       });
       describe('i18nTranslate', function () {
+        beforeEach(function() {
+          i18n.setLocale('de');
+        });
+        afterEach(function() {
+          i18n.setLocale('en');
+        });
         it('has to use local translation in en', function () {
           req.setLocale('en').should.equal('en');
           req.__('Hello').should.equal('Hello');
         });
         it('while the global translation remains untouched', function () {
+          req.setLocale('en');
           should.equal(__('Hello'), 'Hallo');
         });
         it('and has to use local translation in de', function () {
@@ -384,6 +481,7 @@ describe('Module API', function () {
           req.__('Hello').should.equal('Hallo');
         });
         it('still the global translation remains untouched', function () {
+          req.setLocale('de');
           should.equal(__('Hello'), 'Hallo');
         });
         it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
