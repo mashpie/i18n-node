@@ -20,8 +20,25 @@ var vsprintf = require('sprintf').vsprintf,
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
     defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation;
 
-// public exports
-var i18n = exports;
+/**
+ * Basic configuration:
+ *
+ * 	i18n({
+ * 		locales:['en', 'de']
+ * 	})
+ *
+ * Use in express as a middleware:
+ *
+ *  app.use(i18n({
+ * 		locales:['en', 'de']
+ * 	}))
+ *
+ */
+
+var i18n = module.exports = function(options){
+	i18n.configure(options);
+	return i18n.init;
+};
 
 i18n.version = '0.5.0';
 
