@@ -44,6 +44,9 @@ i18n.configure = function i18nConfigure(opt) {
   // what to use as the indentation unit (ex: "\t", "  ")
   indent = (typeof opt.indent === 'string') ? opt.indent : "\t";
 
+  // json files prefix
+  prefix = (typeof opt.prefix === 'string') ? opt.prefix : '';
+
   // where to store json files
   extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
 
@@ -680,8 +683,8 @@ function write(locale) {
 function getStorageFilePath(locale) {
   // changed API to use .json as default, #16
   var ext = extension || '.json',
-      filepath = path.normalize(directory + pathsep + locale + ext),
-      filepathJS = path.normalize(directory + pathsep + locale + '.js');
+      filepath = path.normalize(directory + pathsep + prefix + locale + ext),
+      filepathJS = path.normalize(directory + pathsep + prefix + locale + '.js');
   // use .js as fallback if already existing
   try {
     if (fs.statSync(filepathJS)) {

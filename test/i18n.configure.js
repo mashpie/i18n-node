@@ -13,7 +13,8 @@ describe('Module Config', function () {
       locales: ['en', 'de'],
       register: testScope,
       directory: './customlocales',
-      extension: '.customextension'
+      extension: '.customextension',
+      prefix:'customprefix-'
     });
     testScope.__('Hello');
   });
@@ -23,8 +24,8 @@ describe('Module Config', function () {
     should.exist(stats);
     if (stats) {
       try {
-        fs.unlinkSync('./customlocales/de.customextension');
-        fs.unlinkSync('./customlocales/en.customextension');
+        fs.unlinkSync('./customlocales/customprefix-de.customextension');
+        fs.unlinkSync('./customlocales/customprefix-en.customextension');
         fs.rmdirSync('./customlocales');
       } catch (e) {}
     }
@@ -36,9 +37,9 @@ describe('Module Config', function () {
     should.exist(stats);
   });
 
-  it('should be possible to read custom files with custom extensions', function () {
-    var statsde = fs.lstatSync('./customlocales/de.customextension'),
-        statsen = fs.lstatSync('./customlocales/en.customextension');
+  it('should be possible to read custom files with custom prefixes and extensions', function () {
+    var statsde = fs.lstatSync('./customlocales/customprefix-de.customextension'),
+        statsen = fs.lstatSync('./customlocales/customprefix-en.customextension');
     should.exist(statsde);
     should.exist(statsen);
   });
