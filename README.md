@@ -65,7 +65,7 @@ Minimal example, just setup two locales and a project specific directory
 	    objectNotation: false
 	});
 
-## Example usage in gobal scope
+## Example usage in global scope
 
 In your app, when not registered to a specific object:
 
