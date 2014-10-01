@@ -54,7 +54,8 @@ i18n.configure = function i18nConfigure(opt) {
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
 
   // enable object notation?
-  objectNotation = (typeof opt.objectNotation === 'boolean') ? opt.objectNotation : false;
+  objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
+  if( objectNotation === true ) objectNotation = '.';
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
@@ -489,7 +490,7 @@ function translate(locale, singular, plural) {
  */
 function localeAccessor(locale,singular,allowDelayedTraversal) {
   // Handle object lookup notation
-  var indexOfDot = singular.indexOf( '.' );
+  var indexOfDot = objectNotation && singular.indexOf( objectNotation );
   if( objectNotation && ( 0 < indexOfDot && indexOfDot < singular.length ) ) {
     // If delayed traversal wasn't specifically forbidden, it is allowed.
     if( typeof allowDelayedTraversal == "undefined" ) allowDelayedTraversal = true;
@@ -500,7 +501,7 @@ function localeAccessor(locale,singular,allowDelayedTraversal) {
     // Do we need to re-traverse the tree upon invocation of the accessor?
     var reTraverse = false;
     // Split the provided term and run the callback for each subterm.
-    singular.split( '.' ).reduce( function(object,index) {
+    singular.split( objectNotation ).reduce( function(object,index) {
       // Make the accessor return null.
       accessor = nullAccessor;
       // If our current target object (in the locale tree) doesn't exist or
@@ -550,7 +551,7 @@ function localeAccessor(locale,singular,allowDelayedTraversal) {
  */
 function localeMutator(locale,singular,allowBranching) {
   // Handle object lookup notation
-  var indexOfDot = singular.indexOf( '.' );
+  var indexOfDot = objectNotation && singular.indexOf( objectNotation );
   if( objectNotation && ( 0 < indexOfDot && indexOfDot < singular.length ) ) {
     // If branching wasn't specifically allowed, disable it.
     if( typeof allowBranching == "undefined" ) allowBranching = false;
@@ -561,7 +562,7 @@ function localeMutator(locale,singular,allowBranching) {
     // Are we going to need to re-traverse the tree when the mutator is invoked?
     var reTraverse = false;
     // Split the provided term and run the callback for each subterm.
-    singular.split( '.' ).reduce( function(object,index){
+    singular.split( objectNotation ).reduce( function(object,index){
       // Make the mutator do nothing.
       accessor = nullAccessor;
       // If our current target object (in the locale tree) doesn't exist or
