@@ -353,7 +353,7 @@ Combine those settings with you existing application if any of you other modules
 
 In addition to the traditional, linear translation lists, i18n also supports hierarchical translation catalogs.
 
-To enable this feature, be sure to set `objectNotation` to `true` in your `configure()` call.
+To enable this feature, be sure to set `objectNotation` to `true` in your `configure()` call. **Note**: If you can't or don't want to use `.` as a delimiter, set `objectNotation` to any other delimiter you like.
 
 Instead of calling `__("Hello")` you might call `__("greeting.formal")` to retrieve a formal greeting from a translation document like this one:
 
