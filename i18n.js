@@ -489,6 +489,9 @@ function translate(locale, singular, plural) {
  * in the object at the requested location.
  */
 function localeAccessor(locale,singular,allowDelayedTraversal) {
+  // Bail out on non-existent locales to defend against internal errors.
+  if( !locales[locale] ) return Function.prototype;
+  
   // Handle object lookup notation
   var indexOfDot = objectNotation && singular.indexOf( objectNotation );
   if( objectNotation && ( 0 < indexOfDot && indexOfDot < singular.length ) ) {
@@ -550,6 +553,9 @@ function localeAccessor(locale,singular,allowDelayedTraversal) {
  * invoked, the targeted translation term will be set to the given value inside the locale table.
  */
 function localeMutator(locale,singular,allowBranching) {
+  // Bail out on non-existent locales to defend against internal errors.
+  if( !locales[locale] ) return Function.prototype;
+
   // Handle object lookup notation
   var indexOfDot = objectNotation && singular.indexOf( objectNotation );
   if( objectNotation && ( 0 < indexOfDot && indexOfDot < singular.length ) ) {
