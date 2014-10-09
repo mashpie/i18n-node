@@ -58,6 +58,7 @@ i18n.configure = function i18nConfigure(opt) {
   if( objectNotation === true ) objectNotation = '.';
 
   // implicitly read all locales
+  locales = {};
   if (typeof opt.locales === 'object') {
     opt.locales.forEach(function (l) {
       read(l);
