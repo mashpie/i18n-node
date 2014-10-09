@@ -18,7 +18,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation, fallbacks;
 
 // public exports
 var i18n = exports;
@@ -56,6 +56,9 @@ i18n.configure = function i18nConfigure(opt) {
   // enable object notation?
   objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
   if( objectNotation === true ) objectNotation = '.';
+
+  // read language fallback map
+  fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : null;
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
@@ -343,12 +346,28 @@ function guessLanguage(request) {
 
     if (language_header) {
       var accepted_languages = getAcceptedLanguagesFromHeader(language_header),
-          match, fallbackMatch;
-      for (var i = 0, len = accepted_languages.length; i < len; i++) {
+          match, fallbackMatch, fallback;
+      for (var i = 0; i <  accepted_languages.length; i++) {
         var lang = accepted_languages[i],
             lr = lang.split('-', 2),
             parentLang = lr[0],
             region = lr[1];
+
+        // Check if we have a configured fallback set for this language.
+        if (fallbacks && fallbacks[lang]) {
+          fallback = fallbacks[lang];
+          if(accepted_languages.indexOf(fallback) < 0) {
+            accepted_languages.push(fallback);
+          }
+        }
+
+        // Check if we have a configured fallback set for the parent language of the locale.
+        if (fallbacks && fallbacks[parentLang]) {
+          fallback = fallbacks[parentLang];
+          if(accepted_languages.indexOf(fallback) < 0) {
+            accepted_languages.push(fallback);
+          }
+        }
 
         languages.push(parentLang.toLowerCase());
         if (region) {

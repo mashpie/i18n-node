@@ -40,6 +40,9 @@ Minimal example, just setup two locales and a project specific directory
 	    // setup some locales - other locales default to en silently
 	    locales:['en', 'de'],
 
+	    // fall back from Dutch to German
+	    fallbacks: {'nl':'de'},
+
 	    // you may alter a site wide default locale
 	    defaultLocale: 'de',
 
