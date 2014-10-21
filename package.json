@@ -1,7 +1,7 @@
 {
   "name": "i18n-2",
   "description": "lightweight simple translation module with dynamic json storage",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "homepage": "http://github.com/jeresig/i18n-node-2",
   "repository": {
     "type": "git",
