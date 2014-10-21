@@ -283,6 +283,7 @@ In your app.js:
 
 ## Changelog
 
+* 0.4.7: configurable indent for locale json files
 * 0.4.5: a number of bug fixes
 * 0.4.4: fix typo
 * 0.4.3: fix issue with preferredLocale failing on useragents with no accept lang header
