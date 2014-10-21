@@ -111,6 +111,7 @@ i18n.prototype = {
 	extension: ".js",
 	directory: "./locales",
 	cookieName: "lang",
+	indent: "\t",
 
 	__: function() {
 		var msg = this.translate(this.locale, arguments[0]);
@@ -322,7 +323,7 @@ i18n.prototype = {
 				tmp = target + ".tmp";
 
 			fs.writeFileSync(tmp, JSON.stringify(
-				this.locales[locale], null, "\t"), "utf8");
+				this.locales[locale], null, this.indent), "utf8");
 
 			if (fs.statSync(tmp).isFile()) {
 				fs.renameSync(tmp, target);

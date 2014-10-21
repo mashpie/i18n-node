@@ -219,6 +219,10 @@ Copy the `__`, `__n`, `getLocale`, and `isPreferredLocale` methods over to the o
 
 By default the `devMode` property is automatically set to be `false` if Node.js is in production mode and `true` otherwise. You can override this by setting a different value to the `devMode` option.
 
+### `indent`
+
+Sets the indent string for `JSON.stringify` when updating the locale files. Defaults to a tab character. Might be useful when you use a source formatter in your project.
+
 ## Using with Express.js
 
 ### Load and Configure
