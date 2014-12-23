@@ -9,11 +9,33 @@ describe('Basic Middleware', function () {
   it('should convert lists', function () {
     var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n');
 
+    function joinArrays(value, locale) {
+      if (!Array.isArray(value))
+        return;
+
+      function enList(array) {
+        switch (array.length) {
+          case 1:
+            return array[0];
+          case 2:
+            return array.join(' and ');
+          default:
+            return array.slice(0, -1).join(', ') + ', and ' + array[array.length - 1];
+        }
+      }
+
+      switch (locale) {
+        // TODO: Add more locales
+        default:
+          return enList(value);
+      }
+    };
+
     i18n.configure({
       locales: ['en', 'de'],
       directory: './locales',
       register: global,
-      middleware: [i18n.joinArrays]
+      middleware: [joinArrays]
     });
 
     i18n.setLocale('en');

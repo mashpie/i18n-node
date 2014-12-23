@@ -16,7 +16,7 @@ var vsprintf = require('sprintf').vsprintf,
     error = require('debug')('i18n:error'),
     Mustache = require('mustache'),
     locales = {},
-    api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog', 'addMiddleware', 'removeMiddleware', 'joinArrays'],
+    api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog', 'addMiddleware', 'removeMiddleware'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
     defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation, middleware;
 
@@ -336,28 +336,6 @@ i18n.overrideLocaleFromQuery = function (req) {
   if (urlObj.query.locale) {
     logDebug("Overriding locale from query: " + urlObj.query.locale);
     i18n.setLocale(req, urlObj.query.locale.toLowerCase());
-  }
-};
-
-i18n.joinArrays = function(value, locale) {
-  if (!Array.isArray(value))
-    return;
-
-  function enList(array) {
-    switch (array.length) {
-      case 1:
-        return array[0];
-      case 2:
-        return array.join(' and ');
-      default:
-        return array.slice(0, -1).join(', ') + ', and ' + array[array.length - 1];
-    }
-  }
-
-  switch (locale) {
-    // TODO: Add more locales
-    default:
-      return enList(value);
   }
 };
 
