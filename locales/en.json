@@ -37,5 +37,11 @@
 			"informal": "Hi %s",
 			"loud": "greeting.placeholder.loud"
 		}
+	},
+	"%s": "%s",
+	"You must fill in a value for your %s": "You must fill in a value for your %s",
+	"Uploaded the file %%s": {
+		"one": "Uploaded the file %%s",
+		"other": "Uploaded %d files: %%s"
 	}
 }

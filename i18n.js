@@ -16,9 +16,9 @@ var vsprintf = require('sprintf').vsprintf,
     error = require('debug')('i18n:error'),
     Mustache = require('mustache'),
     locales = {},
-    api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
+    api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog', 'addMiddleware', 'removeMiddleware'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation, middleware;
 
 // public exports
 var i18n = exports;
@@ -52,6 +52,8 @@ i18n.configure = function i18nConfigure(opt) {
 
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+
+  middleware = (Array.isArray(opt.middleware)) ? opt.middleware : [];
 
   // enable object notation?
   objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
@@ -102,7 +104,8 @@ i18n.__ = function i18nTranslate(phrase) {
   if (
     arguments.length > 1 &&
     arguments[arguments.length - 1] !== null &&
-    typeof arguments[arguments.length - 1] === "object"
+    typeof arguments[arguments.length - 1] === "object" &&
+    !Array.isArray(arguments[arguments.length - 1])
   ) {
     namedValues = arguments[arguments.length - 1];
     args = Array.prototype.slice.call(arguments, 1, -1);
@@ -111,16 +114,27 @@ i18n.__ = function i18nTranslate(phrase) {
     args = arguments.length >= 2 ? Array.prototype.slice.call(arguments, 1) : [];
   }
 
+  var locale = (typeof phrase === 'object') ? phrase.locale : getLocaleFromObject(this);
+
+  args.forEach(function(arg, index) {
+    middleware.forEach(function(fn) {
+      var result = fn(arg, locale);
+      if (result !== undefined) {
+        args[index] = result;
+      }
+    });
+  });
+
   // called like __({phrase: "Hello", locale: "en"})
   if (typeof phrase === 'object') {
     if (typeof phrase.locale === 'string' && typeof phrase.phrase === 'string') {
-      msg = translate(phrase.locale, phrase.phrase);
+      msg = translate(locale, phrase.phrase);
     }
   }
   // called like __("Hello")
   else {
     // get translated message with locale from scope (deprecated) or object
-    msg = translate(getLocaleFromObject(this), phrase);
+    msg = translate(locale, phrase);
   }
 
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
@@ -144,7 +158,8 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   if (
     arguments.length >= 2 &&
     arguments[arguments.length - 1] !== null &&
-    typeof arguments[arguments.length - 1] === "object"
+    typeof arguments[arguments.length - 1] === "object" &&
+    !Array.isArray(arguments[arguments.length - 1])
   ) {
     namedValues = arguments[arguments.length - 1];
     args = arguments.length >= 5 ? Array.prototype.slice.call(arguments, 3, -1) : [];
@@ -152,6 +167,15 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     namedValues = {};
     args = arguments.length >= 4 ? Array.prototype.slice.call(arguments, 3) : [];
   }
+
+  args.forEach(function(arg, index) {
+    middleware.forEach(function(fn) {
+      var result = fn(arg, 'null');
+      if (result !== undefined) {
+        args[index] = result;
+      }
+    });
+  });
 
   // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
   if (typeof singular === 'object') {
@@ -290,6 +314,17 @@ i18n.getCatalog = function i18nGetCatalog(locale_or_request, locale) {
   } else {
     logWarn('No catalog found for "' + target_locale + '"');
     return false;
+  }
+};
+
+i18n.addMiddleware = function(fn) {
+  middleware.push(fn);
+};
+
+i18n.removeMiddleware = function(fn) {
+  var i = middleware.indexOf(fn);
+  if (i !== -1) {
+    middleware.splice(i, 1);
   }
 };
 
