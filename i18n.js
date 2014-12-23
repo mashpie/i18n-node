@@ -158,7 +158,8 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   if (
     arguments.length >= 2 &&
     arguments[arguments.length - 1] !== null &&
-    typeof arguments[arguments.length - 1] === "object"
+    typeof arguments[arguments.length - 1] === "object" &&
+    !Array.isArray(arguments[arguments.length - 1])
   ) {
     namedValues = arguments[arguments.length - 1];
     args = arguments.length >= 5 ? Array.prototype.slice.call(arguments, 3, -1) : [];
@@ -166,6 +167,15 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     namedValues = {};
     args = arguments.length >= 4 ? Array.prototype.slice.call(arguments, 3) : [];
   }
+
+  args.forEach(function(arg, index) {
+    middleware.forEach(function(fn) {
+      var result = fn(arg, 'null');
+      if (result !== undefined) {
+        args[index] = result;
+      }
+    });
+  });
 
   // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
   if (typeof singular === 'object') {

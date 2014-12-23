@@ -22,5 +22,9 @@ describe('Basic Middleware', function () {
     should.equal(__('%s', ['one', 'two', 'three']), 'one, two, and three');
 
     should.equal(__('You must fill in a value for your %s', ['email', 'password']), 'You must fill in a value for your email and password');
+
+    var oneFile = ['poster'], twoFiles = ['poster', 'report'];
+    should.equal(__n('Uploaded the file %%s', 'Uploaded %d files: %%s', oneFile.length, oneFile), 'Uploaded the file poster');
+    should.equal(__n('Uploaded the file %%s', 'Uploaded %d files: %%s', twoFiles.length, twoFiles), 'Uploaded 2 files: poster and report');
   });
 });
