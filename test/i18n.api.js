@@ -260,7 +260,7 @@ describe('Module API', function () {
         directory: './locales',
         register: req
       });
-    })
+    });
 
     i18n.configure({
       locales: ['en', 'de', 'en-GB'],
@@ -364,6 +364,20 @@ describe('Module API', function () {
         });
         it('should return false when invoked with unsupported locale as parameter', function () {
           i18n.getCatalog(req, 'oO').should.equal(false);
+        });
+      });
+      describe('i18nGetLocales', function () {
+        it('should return the locales', function () {
+          var returnedLocales = i18n.getLocales();
+          returnedLocales.sort();
+          var expectedLocales = ['en', 'de', 'en-GB'];
+          expectedLocales.sort();
+          
+          returnedLocales.length.should.equal(expectedLocales.length);
+          
+          for (var i = 0; i < returnedLocales.length; i++) {
+            returnedLocales[i].should.equal(expectedLocales[i]);
+          }
         });
       });
       describe('i18nTranslate', function () {

@@ -16,7 +16,7 @@ var vsprintf = require('sprintf').vsprintf,
     error = require('debug')('i18n:error'),
     Mustache = require('mustache'),
     locales = {},
-    api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
+    api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog', 'getLocales'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
     defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation;
 
@@ -291,6 +291,10 @@ i18n.getCatalog = function i18nGetCatalog(locale_or_request, locale) {
     logWarn('No catalog found for "' + target_locale + '"');
     return false;
   }
+};
+
+i18n.getLocales = function i18nGetLocales() {
+  return Object.keys(locales);
 };
 
 i18n.overrideLocaleFromQuery = function (req) {
