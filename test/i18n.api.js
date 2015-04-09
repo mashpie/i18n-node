@@ -260,7 +260,7 @@ describe('Module API', function () {
         directory: './locales',
         register: req
       });
-    })
+    });
 
     i18n.configure({
       locales: ['en', 'de', 'en-GB'],
