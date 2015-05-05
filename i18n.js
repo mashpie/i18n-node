@@ -612,7 +612,7 @@ function localeMutator(locale,singular,allowBranching) {
   } else {
     // No object notation, just return a mutator that performs array lookup and changes the value.
     return function(value){
-      return locales[locale][singular] = nullifyNewStrings ? null : value;
+      return locales[locale][singular] = nullifyNewStrings && !(typeof value === 'object') ? null : value;
     };
   }
 }
