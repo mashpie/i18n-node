@@ -63,6 +63,21 @@ Minimal example, just setup two locales and a project specific directory
 
 	    // enable object notation
 	    objectNotation: false
+
+	    // setting of log level DEBUG - default to require('debug')('i18n:debug')
+	    logDebugFn: function (msg) {
+	        console.log('debug', msg);
+        },
+
+        // setting of log level WARN - default to require('debug')('i18n:warn')
+        logWarnFn: function (msg) {
+            console.log('warn', msg);
+        },
+
+        // setting of log level ERROR - default to require('debug')('i18n:error')
+        logErrorFn: function (msg) {
+            console.log('error', msg);
+        }
 	});
 
 ## Example usage in global scope
@@ -331,7 +346,7 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 		"tree": "Baum"
 	}
 
-## Logging & Debugging
+## Logging & Debugging (dafault)
 
 Logging any kind of output is moved to [debug](https://github.com/visionmedia/debug) module. To let i18n output anything run your app with `DEBUG` env set like so:
 
@@ -348,6 +363,31 @@ if you only want to get errors and warnings reported start your node server like
 	$ DEBUG=i18n:warn,i18n:error node app.js
 
 Combine those settings with you existing application if any of you other modules or libs also uses __debug__
+
+## Using custom logger
+
+You can use custom logger. For example simple `Console`
+
+    i18n.configure({
+
+	    ...
+
+	    // setting of log level DEBUG - default to require('debug')('i18n:debug')
+	    logDebugFn: function (msg) {
+	        console.log('debug', msg);
+        },
+
+        // setting of log level WARN - default to require('debug')('i18n:warn')
+        logWarnFn: function (msg) {
+            console.log('warn', msg);
+        },
+
+        // setting of log level ERROR - default to require('debug')('i18n:error')
+        logErrorFn: function (msg) {
+            console.log('error', msg);
+        }
+	});
+
 
 ## Object notation
 

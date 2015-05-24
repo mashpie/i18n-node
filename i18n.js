@@ -18,7 +18,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog', 'getLocales'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation, logDebugFn, logWarnFn, logErrorFn;
 
 // public exports
 var i18n = exports;
@@ -56,6 +56,11 @@ i18n.configure = function i18nConfigure(opt) {
   // enable object notation?
   objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
   if( objectNotation === true ) objectNotation = '.';
+
+   // setting custom logger functions
+   logDebugFn = (typeof opt.logDebugFn === 'function') ? opt.logDebugFn : debug;
+   logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
+   logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
@@ -714,13 +719,13 @@ function getStorageFilePath(locale) {
  */
 
 function logDebug(msg) {
-  debug(msg);
+   logDebugFn(msg);
 }
 
 function logWarn(msg) {
-  warn(msg);
+   logWarnFn(msg);
 }
 
 function logError(msg) {
-  error(msg);
+   logErrorFn(msg);
 }
