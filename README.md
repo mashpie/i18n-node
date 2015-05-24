@@ -346,7 +346,7 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 		"tree": "Baum"
 	}
 
-## Logging & Debugging (dafault)
+## Logging & Debugging
 
 Logging any kind of output is moved to [debug](https://github.com/visionmedia/debug) module. To let i18n output anything run your app with `DEBUG` env set like so:
 
@@ -366,7 +366,7 @@ Combine those settings with you existing application if any of you other modules
 
 ## Using custom logger
 
-You can use custom logger. For example simple `Console`
+You can configure i18n to use a custom logger. For example attach some simple `console`-logging:
 
     i18n.configure({
 
