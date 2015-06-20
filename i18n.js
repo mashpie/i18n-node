@@ -125,7 +125,7 @@ i18n.prototype = {
 	__n: function(singular, plural, count) {
 		var msg = this.translate(this.locale, singular, plural);
 
-		msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, [count]);
+		msg = vsprintf(parseInt(count, 10) === 1 ? msg.one : msg.other, [count]);
 
 		if (arguments.length > 3) {
 			msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
