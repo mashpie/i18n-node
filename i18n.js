@@ -12,6 +12,11 @@ var vsprintf = require("sprintf").vsprintf,
 		fs = require("fs"),
 		path = require("path");
 
+
+function dotNotation (obj, str) {
+    return str.split(".").reduce(function(o, x) { return o[x]; }, obj);
+}
+
 var i18n = module.exports = function (opt) {
 	var self = this;
 
@@ -277,7 +282,7 @@ i18n.prototype = {
 			}
 		}
 
-		return this.locales[locale][singular];
+		return dotNotation(singular, this.locales[locale]);
 	},
 
 	// try reading a file
