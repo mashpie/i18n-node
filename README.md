@@ -15,7 +15,7 @@ Run the following:
 
 ## Simple Example
 
-Note: If you plan on using the module with Express.js, please view the on that, below.
+Note: If you plan on using the module with Express.js, please view the example on that, below.
 
 	// Load Module and Instantiate
 	var i18n = new (require('i18n-2'))({
@@ -292,4 +292,4 @@ In your app.js:
 * 0.3.0: added configure and init with express support (calling guessLanguage() via 'accept-language')
 * 0.2.0: added plurals
 * 0.1.0: added tests
-* 0.0.1: start 
+* 0.0.1: start
