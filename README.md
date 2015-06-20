@@ -28,13 +28,13 @@ Note: If you plan on using the module with Express.js, please view the example o
 
 ## API:
 
-### `new I18n(options)`
+### `new i18n(options)`
 
-The `I18n` function is the return result from calling `require('i18n-2')`. You use this to instantiate an `I18n` instance and set any configuration options. You'll probably only do this if you're not using the `expressBind` method.
+The `i18n` function is the return result from calling `require('i18n-2')`. You use this to instantiate an `I18n` instance and set any configuration options. You'll probably only do this if you're not using the `expressBind` method.
 
-### `I18n.expressBind(app, options)`
+### `i18n.expressBind(app, options)`
 
-You'll use this method to attach the i18n functionality to the request object inside Express.js. The app argument should be your Express.js app and the options argument should be the same as if you were calling `new I18n(options)`. See **"Using with Express.js"** at the end of this README for more details.
+You'll use this method to attach the i18n functionality to the request object inside Express.js. The app argument should be your Express.js app and the options argument should be the same as if you were calling `new i18n(options)`. See **"Using with Express.js"** at the end of this README for more details.
 
 ### `__(string, [...])`
 
@@ -212,7 +212,7 @@ By default the `query` option is set to true. Setting the `query` option to `fal
 Copy the `__`, `__n`, `getLocale`, and `isPreferredLocale` methods over to the object specified by the `register` property.
 
 	var obj = {};
-	new I18n({ 'register': obj })
+	new i18n({ 'register': obj })
 	console.log( obj.__("Hello.") );
 
 ### `devMode`
@@ -227,7 +227,7 @@ In your app.js:
 
 	// load modules
 	var express = require('express'),
-		I18n = require('i18n-2');
+		i18n = require('i18n-2');
 
 	// Express Configuration
 	app.configure(function() {
@@ -236,7 +236,7 @@ In your app.js:
 
 		// Attach the i18n property to the express request object
 		// And attach helper methods for use in templates
-		I18n.expressBind(app, {
+		i18n.expressBind(app, {
 			// setup some locales - other locales default to en silently
 			locales: ['en', 'de'],
 			// change the cookie name from 'lang' to 'locale'
