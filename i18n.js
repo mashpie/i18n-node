@@ -236,7 +236,7 @@ i18n.prototype = {
 		}
 
 		var accept = req.headers["accept-language"] || "",
-				regExp = /(^|,\s*)([a-z-]+)/gi,
+				regExp = /(^|,\s*)([a-z0-9-]+)/gi,
 				self = this,
 				prefLocale;
 
