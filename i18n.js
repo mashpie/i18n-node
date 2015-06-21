@@ -66,9 +66,9 @@ var i18n = module.exports = function (opt) {
 
 		this.prefLocale = this.preferredLocale();
 
-+		if (this.prefLocale !== false && this.prefLocale !== this.locale) {
-+			this.setLocale(this.prefLocale);
-+		}
+		if (this.prefLocale !== false && this.prefLocale !== this.locale) {
+			this.setLocale(this.prefLocale);
+		}
 	}
 };
 
