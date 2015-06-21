@@ -131,13 +131,26 @@ i18n.prototype = {
 		return msg;
 	},
 
-	__n: function (singular, plural, count) {
-		var msg = this.translate(this.locale, singular, plural);
+	__n: function (pathOrSingular, countOrPlural, additionalOrCount) {
+		var msg;
+		if (typeof countOrPlural === 'number') {
+			var path = pathOrSingular;
+			var count = countOrPlural;
+			msg = this.translate(this.locale, path);
+			console.log('initial', msg);
 
-		msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, [count]);
+			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, Array.prototype.slice.call(arguments, 1));
+		} else {
+			var singular = pathOrSingular;
+			var plural = countOrPlural;
+			var count = additionalOrCount;
+			msg = this.translate(this.locale, singular, plural);
 
-		if (arguments.length > 3) {
-			msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
+			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, [count]);
+
+			if (arguments.length > 3) {
+				msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
+			}
 		}
 
 		return msg;
