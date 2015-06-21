@@ -282,7 +282,7 @@ i18n.prototype = {
 			}
 		}
 
-		return dotNotation(singular, this.locales[locale]);
+		return dotNotation(this.locales[locale], singular);
 	},
 
 	// try reading a file
