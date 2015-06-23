@@ -333,6 +333,7 @@ i18n.prototype = {
 		if (!this.devMode) {
 			// Initialize the locale if didn't exist already
 			this.initLocale(locale, {});
+			return;
 		}
 
 		// creating directory if necessary
