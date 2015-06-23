@@ -15,7 +15,7 @@ Run the following:
 
 ## Simple Example
 
-Note: If you plan on using the module with Express.js, please view the example on that, below.
+Note: If you plan on using the module with Express.js, please view [Using with Express.js](#using-with-expressjs), below.
 
     // Load Module and Instantiate
     var i18n = new (require('i18n-2'))({
