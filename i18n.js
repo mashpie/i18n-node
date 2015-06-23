@@ -14,7 +14,13 @@ var vsprintf = require("sprintf").vsprintf,
 
 
 function dotNotation (obj, str) {
-    return str.split(".").reduce(function(o, x) { return o[x]; }, obj);
+	if (obj.hasOwnProperty(str)) {
+		return obj[str];
+	}
+
+    return str.split(".").reduce(function(o, x) {
+    	return o[x];
+    }, obj);
 }
 
 var i18n = module.exports = function (opt) {
@@ -323,7 +329,9 @@ i18n.prototype = {
 			// unable to read, so intialize that file
 			// locales[locale] are already set in memory, so no extra read required
 			// or locales[locale] are empty, which initializes an empty locale.json file
-			this.writeFile(locale);
+			if (!fs.existsSync(file)) {
+				this.writeFile(locale);
+			}
 		}
 	},
 
