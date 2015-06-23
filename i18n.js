@@ -9,10 +9,15 @@
 
 // dependencies
 var vsprintf = require("sprintf").vsprintf,
-	fs = require("fs"),
-	path = require("path");
+		fs = require("fs"),
+		path = require("path");
 
-var i18n = module.exports = function(opt) {
+
+function dotNotation (obj, str) {
+    return str.split(".").reduce(function(o, x) { return o[x]; }, obj);
+}
+
+var i18n = module.exports = function (opt) {
 	var self = this;
 
 	// Put into dev or production mode
@@ -25,7 +30,7 @@ var i18n = module.exports = function(opt) {
 
 	// you may register helpers in global scope, up to you
 	if (typeof this.register === "object") {
-		i18n.resMethods.forEach(function(method) {
+		i18n.resMethods.forEach(function (method) {
 			self.register[method] = self[method].bind(self);
 		});
 	}
@@ -35,7 +40,7 @@ var i18n = module.exports = function(opt) {
 	if (opt.locales && opt.locales.forEach) {
 		this.locales = {};
 
-		opt.locales.forEach(function(locale) {
+		opt.locales.forEach(function (locale) {
 			self.readFile(locale);
 		});
 
@@ -60,6 +65,10 @@ var i18n = module.exports = function(opt) {
 		}
 
 		this.prefLocale = this.preferredLocale();
+
+		if (this.prefLocale !== false && this.prefLocale !== this.locale) {
+			this.setLocale(this.prefLocale);
+		}
 	}
 };
 
@@ -68,12 +77,12 @@ i18n.version = "0.4.6";
 i18n.localeCache = {};
 i18n.resMethods = ["__", "__n", "getLocale", "isPreferredLocale"];
 
-i18n.expressBind = function(app, opt) {
+i18n.expressBind = function (app, opt) {
 	if (!app) {
 		return;
 	}
 
-	app.use(function(req, res, next) {
+	app.use(function (req, res, next) {
 		opt.request = req;
 		req.i18n = new i18n(opt);
 
@@ -91,16 +100,16 @@ i18n.expressBind = function(app, opt) {
 	}
 };
 
-i18n.registerMethods = function(helpers, req) {
-	i18n.resMethods.forEach(function(method) {
+i18n.registerMethods = function (helpers, req) {
+	i18n.resMethods.forEach(function (method) {
 		if (req) {
-			helpers[method]	= req.i18n[method].bind(req.i18n);
+			helpers[method] = req.i18n[method].bind(req.i18n);
 		} else {
-			helpers[method] = function(req) {
+			helpers[method] = function (req) {
 				return req.i18n[method].bind(req.i18n);
-			};	
+			};
 		}
-		
+
 	});
 
 	return helpers;
@@ -112,7 +121,7 @@ i18n.prototype = {
 	directory: "./locales",
 	cookieName: "lang",
 
-	__: function() {
+	__: function () {
 		var msg = this.translate(this.locale, arguments[0]);
 
 		if (arguments.length > 1) {
@@ -122,22 +131,35 @@ i18n.prototype = {
 		return msg;
 	},
 
-	__n: function(singular, plural, count) {
-		var msg = this.translate(this.locale, singular, plural);
+	__n: function (pathOrSingular, countOrPlural, additionalOrCount) {
+		var msg;
+		if (typeof countOrPlural === 'number') {
+			var path = pathOrSingular;
+			var count = countOrPlural;
+			msg = this.translate(this.locale, path);
+			console.log('initial', msg);
 
-		msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, [count]);
+			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, Array.prototype.slice.call(arguments, 1));
+		} else {
+			var singular = pathOrSingular;
+			var plural = countOrPlural;
+			var count = additionalOrCount;
+			msg = this.translate(this.locale, singular, plural);
 
-		if (arguments.length > 3) {
-			msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
+			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, [count]);
+
+			if (arguments.length > 3) {
+				msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
+			}
 		}
 
 		return msg;
 	},
 
-	setLocale: function(locale) {
-		
+	setLocale: function (locale) {
+
 		if (!locale) return;
-		
+
 		if (!this.locales[locale]) {
 			if (this.devMode) {
 				console.warn("Locale (" + locale + ") not found.");
@@ -149,16 +171,30 @@ i18n.prototype = {
 		return (this.locale = locale);
 	},
 
-	getLocale: function() {
+	getLocale: function () {
 		return this.locale;
 	},
 
-	isPreferredLocale: function() {
+	isPreferredLocale: function () {
 		return !this.prefLocale ||
-			this.prefLocale === this.getLocale();
+				this.prefLocale === this.getLocale();
 	},
 
-	setLocaleFromQuery: function(req) {
+	setLocaleFromSessionVar: function (req) {
+		req = req || this.request;
+
+		var locale = req.session.locale;
+
+		if (this.locales[locale]) {
+			if (this.devMode) {
+				console.log("Overriding locale from query: " + locale);
+			}
+			this.setLocale(locale);
+		}
+
+	},
+
+	setLocaleFromQuery: function (req) {
 		req = req || this.request;
 
 		if (!req || !req.query || !req.query.lang) {
@@ -176,7 +212,7 @@ i18n.prototype = {
 		}
 	},
 
-	setLocaleFromSubdomain: function(req) {
+	setLocaleFromSubdomain: function (req) {
 		req = req || this.request;
 
 		if (!req || !req.headers || !req.headers.host) {
@@ -192,7 +228,7 @@ i18n.prototype = {
 		}
 	},
 
-	setLocaleFromCookie: function(req) {
+	setLocaleFromCookie: function (req) {
 		req = req || this.request;
 
 		if (!req || !req.cookies || !this.cookieName || !req.cookies[this.cookieName]) {
@@ -210,7 +246,7 @@ i18n.prototype = {
 		}
 	},
 
-	preferredLocale: function(req) {
+	preferredLocale: function (req) {
 		req = req || this.request;
 
 		if (!req || !req.headers) {
@@ -218,32 +254,30 @@ i18n.prototype = {
 		}
 
 		var accept = req.headers["accept-language"] || "",
-			regExp = /(^|,\s*)([a-z-]+)/gi,
-			self = this,
-			prefLocale;
+				regExp = /(^|,\s*)([a-z0-9-]+)/gi,
+				self = this,
+				prefLocale;
 
-		while ((match = regExp.exec(accept))){
-			var locale = match[2];
+		while (!prefLocale && (match = regExp.exec(accept))) {
+			var locale = match[2].toLowerCase();
 			var parts = locale.split("-");
 
-			if (!prefLocale) {
-				if (self.locales[locale]) {
-					prefLocale = locale;
-				} else if (parts.length > 1 && self.locales[parts[0]]) {
-					prefLocale = parts[0];
-				}
-			}
+			if (self.locales[locale]) {
+				prefLocale = locale;
+			} else if (parts.length > 1 && self.locales[parts[0]]) {
+              	prefLocale = parts[0];
+            }
 		}
 
 		return prefLocale || this.defaultLocale;
 	},
 
 	// read locale file, translate a msg and write to fs if new
-	translate: function(locale, singular, plural) {
+	translate: function (locale, singular, plural) {
 		if (!locale || !this.locales[locale]) {
 			if (this.devMode) {
 				console.warn("WARN: No locale found. Using the default (" +
-					this.defaultLocale + ") as current locale");
+						this.defaultLocale + ") as current locale");
 			}
 
 			locale = this.defaultLocale;
@@ -253,19 +287,19 @@ i18n.prototype = {
 
 		if (!this.locales[locale][singular]) {
 			this.locales[locale][singular] = plural ?
-				{ one: singular, other: plural } :
-				singular;
+			{ one: singular, other: plural } :
+					singular;
 
 			if (this.devMode) {
 				this.writeFile(locale);
 			}
 		}
 
-		return this.locales[locale][singular];
+		return dotNotation(this.locales[locale], singular);
 	},
 
 	// try reading a file
-	readFile: function(locale) {
+	readFile: function (locale) {
 		var file = this.locateFile(locale);
 
 		if (!this.devMode && i18n.localeCache[file]) {
@@ -282,7 +316,7 @@ i18n.prototype = {
 
 			} catch (e) {
 				console.error('unable to parse locales from file (maybe ' + file +
-					' is empty or invalid json?): ', e);
+						' is empty or invalid json?): ', e);
 			}
 
 		} catch (e) {
@@ -294,11 +328,12 @@ i18n.prototype = {
 	},
 
 	// try writing a file in a created directory
-	writeFile: function(locale) {
+	writeFile: function (locale) {
 		// don't write new locale information to disk if we're not in dev mode
 		if (!this.devMode) {
 			// Initialize the locale if didn't exist already
 			this.initLocale(locale, {});
+			return;
 		}
 
 		// creating directory if necessary
@@ -319,39 +354,39 @@ i18n.prototype = {
 		// writing to tmp and rename on success
 		try {
 			var target = this.locateFile(locale),
-				tmp = target + ".tmp";
+					tmp = target + ".tmp";
 
 			fs.writeFileSync(tmp, JSON.stringify(
-				this.locales[locale], null, "\t"), "utf8");
+					this.locales[locale], null, "\t"), "utf8");
 
 			if (fs.statSync(tmp).isFile()) {
 				fs.renameSync(tmp, target);
 
 			} else {
 				console.error('unable to write locales to file (either ' + tmp +
-					' or ' + target + ' are not writeable?): ');
+						' or ' + target + ' are not writeable?): ');
 			}
 
 		} catch (e) {
 			console.error('unexpected error writing files (either ' + tmp +
-				' or ' + target + ' are not writeable?): ', e);
+					' or ' + target + ' are not writeable?): ', e);
 		}
 	},
 
 	// basic normalization of filepath
-	locateFile: function(locale) {
+	locateFile: function (locale) {
 		return path.normalize(this.directory + '/' + locale + this.extension);
 	},
 
-	initLocale: function(locale, data) {
+	initLocale: function (locale, data) {
 		if (!this.locales[locale]) {
 			this.locales[locale] = data;
 
 			// Only cache the files when we're not in dev mode
 			if (!this.devMode) {
-			    var file = this.locateFile(locale);
-				if ( !i18n.localeCache[file] ) {
-			    	i18n.localeCache[file] = data;
+				var file = this.locateFile(locale);
+				if (!i18n.localeCache[file]) {
+					i18n.localeCache[file] = data;
 				}
 			}
 		}
