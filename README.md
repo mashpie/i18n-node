@@ -1,7 +1,7 @@
 # Node.js: i18n-2
 
  * Designed to work out-of-the-box with Express.js
- * Lightweight simple translation module with dynamic json storage. 
+ * Lightweight simple translation module with dynamic json storage.
  * Uses common __('...') syntax in app and templates.
  * Stores language files in json files compatible to [webtranslateit](http://webtranslateit.com/) json format.
  * Adds new strings on-the-fly when first used in your app.
@@ -46,7 +46,7 @@ For example:
 
 this puts **Hello Marcus, how are you today?**. You might also add endless arguments or even nest it.
 
-    var greeting = i18n.__('Hello %s, how are you today? How was your %s?', 
+    var greeting = i18n.__('Hello %s, how are you today? How was your %s?',
         'Marcus', i18n.__('weekend'));
 
 which puts **Hello Marcus, how are you today? How was your weekend?**
@@ -233,6 +233,10 @@ Copy the `__`, `__n`, `getLocale`, and `isPreferredLocale` methods over to the o
 
 By default the `devMode` property is automatically set to be `false` if Node.js is in production mode and `true` otherwise. You can override this by setting a different value to the `devMode` option.
 
+### `indent`
+
+Sets the indent string for `JSON.stringify` when updating the locale files. Defaults to a tab character. Might be useful when you use a source formatter in your project.
+
 ## Using with Express.js
 
 ### Load and Configure
@@ -287,6 +291,8 @@ In your app.js:
 
 ## Changelog
 
+* 0.4.7: configurable indent for locale json files
+* 0.4.6: bug fixes, new feature (dot notation & __n supporting object locales)
 * 0.4.5: a number of bug fixes
 * 0.4.4: fix typo
 * 0.4.3: fix issue with preferredLocale failing on useragents with no accept lang header
