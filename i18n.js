@@ -208,7 +208,7 @@ i18n.prototype = {
 			return;
 		}
 
-		var locale = req.query.lang.toLowerCase();
+		var locale = (req.query.lang+'').toLowerCase();
 
 		if (this.locales[locale]) {
 			if (this.devMode) {
