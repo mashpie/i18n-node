@@ -316,11 +316,39 @@ i18n.prototype = {
 
 		try {
 			var localeFile = fs.readFileSync(file);
+			var base;
+
+			// reading base file if regexp provided
+			if (this.bases) {
+				var exec = new RegExp(this.bases).exec(locale);
+
+				if (exec && exec.length) {
+					var baseFile = this.locateFile(exec[exec.length-1]);
+
+					try {
+						base = JSON.parse(fs.readFileSync(baseFile));
+					} catch (e) {
+						console.error('unable to read or parse base file %s for locale %s', baseFile, locale, e);
+					}
+				} else {
+					console.error('unable to extract base file for locale %s', locale);
+				}
+			}
 
 			try {
-				// parsing filecontents to locales[locale]
-				this.initLocale(locale, JSON.parse(localeFile));
+				// parsing file content
+				var content = JSON.parse(localeFile);
 
+				if (base) {
+					// writing content to the base and swapping
+					for (var prop in content) {
+						base[prop] = content[prop];
+					}
+					content = base;
+				}
+
+				// putting content to locales[locale]
+				this.initLocale(locale, content);
 			} catch (e) {
 				console.error('unable to parse locales from file (maybe ' + file +
 						' is empty or invalid json?): ', e);
