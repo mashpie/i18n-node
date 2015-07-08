@@ -14,6 +14,7 @@ var vsprintf = require("sprintf").vsprintf,
 
 
 function dotNotation (obj, str) {
+	//console.log('DOES', obj, 'HAS PROPERTY', str);
 	if (obj.hasOwnProperty(str)) {
 		return obj[str];
 	}
@@ -21,6 +22,13 @@ function dotNotation (obj, str) {
     return str.split(".").reduce(function(o, x) {
     	return o[x];
     }, obj);
+}
+
+function hasDotNotation (obj, str) {
+	var tryObj = str.split(".").reduce(function(o, x) {
+		return o[x];
+	}, obj);
+	return (tryObj !== undefined);
 }
 
 var i18n = module.exports = function (opt) {
@@ -144,7 +152,6 @@ i18n.prototype = {
 			var path = pathOrSingular;
 			var count = countOrPlural;
 			msg = this.translate(this.locale, path);
-			console.log('initial', msg);
 
 			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, Array.prototype.slice.call(arguments, 1));
 		} else {
@@ -292,7 +299,7 @@ i18n.prototype = {
 			this.initLocale(locale, {});
 		}
 
-		if (!this.locales[locale][singular]) {
+		if (!this.locales[locale][singular] && !hasDotNotation(this.locales[locale], singular)) {
 			this.locales[locale][singular] = plural ?
 			{ one: singular, other: plural } :
 					singular;
