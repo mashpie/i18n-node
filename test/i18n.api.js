@@ -240,6 +240,18 @@ describe('Module API', function () {
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
       });
+      
+      it('should allow two arguments and lookup strings in file', function(){
+        var singular = __n("cat", 1);
+        var plural = __n("cat", 3);
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
+        
+        singular = __n("nested.deep.plural", 1);
+        plural = __n("nested.deep.plural", 3);
+        should.equal(singular, 'plural');
+        should.equal(plural, 'plurals');
+      });
     });
   });
 

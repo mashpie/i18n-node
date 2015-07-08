@@ -9,10 +9,18 @@
 		"one": "%s cat",
 		"other": "%s cats"
 	},
-  "cat": {
-    "one": "%s cat",
-    "other": "%s cats"
-  },
+	"cat": {
+		"one": "%s cat",
+		"other": "%s cats"
+	},
+	"nested": {
+		"deep": {
+			"plural": {
+				"one": "plural",
+				"other": "plurals"
+			}
+		}
+	},
 	"There is one monkey in the %%s": {
 		"one": "There is one monkey in the %%s",
 		"other": "There are %d monkeys in the %%s"
@@ -37,5 +45,9 @@
 			"informal": "Hi %s",
 			"loud": "greeting.placeholder.loud"
 		}
+	},
+	"nested.deep.plural": {
+		"one": "nested.deep.plural",
+		"other": 1
 	}
 }
