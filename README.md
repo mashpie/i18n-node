@@ -209,23 +209,20 @@ A generated `en.js` inside `./locales/` may look something like:
 
 that file can be edited or just uploaded to [webtranslateit](http://docs.webtranslateit.com/file_formats/) for any kind of collaborative translation workflow.
 
-### `bases`
+### `base`
 
-You can specify a regular expression that will be used to extract base file name for each locale. It will take effect only when `locales` are provided as an array.
+You can specify a function that will be used to extract base file name for each locale. It may be used for instance to keep in the locales only region-specific translations and move all what's shared to the base files.
 
-It may be used for instance to keep in locales only region-specific translations and move all what's shared to the base files.
+It will take effect only when `locales` are provided as an array and `base` is a function that returns a string value. You can skip this mechanism for particular locale if `base` returns no value.
 
-Each locale is merged with its base such that locale translations override the base. If the base file does not exist or is not parsable - it will not be created.
+Each locale is merged with its base (if found) such that locale translations override the base. If the base file does not exist or is not parsable - it will not be created.
 
 Following example takes `de.js` and `en.js` as bases respectively for each locale:
 
     locales: ['at-de', 'de-de', 'at-en', 'de-en'],
-    bases: ".{2}$"
-
-You can use RegExp matching groups, the last matched group will be taken as the base file name:
-
-    locales: ['at-de', 'de-de', 'at-en', 'de-en'],
-    bases: "[^-]*-(.*)"
+    base: function(locale) {
+        return locale.slice(-2);
+    }
 
 ### `request`, `subdomain`, and `query`
 

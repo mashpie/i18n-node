@@ -318,20 +318,22 @@ i18n.prototype = {
 			var localeFile = fs.readFileSync(file);
 			var base;
 
-			// reading base file if regexp provided
-			if (this.bases) {
-				var exec = new RegExp(this.bases).exec(locale);
+			// reading base file if 'base' provided
+			if (typeof this.base === "function") {
+				var baseFilename;
 
-				if (exec && exec.length) {
-					var baseFile = this.locateFile(exec[exec.length-1]);
+				try {
+					baseFilename = this.base(locale);
+				} catch (e) {
+					console.error('base function threw exception for locale %s', locale, e);
+				}
 
+				if (typeof baseFilename === "string") {
 					try {
-						base = JSON.parse(fs.readFileSync(baseFile));
+						base = JSON.parse(fs.readFileSync(this.locateFile(baseFilename)));
 					} catch (e) {
-						console.error('unable to read or parse base file %s for locale %s', baseFile, locale, e);
+						console.error('unable to read or parse base file %s for locale %s', baseFilename, locale, e);
 					}
-				} else {
-					console.error('unable to extract base file for locale %s', locale);
 				}
 			}
 
