@@ -13,22 +13,20 @@ var vsprintf = require("sprintf").vsprintf,
 		path = require("path");
 
 
-function dotNotation (obj, str) {
-	//console.log('DOES', obj, 'HAS PROPERTY', str);
-	if (obj.hasOwnProperty(str)) {
-		return obj[str];
+function dotNotation (obj, is, value) {
+	if (typeof is === 'string') {
+		return dotNotation(obj, is.split('.'), value);
+	} else if (is.length === 1 && value !== undefined) {
+		return obj[is[0]] = value;
+	} else if (is.length === 0) {
+		return obj;
+	} else {
+		if (obj.hasOwnProperty(is[0])) {
+			return dotNotation(obj[is[0]], is.slice(1), value);
+		} else {
+			return obj[is.join('.')] = is.join('.');
+		}
 	}
-
-    return str.split(".").reduce(function(o, x) {
-    	return o[x];
-    }, obj);
-}
-
-function hasDotNotation (obj, str) {
-	var tryObj = str.split(".").reduce(function(o, x) {
-		return o[x];
-	}, obj);
-	return (tryObj !== undefined);
 }
 
 var i18n = module.exports = function (opt) {
@@ -299,17 +297,13 @@ i18n.prototype = {
 			this.initLocale(locale, {});
 		}
 
-		if (!this.locales[locale][singular] && !hasDotNotation(this.locales[locale], singular)) {
-			this.locales[locale][singular] = plural ?
-			{ one: singular, other: plural } :
-					singular;
-
+		if (!this.locales[locale][singular]) {
 			if (this.devMode) {
 				this.writeFile(locale);
 			}
 		}
 
-		return dotNotation(this.locales[locale], singular);
+		return dotNotation(this.locales[locale], singular, plural ? { one: singular, other: plural } : undefined);
 	},
 
 	// try reading a file
