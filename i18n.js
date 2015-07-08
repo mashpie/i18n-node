@@ -150,7 +150,6 @@ i18n.prototype = {
 			var path = pathOrSingular;
 			var count = countOrPlural;
 			msg = this.translate(this.locale, path);
-			console.log('initial', msg);
 
 			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, Array.prototype.slice.call(arguments, 1));
 		} else {
