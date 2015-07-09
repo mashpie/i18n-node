@@ -456,7 +456,7 @@ function translate(locale, singular, plural) {
       defaultSingular = singular.substring(indexOfColon + 1);
       singular = singular.substring(0, indexOfColon);
     }
-    if( plural ) {
+    if( plural && typeof plural !== 'number' ) {
       indexOfColon = plural.indexOf(':');
       if( 0 < indexOfColon ) {
         defaultPlural = plural.substring(indexOfColon + 1);

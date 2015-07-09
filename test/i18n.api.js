@@ -240,6 +240,13 @@ describe('Module API', function () {
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
       });
+      
+      it('should allow two arguments', function(){
+        var singular = __n("cat", 1);
+        var plural = __n("cat", 3);
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
+      });
     });
   });
 

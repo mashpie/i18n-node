@@ -48,6 +48,13 @@ describe('Object Notation', function () {
       should.equal(singular, '1 Katze');
       should.equal(plural, '3 Katzen');
     });
+    
+    it('should allow for simple pluralization', function(){
+      var singular = __n("nested.deep.plural", 1);
+      var plural = __n("nested.deep.plural", 3);
+      should.equal(singular, 'plural');
+      should.equal(plural, 'plurals');
+    });
   });
 
 
