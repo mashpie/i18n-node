@@ -209,6 +209,21 @@ A generated `en.js` inside `./locales/` may look something like:
 
 that file can be edited or just uploaded to [webtranslateit](http://docs.webtranslateit.com/file_formats/) for any kind of collaborative translation workflow.
 
+### `base`
+
+You can specify a function that will be used to extract base file name for each locale. It may be used for instance to keep in the locales only region-specific translations and move all what's shared to the base files.
+
+It will take effect only when `locales` are provided as an array and `base` is a function that returns a string value. You can skip this mechanism for particular locale if `base` returns no value.
+
+Each locale is merged with its base (if found) such that locale translations override the base. If the base file does not exist or is not parsable - it will not be created.
+
+Following example takes `de.js` and `en.js` as bases respectively for each locale:
+
+    locales: ['at-de', 'de-de', 'at-en', 'de-en'],
+    base: function(locale) {
+        return locale.slice(-2);
+    }
+
 ### `request`, `subdomain`, and `query`
 
 These options are to be used with Express.js or another framework that provides a `request` object. In order to use the `subdomain` and `query` options you must specify the `request` option, passing in the Express.js `request` object.
@@ -291,6 +306,7 @@ In your app.js:
 
 ## Changelog
 
+* 0.5.0: base files for locales
 * 0.4.7: configurable indent for locale json files
 * 0.4.6: bug fixes, new feature (dot notation & __n supporting object locales)
 * 0.4.5: a number of bug fixes

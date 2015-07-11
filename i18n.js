@@ -317,11 +317,41 @@ i18n.prototype = {
 
 		try {
 			var localeFile = fs.readFileSync(file);
+			var base;
+
+			// reading base file if 'base' provided
+			if (typeof this.base === "function") {
+				var baseFilename;
+
+				try {
+					baseFilename = this.base(locale);
+				} catch (e) {
+					console.error('base function threw exception for locale %s', locale, e);
+				}
+
+				if (typeof baseFilename === "string") {
+					try {
+						base = JSON.parse(fs.readFileSync(this.locateFile(baseFilename)));
+					} catch (e) {
+						console.error('unable to read or parse base file %s for locale %s', baseFilename, locale, e);
+					}
+				}
+			}
 
 			try {
-				// parsing filecontents to locales[locale]
-				this.initLocale(locale, JSON.parse(localeFile));
+				// parsing file content
+				var content = JSON.parse(localeFile);
 
+				if (base) {
+					// writing content to the base and swapping
+					for (var prop in content) {
+						base[prop] = content[prop];
+					}
+					content = base;
+				}
+
+				// putting content to locales[locale]
+				this.initLocale(locale, content);
 			} catch (e) {
 				console.error('unable to parse locales from file (maybe ' + file +
 						' is empty or invalid json?): ', e);
