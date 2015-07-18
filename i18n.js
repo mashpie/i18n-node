@@ -18,7 +18,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog', 'getLocales'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent, objectNotation, logDebugFn, logWarnFn, logErrorFn;
+    defaultLocale, fallbacks, updateFiles, cookiename, extension, directory, indent, objectNotation, logDebugFn, logWarnFn, logErrorFn;
 
 // public exports
 var i18n = exports;
@@ -53,6 +53,9 @@ i18n.configure = function i18nConfigure(opt) {
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
 
+  // read language fallback map
+  fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : {};
+
   // enable object notation?
   objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
   if( objectNotation === true ) objectNotation = '.';
@@ -63,7 +66,7 @@ i18n.configure = function i18nConfigure(opt) {
    logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
 
   // implicitly read all locales
-  if (typeof opt.locales === 'object') {
+  if (Array.isArray(opt.locales)) {
     opt.locales.forEach(function (l) {
       read(l);
     });
@@ -227,6 +230,10 @@ i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
     target_locale = locale_or_request;
   }
 
+  if (!locales[target_locale] && fallbacks[target_locale]) {
+    target_locale = fallbacks[target_locale];
+  }
+
   if (locales[target_locale]) {
 
     // called like setLocale('en')
@@ -288,6 +295,10 @@ i18n.getCatalog = function i18nGetCatalog(locale_or_request, locale) {
   // called like getCatalog()
   if (target_locale === undefined || target_locale === '') {
     return locales;
+  }
+
+  if (!locales[target_locale] && fallbacks[target_locale]) {
+    target_locale = fallbacks[target_locale];
   }
 
   if (locales[target_locale]) {
@@ -433,6 +444,10 @@ function translate(locale, singular, plural) {
   if (locale === undefined) {
     logWarn("WARN: No locale found - check the context of the call to __(). Using " + defaultLocale + " as current locale");
     locale = defaultLocale;
+  }
+
+  if (!locales[locale] && fallbacks[locale]) {
+    locale = fallbacks[locale];
   }
 
   // attempt to read when defined as valid locale

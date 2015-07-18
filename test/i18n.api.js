@@ -6,6 +6,7 @@ var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n')
 
 i18n.configure({
   locales: ['en', 'de'],
+  fallbacks: {'nl': 'de'},
   directory: './locales',
   register: global
 });
@@ -63,8 +64,13 @@ describe('Module API', function () {
         i18n.setLocale('de').should.equal('de');
       });
 
-      it('and getLocale should return the new setting', function () {
+      it('getLocale should return the new setting', function () {
         i18n.getLocale().should.equal('de');
+      });
+
+      it('setLocale should return a fallback value', function () {
+        i18n.setLocale('en');
+        i18n.setLocale('nl').should.equal('de');
       });
     });
 
@@ -81,6 +87,9 @@ describe('Module API', function () {
       });
       it('should return just the EN catalog when invoked with "en" as parameter', function () {
         i18n.getCatalog('de').should.have.property('Hello', 'Hallo');
+      });
+      it('should return just the DE catalog when invoked with a (fallback) "nl" as parameter', function () {
+        i18n.getCatalog('nl').should.have.property('Hello', 'Hallo');
       });
       it('should return false when invoked with unsupported locale as parameter', function () {
         i18n.getCatalog('oO').should.equal(false);
@@ -157,10 +166,19 @@ describe('Module API', function () {
         should.equal(__({phrase: 'Hello %s', locale: 'en'}, 'Marcus'), 'Hello Marcus');
         should.equal(__({phrase: 'Hello {{name}}', locale: 'en'}, { name: 'Marcus' }), 'Hello Marcus');
 
-        i18n.setLocale('de');
-        should.equal(__('Hello'), 'Hallo');
+        should.equal(__({phrase: 'Hello', locale: 'nl'}), 'Hallo');
+        should.equal(__({phrase: 'Hello %s', locale: 'nl'}, 'Marcus'), 'Hallo Marcus');
+        should.equal(__({phrase: 'Hello {{name}}', locale: 'nl'}, { name: 'Marcus' }), 'Hallo Marcus');
+
         i18n.setLocale('en');
         should.equal(__('Hello'), 'Hello');
+        i18n.setLocale('de');
+        should.equal(__('Hello'), 'Hallo');
+        // Reset so `de` fallback can be tested again
+        i18n.setLocale('en');
+        
+        i18n.setLocale('nl');
+        should.equal(__('Hello'), 'Hallo');
       });
 
     });
@@ -209,9 +227,11 @@ describe('Module API', function () {
       });
 
       it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function(){
+        var singular, plural;
+        
         i18n.setLocale('en');
-        var singular = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 1),
-            plural = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 3);
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 1),
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 3);
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
@@ -220,6 +240,17 @@ describe('Module API', function () {
         should.equal(singular, '1 cat');
         should.equal(plural, '3 cats');
 
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 1),
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 3);
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        i18n.setLocale('en');
+        ingular = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: 1});
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: 3});
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
         singular = __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 1});
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3});
         should.equal(singular, '1 cat');
@@ -227,6 +258,12 @@ describe('Module API', function () {
 
         singular = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: 1});
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: 3});
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        i18n.setLocale('en');
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: "1"});
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: "3"});
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
