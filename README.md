@@ -118,7 +118,7 @@ Will then do:
 
 To be used with Express.js or another framework that provides a `request` object. Generally you would want to use this by setting the `session` option to `true`.
 
-This methods takes in an Express.js request object, looks at the variable `locale` contained in the `session` object, and it will set the locale to that value.
+This methods takes in an Express.js request object, looks at the variable `locale` (you may override this behaviour by changing the option `sessionVarName`, which defaults to `locale`) contained in the `session` object, and it will set the locale to that value.
 
 For example, if the session is :
 { user: { ... }, locale: 'de' }
