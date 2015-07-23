@@ -114,6 +114,17 @@ Will then do:
 
     setLocale('de')
 
+### `setLocaleFromSessionVar([request])`
+
+To be used with Express.js or another framework that provides a `request` object. Generally you would want to use this by setting the `session` option to `true`.
+
+This methods takes in an Express.js request object, looks at the variable `locale` contained in the `session` object, and it will set the locale to that value.
+
+For example, if the session is :
+{ user: { ... }, locale: 'de' }
+
+Then `setLocaleFromSessionVar` will do `setLocale('de')`
+
 ### `setLocaleFromSubdomain([request])`
 
 To be used with Express.js or another framework that provides a `request` object. Generally you would want to use this by setting the `subdomain` option to `true`.
@@ -224,7 +235,7 @@ Following example takes `de.js` and `en.js` as bases respectively for each local
         return locale.slice(-2);
     }
 
-### `request`, `subdomain`, and `query`
+### `request`, `subdomain`, `query` and `session`
 
 These options are to be used with Express.js or another framework that provides a `request` object. In order to use the `subdomain` and `query` options you must specify the `request` option, passing in the Express.js `request` object.
 
@@ -233,6 +244,8 @@ If you pass in a `request` object a new `i18n` property will be attached to it, 
 Note that you probably won't need to use `request` directly, if you use `expressBind` it is taken care of automatically.
 
 Setting the `subdomain` option to `true` will run the `setLocaleFromSubdomain` method automatically on every request.
+
+Setting the `session` option to `true` will run the `setLocaleFromSessionVar` method automatically on every request.
 
 By default the `query` option is set to true. Setting the `query` option to `false` will stop the `setLocaleFromQuery` method from running automatically on every request.
 
