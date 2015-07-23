@@ -76,6 +76,10 @@ var i18n = module.exports = function (opt) {
 			this.setLocaleFromQuery(this.request);
 		}
 
+		if (this.session !== false) {
+			this.setLocaleFromSessionVar(this.request);
+		}
+
 		this.prefLocale = this.preferredLocale();
 
 		if (this.prefLocale !== false && this.prefLocale !== this.locale) {
