@@ -136,6 +136,7 @@ i18n.prototype = {
 	extension: ".js",
 	directory: "./locales",
 	cookieName: "lang",
+	sessionVarName: "locale",
 	indent: "\t",
 
 	__: function () {
@@ -199,7 +200,7 @@ i18n.prototype = {
 	setLocaleFromSessionVar: function (req) {
 		req = req || this.request;
 
-		var locale = req.session.locale;
+		var locale = req.session[sessionVarName];
 
 		if (this.locales[locale]) {
 			if (this.devMode) {
