@@ -155,6 +155,20 @@ Will then do:
 
     setLocale('de')
 
+### `setLocaleFromEnvironmentVariable()`
+
+To be used with some desktop application environment (like [Electron](http://electron.atom.io/) or [NW.js](http://nwjs.io/)) or console. This method tries to get language code from `LANG` environment variable. For example, it get `de` from `de_DE.UTF-8`.
+
+For example:
+
+    console.log(process.env.LANG)
+    => 'en_US.UTF-8'
+    setLocaleFromEnvironmentVariable()
+
+Will then do:
+
+    setLocale('en')
+
 ### `isPreferredLocale()`
 
 To be used with Express.js or another framework that provides a `request` object. This method works if a `request` option has been specified when the i18n object was instantiated.
@@ -319,9 +333,10 @@ In your app.js:
 
 ## Changelog
 
+* 0.6.0: added setLocaleFromEnvironmentVariable()
 * 0.5.0: base files for locales
 * 0.4.7: configurable indent for locale json files
-* 0.4.6: bug fixes, new feature (dot notation & __n supporting object locales)
+* 0.4.6: bug fixes, new feature (dot notation & `__n` supporting object locales)
 * 0.4.5: a number of bug fixes
 * 0.4.4: fix typo
 * 0.4.3: fix issue with preferredLocale failing on useragents with no accept lang header

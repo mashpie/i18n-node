@@ -263,6 +263,20 @@ i18n.prototype = {
 		}
 	},
 
+	setLocaleFromEnvironmentVariable: function () {
+		if (!process.env.LANG) {
+			return;
+		}
+		var locale = process.env.LANG.split("_")[0];
+		if (this.locales[locale]) {
+			if (this.devMode) {
+				console.log("Overriding locale from environment variable: " + locale);
+			}
+
+			this.setLocale(locale);
+		}
+	},
+
 	preferredLocale: function (req) {
 		req = req || this.request;
 
@@ -282,8 +296,8 @@ i18n.prototype = {
 			if (self.locales[locale]) {
 				prefLocale = locale;
 			} else if (parts.length > 1 && self.locales[parts[0]]) {
-              	prefLocale = parts[0];
-            }
+				prefLocale = parts[0];
+			}
 		}
 
 		return prefLocale || this.defaultLocale;
