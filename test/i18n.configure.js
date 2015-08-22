@@ -28,5 +28,21 @@ module.exports = {
 		assert.equal(i18n.__('Hello'), 'Hello');
 		assert.equal(i18n.__('Hello %s, how are you today?', 'Marcus'), 'Hello Marcus, how are you today?');
 		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus', i18n.__('weekend')), 'Hello Marcus, how are you today? How was your weekend.');
+	},
+
+    'check setLocale from environment variable': function () {
+		var i18n = new I18n({
+			locales: ['en', 'de'],
+			directory: './testlocales',
+			extension: '.json'
+		});
+		var defaultLang = process.env.LANG;
+		try {
+			process.env.LANG = "de_DE.UTF-8";
+			i18n.setLocaleFromEnvironmentVariable();
+			assert.equal('de', i18n.getLocale(), 'should return the new setting');
+		} finally {
+			process.env.LANG = defaultLang;
+		}
 	}
 };
