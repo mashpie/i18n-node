@@ -64,6 +64,18 @@ which outputs:
     Hello
     Howdy
 
+You can also use nested object :
+
+    {
+        'foo': {
+            'bar': 'ok'
+        }
+    }
+
+And use dot notation to access the value :
+
+    i18n.__('foo.bar');
+
 ### `__n(one, other, count, [...])`
 
 Different plural forms are supported as a response to `count`:
