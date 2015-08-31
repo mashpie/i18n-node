@@ -51,6 +51,16 @@ describe('Module Setup', function () {
     should.equal(typeof i18n.getCatalog, 'function');
     should.equal(i18n.getCatalog.name, 'i18nGetCatalog');
   });
+
+  it('should export addLocale as i18nAddLocale', function () {
+    should.equal(typeof i18n.addLocale, 'function');
+    should.equal(i18n.addLocale.name, 'i18nAddLocale');
+  });
+
+  it('should export removeLocale as i18nRemoveLocale', function () {
+    should.equal(typeof i18n.removeLocale, 'function');
+    should.equal(i18n.removeLocale.name, 'i18nRemoveLocale');
+  });
 });
 
 describe('Module API', function () {
@@ -277,7 +287,7 @@ describe('Module API', function () {
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
       });
-      
+
       it('should allow two arguments', function(){
         var singular = __n("cat", 1);
         var plural = __n("cat", 3);
@@ -416,12 +426,28 @@ describe('Module API', function () {
           returnedLocales.sort();
           var expectedLocales = ['en', 'de', 'en-GB'];
           expectedLocales.sort();
-          
+
           returnedLocales.length.should.equal(expectedLocales.length);
-          
+
           for (var i = 0; i < returnedLocales.length; i++) {
             returnedLocales[i].should.equal(expectedLocales[i]);
           }
+        });
+      });
+      describe('i18nAddLocale and i18nRemoveLocale', function () {
+        it('addLocale should add a locale', function () {
+          var oldLength = i18n.getLocales().length;
+          i18n.addLocale('fr');
+          var locales = i18n.getLocales()
+          locales.length.should.equal(oldLength + 1);
+          locales.should.containEql('fr');
+        });
+        it('removeLocale should remove a locale', function () {
+          var oldLength = i18n.getLocales().length;
+          i18n.removeLocale('fr');
+          var locales = i18n.getLocales()
+          locales.length.should.equal(oldLength - 1);
+          locales.should.not.containEql('fr');
         });
       });
       describe('i18nTranslate', function () {
