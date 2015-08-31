@@ -249,7 +249,7 @@ You could still setup your own implementation. Please refer to Examples below, p
 
 ## Output parsing of expressions
 
-As inspired by gettext there is currently support for sprintf-style expressions. Named parameters are on roadmap.
+As inspired by gettext there is currently support for sprintf-style expressions. You can also use mustache syntax for named parameters.
 
 ### sprintf support
 
