@@ -119,9 +119,9 @@ in your templates (depending on your template engine)
 
 For serving the same static files with different language url, you could:
 
-	server.use(express.static(__dirname + '/www'));
-	server.use('/en', express.static(__dirname + '/www'));
-	server.use('/de', express.static(__dirname + '/www'));
+	app.use(express.static(__dirname + '/www'));
+	app.use('/en', express.static(__dirname + '/www'));
+	app.use('/de', express.static(__dirname + '/www'));
 	
 ## Examples for common setups
 
