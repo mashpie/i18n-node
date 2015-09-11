@@ -117,7 +117,12 @@ in your templates (depending on your template engine)
 
 	${__('Hello')}
 
+For serving the same static files with different language url, you could:
 
+	server.use(express.static(__dirname + '/www'));
+	server.use('/en', express.static(__dirname + '/www'));
+	server.use('/de', express.static(__dirname + '/www'));
+	
 ## Examples for common setups
 
 See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples) inside `/examples` or browse these gists:
