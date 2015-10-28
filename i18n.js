@@ -416,7 +416,7 @@ function getAcceptedLanguagesFromHeader(header) {
     if (preferenceParts.length < 2) {
       preferenceParts[1] = 1.0;
     } else {
-      var quality = parseFloat(preferenceParts[1])
+      var quality = parseFloat(preferenceParts[1]);
       preferenceParts[1] = quality ? quality : 0.0;
     }
     preferences[preferenceParts[0]] = preferenceParts[1];
@@ -548,7 +548,7 @@ function localeAccessor(locale,singular,allowDelayedTraversal) {
         return null;
       }
       // We can traverse deeper, so we generate an accessor for this current level.
-      accessor = function(){ return object[index]; }
+      accessor = function(){ return object[index]; };
       // Return a reference to the next deeper level in the locale tree.
       return object[index];
 
