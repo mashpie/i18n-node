@@ -616,7 +616,8 @@ function localeMutator(locale,singular,allowBranching) {
         }
       }
       // Generate a mutator for the current level.
-      accessor = function(value){ return object[index] = value; };
+      accessor = function(value){ object[index] = value; return value; };
+
       // Return a reference to the next deeper level in the locale tree.
       return object[index];
 
@@ -633,7 +634,8 @@ function localeMutator(locale,singular,allowBranching) {
   } else {
     // No object notation, just return a mutator that performs array lookup and changes the value.
     return function(value){
-      return locales[locale][singular] = value;
+      locales[locale][singular] = value;
+      return value;
     };
   }
 }
