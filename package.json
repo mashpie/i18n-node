@@ -39,6 +39,6 @@
   },
   "scripts": {
     "jshint": "jshint --verbose .",
-    "test": "make test"
+    "test": "npm run jshint && make test"
   }
 }
