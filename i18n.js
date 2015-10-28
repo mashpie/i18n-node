@@ -555,12 +555,10 @@ function localeAccessor(locale,singular,allowDelayedTraversal) {
     }, locales[locale]);
     // Return the requested accessor.
     return function() {
-      // If we need to re-traverse (because we didn't find our target term)...
-      return ( reTraverse )
-        // ...traverse again and return the new result (but don't allow further iterations)...
-        ? localeAccessor(locale,singular,false)()
-        // ...or return the previously found accessor if it was already valid.
-        : accessor();
+      // If we need to re-traverse (because we didn't find our target term)
+      // traverse again and return the new result (but don't allow further iterations)
+      // or return the previously found accessor if it was already valid.
+      return ( reTraverse ) ? localeAccessor(locale,singular,false)() : accessor();
     };
 
   } else {
@@ -626,12 +624,10 @@ function localeMutator(locale,singular,allowBranching) {
 
     // Return the final mutator.
     return function(value){
-      // If we need to re-traverse the tree...
-      return ( reTraverse )
-        // ...invoke the search again, but allow branching this time (because here the mutator is being invoked)...
-        ? localeMutator(locale,singular,true)(value)
-        /// ...otherwise, just change the value directly.
-        : accessor(value);
+      // If we need to re-traverse the tree
+      // invoke the search again, but allow branching this time (because here the mutator is being invoked)
+      // otherwise, just change the value directly.
+      return ( reTraverse ) ? localeMutator(locale,singular,true)(value) : accessor(value);
     };
 
   } else {
