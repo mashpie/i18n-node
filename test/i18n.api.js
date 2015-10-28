@@ -395,14 +395,14 @@ describe('Module API', function () {
         it('addLocale should add a locale', function () {
           var oldLength = i18n.getLocales().length;
           i18n.addLocale('fr');
-          var locales = i18n.getLocales()
+          var locales = i18n.getLocales();
           locales.length.should.equal(oldLength + 1);
           locales.should.containEql('fr');
         });
         it('removeLocale should remove a locale', function () {
           var oldLength = i18n.getLocales().length;
           i18n.removeLocale('fr');
-          var locales = i18n.getLocales()
+          var locales = i18n.getLocales();
           locales.length.should.equal(oldLength - 1);
           locales.should.not.containEql('fr');
         });
