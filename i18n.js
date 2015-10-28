@@ -189,7 +189,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     // get translated message with locale from scope (deprecated) or object
     msg = translate(getLocaleFromObject(this), singular, plural);
   }
-  if (count == null) count = namedValues.count;
+  if (count === null) count = namedValues.count;
 
   // parse translation and replace all digets '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
