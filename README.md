@@ -280,7 +280,7 @@ In some cases the argument order will need to be switched for different locales.
 
 which puts 
 	
-	2 then First then333.33
+	2 then First then 333.33
 
 ### mustache support
 
