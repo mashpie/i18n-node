@@ -266,6 +266,22 @@ this puts *Hello Marcus, how are you today?*. You might add endless arguments an
 
 which puts *Hello Marcus, how are you today? How was your weekend.*
 
+You might need to have repeated references to the same argument, which can be done with sprintf.
+
+	var example = __('%1$s, %1$s, %1$s', 'repeat');
+
+which puts 
+	
+	repeat, repeat, repeat
+
+In some cases the argument order will need to be switched for different locales.  The arguments can be strings, floats, numbers, etc.  
+
+	var example = __('%2$d then %1$s then %3$.2f', 'First', 2, 333.333);
+
+which puts 
+	
+	2 then First then333.33
+
 ### mustache support
 
 You may also use [mustache](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the second parameter. You can still pass unnamed parameters by adding additional arguments.
