@@ -197,7 +197,7 @@ describe('Module API', function () {
         var singular, plural;
         
         i18n.setLocale('en');
-        singular = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 1),
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 1);
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 3);
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
@@ -207,7 +207,7 @@ describe('Module API', function () {
         should.equal(singular, '1 cat');
         should.equal(plural, '3 cats');
 
-        singular = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 1),
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 1);
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 3);
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
@@ -395,14 +395,14 @@ describe('Module API', function () {
         it('addLocale should add a locale', function () {
           var oldLength = i18n.getLocales().length;
           i18n.addLocale('fr');
-          var locales = i18n.getLocales()
+          var locales = i18n.getLocales();
           locales.length.should.equal(oldLength + 1);
           locales.should.containEql('fr');
         });
         it('removeLocale should remove a locale', function () {
           var oldLength = i18n.getLocales().length;
           i18n.removeLocale('fr');
-          var locales = i18n.getLocales()
+          var locales = i18n.getLocales();
           locales.length.should.equal(oldLength - 1);
           locales.should.not.containEql('fr');
         });

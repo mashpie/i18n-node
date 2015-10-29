@@ -3,8 +3,8 @@ require('./express-jade');
 var should = require('should'),
     Browser = require('zombie'),
     async = require('async'),
-    browserEn = new Browser,
-    browserFr = new Browser;
+    browserEn = new Browser(),
+    browserFr = new Browser();
 
 visitLinks = function (asyncMethod) {
   return it('should show /en in English and /fr in French', function (done) {

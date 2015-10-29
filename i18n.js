@@ -189,7 +189,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     // get translated message with locale from scope (deprecated) or object
     msg = translate(getLocaleFromObject(this), singular, plural);
   }
-  if (count == null) count = namedValues.count;
+  if (count === null) count = namedValues.count;
 
   // parse translation and replace all digets '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
@@ -416,7 +416,7 @@ function getAcceptedLanguagesFromHeader(header) {
     if (preferenceParts.length < 2) {
       preferenceParts[1] = 1.0;
     } else {
-      var quality = parseFloat(preferenceParts[1])
+      var quality = parseFloat(preferenceParts[1]);
       preferenceParts[1] = quality ? quality : 0.0;
     }
     preferences[preferenceParts[0]] = preferenceParts[1];
@@ -548,19 +548,17 @@ function localeAccessor(locale,singular,allowDelayedTraversal) {
         return null;
       }
       // We can traverse deeper, so we generate an accessor for this current level.
-      accessor = function(){ return object[index]; }
+      accessor = function(){ return object[index]; };
       // Return a reference to the next deeper level in the locale tree.
       return object[index];
 
     }, locales[locale]);
     // Return the requested accessor.
     return function() {
-      // If we need to re-traverse (because we didn't find our target term)...
-      return ( reTraverse )
-        // ...traverse again and return the new result (but don't allow further iterations)...
-        ? localeAccessor(locale,singular,false)()
-        // ...or return the previously found accessor if it was already valid.
-        : accessor();
+      // If we need to re-traverse (because we didn't find our target term)
+      // traverse again and return the new result (but don't allow further iterations)
+      // or return the previously found accessor if it was already valid.
+      return ( reTraverse ) ? localeAccessor(locale,singular,false)() : accessor();
     };
 
   } else {
@@ -618,7 +616,8 @@ function localeMutator(locale,singular,allowBranching) {
         }
       }
       // Generate a mutator for the current level.
-      accessor = function(value){ return object[index] = value; };
+      accessor = function(value){ object[index] = value; return value; };
+
       // Return a reference to the next deeper level in the locale tree.
       return object[index];
 
@@ -626,18 +625,17 @@ function localeMutator(locale,singular,allowBranching) {
 
     // Return the final mutator.
     return function(value){
-      // If we need to re-traverse the tree...
-      return ( reTraverse )
-        // ...invoke the search again, but allow branching this time (because here the mutator is being invoked)...
-        ? localeMutator(locale,singular,true)(value)
-        /// ...otherwise, just change the value directly.
-        : accessor(value);
+      // If we need to re-traverse the tree
+      // invoke the search again, but allow branching this time (because here the mutator is being invoked)
+      // otherwise, just change the value directly.
+      return ( reTraverse ) ? localeMutator(locale,singular,true)(value) : accessor(value);
     };
 
   } else {
     // No object notation, just return a mutator that performs array lookup and changes the value.
     return function(value){
-      return locales[locale][singular] = value;
+      locales[locale][singular] = value;
+      return value;
     };
   }
 }
