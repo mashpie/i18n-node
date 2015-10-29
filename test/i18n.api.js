@@ -90,6 +90,25 @@ describe('Module API', function () {
         should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hallo Marcus, wie war dein Wochenende?');
       });
 
+      it('should test the ordering in sprintf' , function () {
+        i18n.setLocale('en');
+        should.equal(__('ordered arguments', "First", "Second"), 'Second then First');
+        i18n.setLocale('de');
+        should.equal(__('ordered arguments', "First", "Second"), 'First then Second');
+      });
+
+      it('should test more complex sprintf examples' , function () {
+        i18n.setLocale('en');
+        should.equal(__('ordered arguments with numbers', "First", 2, 123.456), '2 then First then 123.46');
+        i18n.setLocale('de');
+        should.equal(__('ordered arguments with numbers', "First", 2, 123.456), 'First then 2 then 123.46');        
+      });
+
+      it('should allow for repeated references to the same argument.' , function () {
+        i18n.setLocale('en');
+        should.equal(__('repeated argument', "repeated"), 'repeated, repeated, repeated');
+      });
+
       it('should also return translations when iterating thru variables values', function () {
         var i = 0,
             greetings = ['Hi', 'Hello', 'Howdy'],
