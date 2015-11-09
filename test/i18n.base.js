@@ -11,7 +11,7 @@ module.exports = {
 
 		i18n.setLocale('at-de');
 		assert.equal(i18n.__('Hello'), 'Hallo');
-		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus'), 'Hallo Marcus, wie geht es dir heute? Wie war Ihre Reise nach Wien?');
+		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus'), 'Hallo Marcus, wie geht es dir heute? Wie war Ihre Reise nach Wien.');
 	},
 
 	'check base - returning nothing reads locale safely': function () {
@@ -21,7 +21,7 @@ module.exports = {
 		});
 
 		i18n.setLocale('at-de');
-		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus'), 'Hallo Marcus, wie geht es dir heute? Wie war Ihre Reise nach Wien?');
+		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus'), 'Hallo Marcus, wie geht es dir heute? Wie war Ihre Reise nach Wien.');
 	},
 
 	'check base - returning not a string reads locale safely': function () {
@@ -31,7 +31,7 @@ module.exports = {
 		});
 
 		i18n.setLocale('at-de');
-		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus'), 'Hallo Marcus, wie geht es dir heute? Wie war Ihre Reise nach Wien?');
+		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus'), 'Hallo Marcus, wie geht es dir heute? Wie war Ihre Reise nach Wien.');
 	},
 
 	'check base - throwing exception reads locale safely': function () {
@@ -41,6 +41,6 @@ module.exports = {
 		});
 
 		i18n.setLocale('at-de');
-		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus'), 'Hallo Marcus, wie geht es dir heute? Wie war Ihre Reise nach Wien?');
+		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus'), 'Hallo Marcus, wie geht es dir heute? Wie war Ihre Reise nach Wien.');
 	}
 };

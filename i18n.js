@@ -14,6 +14,10 @@ var vsprintf = require("sprintf").vsprintf,
 
 
 function dotNotation (obj, is, value) {
+	if (obj.hasOwnProperty(is)) {
+		return obj[is];
+	}
+
 	if (typeof is === 'string') {
 		return dotNotation(obj, is.split('.'), value);
 	} else if (is.length === 1 && value !== undefined) {
