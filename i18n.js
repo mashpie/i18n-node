@@ -143,6 +143,12 @@ i18n.prototype = {
 	sessionVarName: "locale",
 	indent: "\t",
 
+	parse: JSON.parse,
+
+	dump: function (data, indent) {
+	  return JSON.stringify(data, null, indent);
+	},
+
 	__: function () {
 		var msg = this.translate(this.locale, arguments[0]);
 
@@ -155,7 +161,7 @@ i18n.prototype = {
 
 	__n: function (pathOrSingular, countOrPlural, additionalOrCount) {
 		var msg;
-		if (typeof countOrPlural === 'number') {
+		if (typeof countOrPlural === 'number') {
 			var path = pathOrSingular;
 			var count = countOrPlural;
 			msg = this.translate(this.locale, path);
@@ -354,7 +360,7 @@ i18n.prototype = {
 
 				if (typeof baseFilename === "string") {
 					try {
-						base = JSON.parse(fs.readFileSync(this.locateFile(baseFilename)));
+						base = this.parse(fs.readFileSync(this.locateFile(baseFilename)));
 					} catch (e) {
 						console.error('unable to read or parse base file %s for locale %s', baseFilename, locale, e);
 					}
@@ -363,7 +369,7 @@ i18n.prototype = {
 
 			try {
 				// parsing file content
-				var content = JSON.parse(localeFile);
+				var content = this.parse(localeFile);
 
 				if (base) {
 					// writing content to the base and swapping
@@ -377,7 +383,7 @@ i18n.prototype = {
 				this.initLocale(locale, content);
 			} catch (e) {
 				console.error('unable to parse locales from file (maybe ' + file +
-						' is empty or invalid json?): ', e);
+						' is empty or invalid ' + this.extension + '?): ', e);
 			}
 
 		} catch (e) {
@@ -419,8 +425,9 @@ i18n.prototype = {
 			var target = this.locateFile(locale),
 					tmp = target + ".tmp";
 
-			fs.writeFileSync(tmp, JSON.stringify(
-				this.locales[locale], null, this.indent), "utf8");
+			fs.writeFileSync(tmp,
+							 this.dump(this.locales[locale], this.indent),
+							 "utf8");
 
 			if (fs.statSync(tmp).isFile()) {
 				fs.renameSync(tmp, target);

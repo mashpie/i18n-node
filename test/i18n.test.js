@@ -1,6 +1,8 @@
 // Run $ expresso
-var I18n = require('../i18n'),
-	assert = require('assert');
+var fs = require('fs'),
+	I18n = require('../i18n'),
+	assert = require('assert'),
+	yaml = require('js-yaml');
 
 module.exports = {
 	'check version': function () {
@@ -120,5 +122,43 @@ module.exports = {
 		assert.equal('0 cat', i18n.__n('%s cat', 0));
 		assert.equal('1 cat', i18n.__n('%s cat', 1));
 		assert.equal('2 cats', i18n.__n('%s cat', 2));
+	},
+
+	'check parse': function () {
+		var i18n = new I18n({
+			locales: ['en', 'de'],
+			extension: '.yml',
+			parse: function (data) {
+				return yaml.safeLoad(data);
+			},
+			dump: function (data) {
+				return yaml.safeDump(data);
+			}
+		});
+
+		i18n.setLocale('en');
+		assert.equal(i18n.__('Hello'), 'Hello');
+		assert.equal(i18n.__('Hello %s, how are you today?', 'Marcus'), 'Hello Marcus, how are you today?');
+		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus', i18n.__('weekend')), 'Hello Marcus, how are you today? How was your weekend.');
+	},
+
+	'check dump': function () {
+		var i18n = new I18n({
+			locales: ['en', 'de'],
+			extension: '.yml',
+			parse: function (data) {
+				return yaml.safeLoad(data);
+			},
+			dump: function (data) {
+				return yaml.safeDump(data);
+			}
+		});
+
+		i18n.setLocale('de');
+		assert.equal(i18n.__('Hello'), 'Hallo');
+		assert.equal(i18n.__('Hello %s, how are you today?', 'Marcus'), 'Hallo Marcus, wie geht es dir heute?');
+		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus', i18n.__('weekend')), 'Hallo Marcus, wie geht es dir heute? Wie war dein Wochenende.');
+
+		assert.deepEqual(yaml.safeLoad(fs.readFileSync('./locales/de.yml')), i18n.locales['de']);
 	}
 };

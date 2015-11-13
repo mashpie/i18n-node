@@ -99,7 +99,7 @@ You may also use in your locale object/file :
         }
     }
 
-and use `__n()` as you would use `__()` (directly, or from locale) :
+and use `__n()` as you would use `__()` (directly, or from locale) :
 
     var singular = i18n.__n('catEat', 1, 'mouse');
     var plural = i18n.__n('catEat', 10, 'mouse')
@@ -126,14 +126,14 @@ Will then do:
 
     setLocale('de')
 
-### `setLocaleFromSessionVar([request])`
+### `setLocaleFromSessionVar([request])`
 
 To be used with Express.js or another framework that provides a `request` object. Generally you would want to use this by setting the `session` option to `true`.
 
 This methods takes in an Express.js request object, looks at the variable `locale` (you may override this behaviour by changing the option `sessionVarName`, which defaults to `locale`) contained in the `session` object, and it will set the locale to that value.
 
 For example, if the session is :
-{ user: { ... }, locale: 'de' }
+{ user: { ... }, locale: 'de' }
 
 Then `setLocaleFromSessionVar` will do `setLocale('de')`
 
@@ -260,6 +260,21 @@ Following example takes `de.js` and `en.js` as bases respectively for each local
     base: function(locale) {
         return locale.slice(-2);
     }
+
+### `parse(data, [indent])` and `dump(data)`
+
+Optional custom methods to override `JSON.parse()` and `JSON.stringify()`, respectively. One possible use for this is to allow for file formats other than JSON. For example:
+
+    var i18n = new (require('i18n-2'))({
+        locales: ['en', 'de'],
+        extension: '.yaml',
+        parse: function (data) {
+            return require('js-yaml').safeLoad(data);
+        },
+        dump: function (data) {
+            return require('js-yaml').safeDump(data);
+        }
+    });
 
 ### `request`, `subdomain`, `query` and `session`
 
