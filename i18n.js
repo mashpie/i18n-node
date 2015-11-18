@@ -210,6 +210,10 @@ i18n.prototype = {
 	setLocaleFromSessionVar: function (req) {
 		req = req || this.request;
 
+		if (!req || !req.session || !req.session[this.sessionVarName]) {
+			return;
+		}
+
 		var locale = req.session[this.sessionVarName];
 
 		if (this.locales[locale]) {
