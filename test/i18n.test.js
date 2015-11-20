@@ -160,5 +160,24 @@ module.exports = {
 		assert.equal(i18n.__('Hello %s, how are you today? How was your %s.', 'Marcus', i18n.__('weekend')), 'Hallo Marcus, wie geht es dir heute? Wie war dein Wochenende.');
 
 		assert.deepEqual(yaml.safeLoad(fs.readFileSync('./locales/de.yml')), i18n.locales['de']);
+	},
+
+
+	'check strings save': function () {
+		var i18n = new I18n({
+			locales: ['en', 'de'],
+			devMode: true
+		});
+		i18n.setLocale('en');
+
+		var testString = 'New string';
+
+		assert.equal(undefined, i18n.locales['en'][testString]);
+		i18n.__(testString);
+		assert.equal(testString, i18n.locales['en'][testString]);
+
+		// Remove the new string
+		delete i18n.locales['en'][testString];
+		i18n.writeFile('en');
 	}
 };
