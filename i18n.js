@@ -210,10 +210,6 @@ i18n.prototype = {
 	setLocaleFromSessionVar: function (req) {
 		req = req || this.request;
 
-		if (!req || !req.session || !req.session[this.sessionVarName]) {
-			return;
-		}
-
 		var locale = req.session[this.sessionVarName];
 
 		if (this.locales[locale]) {
@@ -332,6 +328,7 @@ i18n.prototype = {
 
 		if (!this.locales[locale][singular]) {
 			if (this.devMode) {
+				dotNotation(this.locales[locale], singular, plural ? { one: singular, other: plural } : undefined);
 				this.writeFile(locale);
 			}
 		}
