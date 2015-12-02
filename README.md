@@ -133,7 +133,7 @@ See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples)
 * [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
 * [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
 * [express 3 + jade 0.3 (+ cookie)](https://gist.github.com/hankwang/5994144)
-* [express 4 + + cookie](https://gist.github.com/mashpie/08e5a0ee764f7b6b1355)
+* [express 4 + cookie](https://gist.github.com/mashpie/08e5a0ee764f7b6b1355)
 
 ## API
 
