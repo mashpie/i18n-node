@@ -9,49 +9,48 @@
 
 // require modules
 var express = require('express'),
+    cookieParser = require('cookie-parser'),
     i18n = require('../../i18n'),
     url = require('url'),
-    jade = require('jade'),
-    app = module.exports = express();
+    app = express();
 
 // minimal config
 i18n.configure({
-  locales: ['en', 'fr'],
-  cookie: 'locale',
-  directory: __dirname + '/locales'
+    locales: ['en', 'fr'],
+    cookie: 'locale',
+    directory: __dirname + '/locales'
 });
 
-app.configure(function () {
-  // setup hbs
-  app.set('views', "" + __dirname + "/views");
-  app.set('view engine', 'jade');
+// setup hbs
+app.set('views', __dirname + "/views");
+app.set('view engine', 'jade');
 
-  // you'll need cookies
-  app.use(express.cookieParser());
+// you'll need cookies
+app.use(cookieParser());
 
-  // init i18n module for this loop
-  app.use(i18n.init);
-
-});
+// init i18n module for this loop
+app.use(i18n.init);
 
 // delay a response to simulate a long running process,
 // while another request comes in with altered language settings
 app.get('/', function (req, res) {
-  setTimeout(function () {
-    res.render('index');
-  }, app.getDelay(req, res));
+    setTimeout(function () {
+        res.render('index');
+    }, app.getDelay(req, res));
 });
 
 // set a cookie to requested locale
 app.get('/:locale', function (req, res) {
-  res.cookie('locale', req.params.locale);
-  res.redirect("/?delay=" + app.getDelay(req, res));
+    res.cookie('locale', req.params.locale);
+    res.redirect("/?delay=" + app.getDelay(req, res));
 });
 
 // simple param parsing
-app.getDelay = function (req, res) {
-  return url.parse(req.url, true).query.delay || 0;
+app.getDelay = function (req) {
+    return url.parse(req.url, true).query.delay || 0;
 };
 
 // startup
-app.listen(3000);
+app.listen(3000, function() {
+    console.log('The server is running on port %s', 3000);
+});

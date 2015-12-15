@@ -1,0 +1,16 @@
+{
+  "name": "express-jade",
+  "version": "1.0.0",
+  "description": "",
+  "main": "express-jade.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node express-jade.js"
+  },
+  "author": "",
+  "private": true,
+  "dependencies": {
+    "cookie-parser": "^1.4.0",
+    "express": "^4.13.3"
+  }
+}
