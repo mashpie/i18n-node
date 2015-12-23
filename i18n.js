@@ -194,7 +194,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   // parse translation and replace all digets '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
   // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
-  if (count === 1 || count === -1) {
+  if (count == 1 || count == -1) {
     msg = vsprintf(msg.one, [parseInt(count, 10)]);
   } else {
     msg = vsprintf(msg.other, [parseInt(count, 10)]);
