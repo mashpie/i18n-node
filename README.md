@@ -10,18 +10,21 @@ No extra parsing needed.
 [![Dependency Status](https://gemnasium.com/mashpie/i18n-node.png)](https://gemnasium.com/mashpie/i18n-node)
 
 ## Install
-
-	npm install i18n
+```sh
+npm install i18n
+```
 
 ## Test
-
-	npm test
+```sh
+npm test
+```
 
 ## Load
-
-	// load modules
-	var express = require('express'),
-	    i18n = require("i18n");
+```js
+// load modules
+var express = require('express'),
+    i18n = require("i18n");
+```
 
 now you are ready to use a global `i18n.__('Hello')`. **Global** assumes you share a common state of localization in any time and any part of your app. This is usually fine in cli-style scripts. When serving responses to http requests you'll need to make sure that scope is __NOT__ shared globally but attached to your request object.
 
@@ -29,100 +32,113 @@ now you are ready to use a global `i18n.__('Hello')`. **Global** assumes you sha
 
 Minimal example, just setup two locales and a project specific directory
 
-    i18n.configure({
-        locales:['en', 'de'],
-        directory: __dirname + '/locales'
-    });
+```js
+i18n.configure({
+    locales:['en', 'de'],
+    directory: __dirname + '/locales'
+});
+```
 
 ### list of configuration options
+```js
+i18n.configure({
+    // setup some locales - other locales default to en silently
+    locales:['en', 'de'],
 
-	i18n.configure({
-	    // setup some locales - other locales default to en silently
-	    locales:['en', 'de'],
+    // fall back from Dutch to German
+    fallbacks:{'nl': 'de'},
 
-        // fall back from Dutch to German
-        fallbacks:{'nl': 'de'},
+    // you may alter a site wide default locale
+    defaultLocale: 'de',
 
-	    // you may alter a site wide default locale
-	    defaultLocale: 'de',
+    // sets a custom cookie name to parse locale settings from  - defaults to NULL
+    cookie: 'yourcookiename',
 
-	    // sets a custom cookie name to parse locale settings from  - defaults to NULL
-	    cookie: 'yourcookiename',
+    // where to store json files - defaults to './locales' relative to modules directory
+    directory: './mylocales',
 
-	    // where to store json files - defaults to './locales' relative to modules directory
-	    directory: './mylocales',
+    // whether to write new locale information to disk - defaults to true
+    updateFiles: false,
 
-	    // whether to write new locale information to disk - defaults to true
-	    updateFiles: false,
+    // what to use as the indentation unit - defaults to "\t"
+    indent: "\t",
 
-	    // what to use as the indentation unit - defaults to "\t"
-	    indent: "\t",
+    // setting extension of json files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
+    extension: '.js',
 
-	    // setting extension of json files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
-	    extension: '.js',
+    // setting prefix of json files name - default to none '' (in case you use different locale files naming scheme (webapp-en.json), rather then just en.json)
+    prefix: 'webapp-',
 
-	    // setting prefix of json files name - default to none '' (in case you use different locale files naming scheme (webapp-en.json), rather then just en.json)
-	    prefix: 'webapp-',
+    // enable object notation
+    objectNotation: false
 
-	    // enable object notation
-	    objectNotation: false
+    // setting of log level DEBUG - default to require('debug')('i18n:debug')
+    logDebugFn: function (msg) {
+        console.log('debug', msg);
+    },
 
-	    // setting of log level DEBUG - default to require('debug')('i18n:debug')
-	    logDebugFn: function (msg) {
-	        console.log('debug', msg);
-        },
+    // setting of log level WARN - default to require('debug')('i18n:warn')
+    logWarnFn: function (msg) {
+        console.log('warn', msg);
+    },
 
-        // setting of log level WARN - default to require('debug')('i18n:warn')
-        logWarnFn: function (msg) {
-            console.log('warn', msg);
-        },
-
-        // setting of log level ERROR - default to require('debug')('i18n:error')
-        logErrorFn: function (msg) {
-            console.log('error', msg);
-        }
-	});
+    // setting of log level ERROR - default to require('debug')('i18n:error')
+    logErrorFn: function (msg) {
+        console.log('error', msg);
+    }
+});
+```
 
 ## Example usage in global scope
 
 In your app, when not registered to a specific object:
 
-	var greeting = i18n.__('Hello');
+```js
+var greeting = i18n.__('Hello');
+```
 
 ## Example usage in express.js
 
 In an express app, you might use i18n.init to gather language settings of your visitors and also bind your helpers to response object honoring request objects locale, ie:
 
-	// Configuration
-	app.configure(function() {
+```js
+// Configuration
+app.configure(function() {
 
-    	[...]
+    [...]
 
-	    // default: using 'accept-language' header to guess language settings
-	    app.use(i18n.init);
+    // default: using 'accept-language' header to guess language settings
+    app.use(i18n.init);
 
-	    [...]
-	});
+    [...]
+});
+```
 
 in your apps methods:
 
-	app.get('/de', function(req, res){
-      var greeting = res.__('Hello');
-    });
+```js
+app.get('/de', function(req, res){
+  var greeting = res.__('Hello');
+});
+```
 
 
 in your templates (depending on your template engine)
 
-	<%= __('Hello') %>
+```ejs
+<%= __('Hello') %>
 
-	${__('Hello')}
+${__('Hello')}
+```
 
 For serving the same static files with different language url, you could:
 
-	app.use(express.static(__dirname + '/www'));
-	app.use('/en', express.static(__dirname + '/www'));
-	app.use('/de', express.static(__dirname + '/www'));
-	
+```js
+app.use(express.static(__dirname + '/www'));
+app.use('/en', express.static(__dirname + '/www'));
+app.use('/de', express.static(__dirname + '/www'));
+```
+
 ## Examples for common setups
 
 See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples) inside `/examples` or browse these gists:
@@ -141,48 +157,54 @@ See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples)
 
 Translates a single phrase and adds it to locales if unknown. Returns translated parsed and substituted string.
 
-	// template and global (this.locale == 'de')
-	__('Hello'); // Hallo
-	__('Hello %s', 'Marcus'); // Hallo Marcus
-	__('Hello {{name}}', { name: 'Marcus' }); // Hallo Marcus
+```js
+// template and global (this.locale == 'de')
+__('Hello'); // Hallo
+__('Hello %s', 'Marcus'); // Hallo Marcus
+__('Hello {{name}}', { name: 'Marcus' }); // Hallo Marcus
 
 
-	// scoped via req object (req.locale == 'de')
-	req.__('Hello'); // Hallo
-	req.__('Hello %s', 'Marcus'); // Hallo Marcus
-	req.__('Hello {{name}}', { name: 'Marcus' }); // Hallo Marcus
+// scoped via req object (req.locale == 'de')
+req.__('Hello'); // Hallo
+req.__('Hello %s', 'Marcus'); // Hallo Marcus
+req.__('Hello {{name}}', { name: 'Marcus' }); // Hallo Marcus
 
-	// passing specific locale
-	__({phrase: 'Hello', locale: 'fr'}); // Salut
-	__({phrase: 'Hello %s', locale: 'fr'}, 'Marcus'); // Salut Marcus
-	__({phrase: 'Hello {{name}}, locale: 'fr'}, { name: 'Marcus' }); // Salut Marcus
+// passing specific locale
+__({phrase: 'Hello', locale: 'fr'}); // Salut
+__({phrase: 'Hello %s', locale: 'fr'}, 'Marcus'); // Salut Marcus
+__({phrase: 'Hello {{name}}', locale: 'fr'}, { name: 'Marcus' }); // Salut Marcus
+```
 
 ### __n()
 
 Plurals translation of a single phrase. Singular and plural forms will get added to locales if unknown. Returns translated parsed and substituted string based on `count` parameter.
 
-	// template and global (this.locale == 'de')
-	__n("%s cat", "%s cats", 1); // 1 Katze
-	__n("%s cat", "%s cats", 3); // 3 Katzen
+```js
+// template and global (this.locale == 'de')
+__n("%s cat", "%s cats", 1); // 1 Katze
+__n("%s cat", "%s cats", 3); // 3 Katzen
 
-	// scoped via req object (req.locale == 'de')
-	req.__n("%s cat", "%s cats", 1); // 1 Katze
-	req.__n("%s cat", "%s cats", 3); // 3 Katzen
+// scoped via req object (req.locale == 'de')
+req.__n("%s cat", "%s cats", 1); // 1 Katze
+req.__n("%s cat", "%s cats", 3); // 3 Katzen
 
-	// passing specific locale
-	__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 1); // 1 chat
-	__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 3); // 3 chat
+// passing specific locale
+__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 1); // 1 chat
+__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 3); // 3 chat
 
-	__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
-	__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
+__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
+__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
+```
 
 ### setLocale()
 
 Setting the current locale (ie.: `en`) globally or in current scope.
 
-	setLocale('de');
-	setLocale(req, 'de');
-	req.setLocale('de');
+```js
+setLocale('de');
+setLocale(req, 'de');
+req.setLocale('de');
+```
 
 To change the initial locale (when you set it on `i18n.init()`) for all the user session (eg.: you have a language
 selector on your web page to let the user select the preferred language), you have some options.
@@ -192,7 +214,9 @@ Or you could manage it via any session middleware or by setting a cookie in the 
 In the last case you will need to enable cookies (eg. for express will be `app.use(express.cookieParser())`) and then
 you can use the `i18n.configure.cookie` to let i18n which language must use. Simply use the same cookie name when setting it in the user preferred language, like here:
 
-	res.cookie('yourcookiename', 'de', { maxAge: 900000, httpOnly: true });
+```js
+res.cookie('yourcookiename', 'de', { maxAge: 900000, httpOnly: true });
+```
 
 After this and until the cookie expires, i18n will get the value of the cookie and will set that language instead of default for every page.
 
@@ -200,55 +224,61 @@ After this and until the cookie expires, i18n will get the value of the cookie a
 
 Getting the current locale (ie.: `en`) from current scope or globally.
 
-	getLocale(); // --> de
-	getLocale(req); // --> de
-	req.getLocale(); // --> de
+```js
+getLocale(); // --> de
+getLocale(req); // --> de
+req.getLocale(); // --> de
+```
 
 ### getCatalog()
 
 Returns a whole catalog optionally based on current scope and locale.
 
-	getCatalog(); // returns all locales
-	getCatalog('de'); // returns just 'de'
+```js
+getCatalog(); // returns all locales
+getCatalog('de'); // returns just 'de'
 
-	getCatalog(req); // returns all locales
-	getCatalog(req, 'de'); // returns just 'de'
+getCatalog(req); // returns all locales
+getCatalog(req, 'de'); // returns just 'de'
 
-	req.getCatalog(); // returns all locales
-	req.getCatalog('de'); // returns just 'de'
-
-
+req.getCatalog(); // returns all locales
+req.getCatalog('de'); // returns just 'de'
+```
 
 ## Optionally manual attaching helpers for different template engines
 
 In general i18n has to be attached to the response object to let it's public api get accessible in your templates and methods. As of **0.4.0** i18n tries to do so internally via `i18n.init`, as if you were doing it in `app.configure` on your own:
 
-	app.use(function(req, res, next) {
-		// express helper for natively supported engines
-		res.locals.__ = res.__ = function() {
-			return i18n.__.apply(req, arguments);
-		};
+```js
+app.use(function(req, res, next) {
+    // express helper for natively supported engines
+    res.locals.__ = res.__ = function() {
+        return i18n.__.apply(req, arguments);
+    };
 
-		[...]
+    [...]
 
-		next();
-	});
+    next();
+});
+```
 
 Different engines need different implementations, so yours might miss or not work with the current default helpers. This one showing an example for mustache in express:
 
-	// register helper as a locals function wrapped as mustache expects
-	app.use(function (req, res, next) {
-		// mustache helper
-		res.locals.__ = function () {
-		  return function (text, render) {
-		    return i18n.__.apply(req, arguments);
-		  };
-		};
+```js
+// register helper as a locals function wrapped as mustache expects
+app.use(function (req, res, next) {
+    // mustache helper
+    res.locals.__ = function () {
+      return function (text, render) {
+        return i18n.__.apply(req, arguments);
+      };
+    };
 
-		[...]
+    [...]
 
-		next();
-	});
+    next();
+});
+```
 
 You could still setup your own implementation. Please refer to Examples below, post an issue or contribute your setup.
 
@@ -258,39 +288,55 @@ As inspired by gettext there is currently support for sprintf-style expressions.
 
 ### sprintf support
 
-	var greeting = __('Hello %s, how are you today?', 'Marcus');
+```js
+var greeting = __('Hello %s, how are you today?', 'Marcus');
+```
 
 this puts *Hello Marcus, how are you today?*. You might add endless arguments and even nest it.
 
-	var greeting = __('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend'));
+```js
+var greeting = __('Hello %s, how are you today? How was your %s.', 'Marcus', __('weekend'));
+```
 
 which puts *Hello Marcus, how are you today? How was your weekend.*
 
 You might need to have repeated references to the same argument, which can be done with sprintf.
 
-	var example = __('%1$s, %1$s, %1$s', 'repeat');
+```js
+var example = __('%1$s, %1$s, %1$s', 'repeat');
+```
 
 which puts 
-	
-	repeat, repeat, repeat
+
+```
+repeat, repeat, repeat
+```
 
 In some cases the argument order will need to be switched for different locales.  The arguments can be strings, floats, numbers, etc.  
 
-	var example = __('%2$d then %1$s then %3$.2f', 'First', 2, 333.333);
+```js
+var example = __('%2$d then %1$s then %3$.2f', 'First', 2, 333.333);
+```
 
 which puts 
-	
-	2 then First then 333.33
+
+```
+2 then First then 333.33
+```
 
 ### mustache support
 
 You may also use [mustache](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the second parameter. You can still pass unnamed parameters by adding additional arguments.
 
-	var greeting = __('Hello {{name}}, how are you today?', { name: 'Marcus' });
+```js
+var greeting = __('Hello {{name}}, how are you today?', { name: 'Marcus' });
+```
 
 this puts *Hello Marcus, how are you today?*. You might also combine it with sprintf arguments and also nest it.
 
-	var greeting = __('Hello {{name}}, how was your %s.', { name: 'Marcus' }, __('weekend'));
+```js
+var greeting = __('Hello {{name}}, how was your %s.', { name: 'Marcus' }, __('weekend'));
+```
 
 which puts *Hello Marcus, how was your weekend.*
 
@@ -298,29 +344,37 @@ which puts *Hello Marcus, how was your weekend.*
 
 you might even use dynamic variables as they get interpreted on the fly. Better make sure no user input finds it's way to that point as they all get added to the `en.js` file if not yet existing.
 
-	var greetings = ['Hi', 'Hello', 'Howdy'];
-    for (var i=0; i < greetings.length; i++) {
-        console.log( __(greetings[i]) );
-    };
+```js
+var greetings = ['Hi', 'Hello', 'Howdy'];
+for (var i=0; i < greetings.length; i++) {
+    console.log( __(greetings[i]) );
+};
+```
 
 which puts
 
-	Hi
-	Hello
-	Howdy
+```
+Hi
+Hello
+Howdy
+```
 
 ### basic plural support
 
 two different plural forms are supported as response to `count`:
 
-	var singular = __n('%s cat', '%s cats', 1);
-    var plural = __n('%s cat', '%s cats', 3);
+```js
+var singular = __n('%s cat', '%s cats', 1);
+var plural = __n('%s cat', '%s cats', 3);
+```
 
 this puts **1 cat** or **3 cats**
 and again these could get nested:
 
-	var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, 'tree');
-	var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, 'tree');
+```js
+var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, 'tree');
+var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, 'tree');
+```
 
 putting *There is one monkey in the tree* or *There are 3 monkeys in the tree*
 
@@ -332,49 +386,55 @@ Will get modular support for different storage engines, currently just json file
 
 the above will automatically generate a `en.json` by default inside `./locales/` which looks like
 
-	{
-		"Hello": "Hello",
-		"Hello %s, how are you today?": "Hello %s, how are you today?",
-		"weekend": "weekend",
-		"Hello %s, how are you today? How was your %s.": "Hello %s, how are you today? How was your %s.",
-		"Hi": "Hi",
-		"Howdy": "Howdy",
-		"%s cat": {
-			"one": "%s cat",
-			"other": "%s cats"
-		},
-		"There is one monkey in the %%s": {
-			"one": "There is one monkey in the %%s",
-			"other": "There are %d monkeys in the %%s"
-		},
-		"tree": "tree"
-	}
+```json
+{
+    "Hello": "Hello",
+    "Hello %s, how are you today?": "Hello %s, how are you today?",
+    "weekend": "weekend",
+    "Hello %s, how are you today? How was your %s.": "Hello %s, how are you today? How was your %s.",
+    "Hi": "Hi",
+    "Howdy": "Howdy",
+    "%s cat": {
+        "one": "%s cat",
+        "other": "%s cats"
+    },
+    "There is one monkey in the %%s": {
+        "one": "There is one monkey in the %%s",
+        "other": "There are %d monkeys in the %%s"
+    },
+    "tree": "tree"
+}
+```
 
 that file can be edited or just uploaded to [webtranslateit](http://docs.webtranslateit.com/file_formats/) for any kind of collaborative translation workflow:
 
-	{
-		"Hello": "Hallo",
-		"Hello %s, how are you today?": "Hallo %s, wie geht es dir heute?",
-		"weekend": "Wochenende",
-		"Hello %s, how are you today? How was your %s.": "Hallo %s, wie geht es dir heute? Wie war dein %s.",
-		"Hi": "Hi",
-		"Howdy": "Hallöchen",
-		"%s cat": {
-			"one": "%s Katze",
-			"other": "%s Katzen"
-		},
-		"There is one monkey in the %%s": {
-			"one": "Im %%s sitzt ein Affe",
-			"other": "Im %%s sitzen %d Affen"
-		},
-		"tree": "Baum"
-	}
+```json
+{
+    "Hello": "Hallo",
+    "Hello %s, how are you today?": "Hallo %s, wie geht es dir heute?",
+    "weekend": "Wochenende",
+    "Hello %s, how are you today? How was your %s.": "Hallo %s, wie geht es dir heute? Wie war dein %s.",
+    "Hi": "Hi",
+    "Howdy": "Hallöchen",
+    "%s cat": {
+        "one": "%s Katze",
+        "other": "%s Katzen"
+    },
+    "There is one monkey in the %%s": {
+        "one": "Im %%s sitzt ein Affe",
+        "other": "Im %%s sitzen %d Affen"
+    },
+    "tree": "Baum"
+}
+```
 
 ## Logging & Debugging
 
 Logging any kind of output is moved to [debug](https://github.com/visionmedia/debug) module. To let i18n output anything run your app with `DEBUG` env set like so:
 
-	$ DEBUG=i18n:* node app.js
+```sh
+$ DEBUG=i18n:* node app.js
+```
 
 i18n exposes three log-levels:
 
@@ -384,7 +444,9 @@ i18n exposes three log-levels:
 
 if you only want to get errors and warnings reported start your node server like so:
 
-	$ DEBUG=i18n:warn,i18n:error node app.js
+```sh
+$ DEBUG=i18n:warn,i18n:error node app.js
+```
 
 Combine those settings with you existing application if any of you other modules or libs also uses __debug__
 
@@ -392,25 +454,27 @@ Combine those settings with you existing application if any of you other modules
 
 You can configure i18n to use a custom logger. For example attach some simple `console`-logging:
 
-    i18n.configure({
+```js
+i18n.configure({
 
-	    ...
+    ...
 
-	    // setting of log level DEBUG - default to require('debug')('i18n:debug')
-	    logDebugFn: function (msg) {
-	        console.log('debug', msg);
-        },
+    // setting of log level DEBUG - default to require('debug')('i18n:debug')
+    logDebugFn: function (msg) {
+        console.log('debug', msg);
+    },
 
-        // setting of log level WARN - default to require('debug')('i18n:warn')
-        logWarnFn: function (msg) {
-            console.log('warn', msg);
-        },
+    // setting of log level WARN - default to require('debug')('i18n:warn')
+    logWarnFn: function (msg) {
+        console.log('warn', msg);
+    },
 
-        // setting of log level ERROR - default to require('debug')('i18n:error')
-        logErrorFn: function (msg) {
-            console.log('error', msg);
-        }
-	});
+    // setting of log level ERROR - default to require('debug')('i18n:error')
+    logErrorFn: function (msg) {
+        console.log('error', msg);
+    }
+});
+```
 
 
 ## Object notation
@@ -421,14 +485,16 @@ To enable this feature, be sure to set `objectNotation` to `true` in your `confi
 
 Instead of calling `__("Hello")` you might call `__("greeting.formal")` to retrieve a formal greeting from a translation document like this one:
 
-    "greeting": {
-        "formal": "Hello",
-        "informal": "Hi",
-        "placeholder": {
-            "formal": "Hello %s",
-            "informal": "Hi %s"
-        }
+```js
+"greeting": {
+    "formal": "Hello",
+    "informal": "Hi",
+    "placeholder": {
+        "formal": "Hello %s",
+        "informal": "Hi %s"
     }
+}
+```
 
 In the document, the translation terms, which include placeholders, are nested inside the "greeting" translation. They can be accessed and used in the same way, like so `__('greeting.placeholder.informal', 'Marcus')`.
 
@@ -436,10 +502,12 @@ In the document, the translation terms, which include placeholders, are nested i
 
 Object notation also supports pluralization. When making use of it, the "one" and "other" entries are used implicitly for an object in the translation document. For example, consider the following document:
 
-    "cat": {
-        "one": "Katze",
-        "other": "Katzen"
-    }
+```js
+"cat": {
+    "one": "Katze",
+    "other": "Katzen"
+}
+```
 
 When accessing these, you would use `__n("cat", "cat", 3)` to tell i18n to use both the singular and plural form of the "cat" entry. Naturally, you could also access these members explicitly with `__("cat.one")` and `__("cat.other")`.
 
@@ -449,15 +517,19 @@ When starting a project from scratch, your translation documents will probably b
 
 By default, when using object notation, the provided string literal will be inserted and returned as the default string. As an example, this is what the "greeting" object shown earlier would look like by default:
 
-    "greeting": {
-        "formal": "greeting.formal",
-        "informal": "greeting.informal"
-    }
+```js
+"greeting": {
+    "formal": "greeting.formal",
+    "informal": "greeting.informal"
+}
+```
 
 In case you would prefer to have a default string automatically inserted and returned, you can provide that default string by appending it to your object literal, delimited by a `:`. For example:
 
-    __("greeting.formal:Hello")
-    __("greeting.placeholder.informal:Hi %s")
+```js
+__("greeting.formal:Hello")
+__("greeting.placeholder.informal:Hi %s")
+```
 
 ## Changelog
 
