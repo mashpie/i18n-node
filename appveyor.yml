@@ -10,6 +10,7 @@ branches:
     - master
     - stable
 install:
+  - "npm install -g jshint"
   - "npm install -g istanbul"
 build: off
 test_script:
