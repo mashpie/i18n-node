@@ -585,4 +585,4 @@ SOFTWARE.
 [coveralls-image]: https://img.shields.io/coveralls/SuperPaintman/i18n-node/master.svg
 [coveralls-url]: https://coveralls.io/r/SuperPaintman/i18n-node?branch=master
 [dependency-image]: https://gemnasium.com/mashpie/i18n-node.png
-[dependency-utl]: https://gemnasium.com/mashpie/i18n-node
+[dependency-url]: https://gemnasium.com/mashpie/i18n-node
