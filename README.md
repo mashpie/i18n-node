@@ -584,5 +584,5 @@ SOFTWARE.
 [appveyor-url]: https://ci.appveyor.com/project/SuperPaintman/i18n-node
 [coveralls-image]: https://img.shields.io/coveralls/SuperPaintman/i18n-node/master.svg
 [coveralls-url]: https://coveralls.io/r/SuperPaintman/i18n-node?branch=master
-[dependency-image]: https://gemnasium.com/mashpie/i18n-node.png
+[dependency-image]: https://img.shields.io/gemnasium/mashpie/i18n-node.svg
 [dependency-url]: https://gemnasium.com/mashpie/i18n-node
