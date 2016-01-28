@@ -61,6 +61,7 @@ i18n.configure = function i18nConfigure(opt) {
   fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : null;
 
   // implicitly read all locales
+  locales = {};
   if (typeof opt.locales === 'object') {
     opt.locales.forEach(function (l) {
       read(l);
