@@ -356,20 +356,26 @@ function guessLanguage(request) {
         // Check if we have a configured fallback set for this language.
         if (fallbacks && fallbacks[lang]) {
           fallback = fallbacks[lang];
+          // Fallbacks for languages should be inserted where the original, unsupported language existed.
+          var acceptedLanguageIndex = accepted_languages.indexOf(lang);
           if(accepted_languages.indexOf(fallback) < 0) {
-            accepted_languages.push(fallback);
+            accepted_languages.splice(acceptedLanguageIndex + 1, 0, fallback);
           }
         }
 
         // Check if we have a configured fallback set for the parent language of the locale.
         if (fallbacks && fallbacks[parentLang]) {
           fallback = fallbacks[parentLang];
+          // Fallbacks for a parent language should be inserted to the end of the list, so they're only picked
+          // if there is no better match.
           if(accepted_languages.indexOf(fallback) < 0) {
             accepted_languages.push(fallback);
           }
         }
 
-        languages.push(parentLang.toLowerCase());
+        if (languages.indexOf(parentLang) < 0) {
+          languages.push(parentLang.toLowerCase());
+        }
         if (region) {
           regions.push(region.toLowerCase());
         }
