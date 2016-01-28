@@ -28,5 +28,7 @@
 	"format": {
 		"date": "DD.MM.YYYY",
 		"time": "hh:mm:ss"
-	}
+	},
+	"ordered arguments": "%1$s then %2$s",
+	"ordered arguments with numbers": "%1$s then %2$d then %3$.2f"
 }

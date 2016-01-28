@@ -4,57 +4,23 @@
 var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n'),
     should = require("should");
 
-i18n.configure({
-  locales: ['en', 'de'],
-  directory: './locales',
-  register: global
-});
-
-
-describe('Module Setup', function () {
-  it('should export a valid version', function () {
-    should.equal(i18n.version, '0.5.0');
-  });
-
-  it('should export configure as i18nConfigure', function () {
-    should.equal(typeof i18n.configure, 'function');
-    should.equal(i18n.configure.name, 'i18nConfigure');
-  });
-
-  it('should export init as i18nInit', function () {
-    should.equal(typeof i18n.init, 'function');
-    should.equal(i18n.init.name, 'i18nInit');
-  });
-
-  it('should export __ as i18nTranslate', function () {
-    should.equal(typeof i18n.__, 'function');
-    should.equal(i18n.__.name, 'i18nTranslate');
-  });
-
-  it('should export __n as i18nTranslatePlural', function () {
-    should.equal(typeof i18n.__n, 'function');
-    should.equal(i18n.__n.name, 'i18nTranslatePlural');
-  });
-
-  it('should export setLocale as i18nSetLocale', function () {
-    should.equal(typeof i18n.setLocale, 'function');
-    should.equal(i18n.setLocale.name, 'i18nSetLocale');
-  });
-
-  it('should export getLocale as i18nGetLocale', function () {
-    should.equal(typeof i18n.getLocale, 'function');
-    should.equal(i18n.getLocale.name, 'i18nGetLocale');
-  });
-
-  it('should export getCatalog as i18nGetCatalog', function () {
-    should.equal(typeof i18n.getCatalog, 'function');
-    should.equal(i18n.getCatalog.name, 'i18nGetCatalog');
-  });
-});
-
 describe('Module API', function () {
+
+  beforeEach(function() {
+
+    i18n.configure({
+      locales: ['en', 'de'],
+      fallbacks: {'nl': 'de'},
+      directory: './locales',
+      register: global
+    });
+    
+  });
+
   describe('Global Scope', function () {
+
     describe('i18nSetLocale and i18nGetLocale', function () {
+
       it('getLocale should return default setting', function () {
         i18n.getLocale().should.equal('en');
       });
@@ -63,9 +29,16 @@ describe('Module API', function () {
         i18n.setLocale('de').should.equal('de');
       });
 
-      it('and getLocale should return the new setting', function () {
+      it('getLocale should return the new setting', function () {
+        i18n.setLocale('de');
         i18n.getLocale().should.equal('de');
       });
+
+      it('setLocale should return a fallback value', function () {
+        i18n.setLocale('en');
+        i18n.setLocale('nl').should.equal('de');
+      });
+
     });
 
     describe('i18nGetCatalog', function () {
@@ -81,6 +54,9 @@ describe('Module API', function () {
       });
       it('should return just the EN catalog when invoked with "en" as parameter', function () {
         i18n.getCatalog('de').should.have.property('Hello', 'Hallo');
+      });
+      it('should return just the DE catalog when invoked with a (fallback) "nl" as parameter', function () {
+        i18n.getCatalog('nl').should.have.property('Hello', 'Hallo');
       });
       it('should return false when invoked with unsupported locale as parameter', function () {
         i18n.getCatalog('oO').should.equal(false);
@@ -112,6 +88,25 @@ describe('Module API', function () {
         i18n.setLocale('de');
         should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hallo Marcus');
         should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hallo Marcus, wie war dein Wochenende?');
+      });
+
+      it('should test the ordering in sprintf' , function () {
+        i18n.setLocale('en');
+        should.equal(__('ordered arguments', "First", "Second"), 'Second then First');
+        i18n.setLocale('de');
+        should.equal(__('ordered arguments', "First", "Second"), 'First then Second');
+      });
+
+      it('should test more complex sprintf examples' , function () {
+        i18n.setLocale('en');
+        should.equal(__('ordered arguments with numbers', "First", 2, 123.456), '2 then First then 123.46');
+        i18n.setLocale('de');
+        should.equal(__('ordered arguments with numbers', "First", 2, 123.456), 'First then 2 then 123.46');        
+      });
+
+      it('should allow for repeated references to the same argument.' , function () {
+        i18n.setLocale('en');
+        should.equal(__('repeated argument', "repeated"), 'repeated, repeated, repeated');
       });
 
       it('should also return translations when iterating thru variables values', function () {
@@ -157,10 +152,19 @@ describe('Module API', function () {
         should.equal(__({phrase: 'Hello %s', locale: 'en'}, 'Marcus'), 'Hello Marcus');
         should.equal(__({phrase: 'Hello {{name}}', locale: 'en'}, { name: 'Marcus' }), 'Hello Marcus');
 
-        i18n.setLocale('de');
-        should.equal(__('Hello'), 'Hallo');
+        should.equal(__({phrase: 'Hello', locale: 'nl'}), 'Hallo');
+        should.equal(__({phrase: 'Hello %s', locale: 'nl'}, 'Marcus'), 'Hallo Marcus');
+        should.equal(__({phrase: 'Hello {{name}}', locale: 'nl'}, { name: 'Marcus' }), 'Hallo Marcus');
+
         i18n.setLocale('en');
         should.equal(__('Hello'), 'Hello');
+        i18n.setLocale('de');
+        should.equal(__('Hello'), 'Hallo');
+        // Reset so `de` fallback can be tested again
+        i18n.setLocale('en');
+        
+        i18n.setLocale('nl');
+        should.equal(__('Hello'), 'Hallo');
       });
 
     });
@@ -209,9 +213,11 @@ describe('Module API', function () {
       });
 
       it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function(){
+        var singular, plural;
+        
         i18n.setLocale('en');
-        var singular = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 1),
-            plural = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 3);
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 1);
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 3);
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
@@ -220,6 +226,17 @@ describe('Module API', function () {
         should.equal(singular, '1 cat');
         should.equal(plural, '3 cats');
 
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 1);
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "de"}, 3);
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        i18n.setLocale('en');
+        ingular = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: 1});
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: 3});
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
         singular = __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 1});
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3});
         should.equal(singular, '1 cat');
@@ -227,6 +244,12 @@ describe('Module API', function () {
 
         singular = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: 1});
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: 3});
+        should.equal(singular, '1 Katze');
+        should.equal(plural, '3 Katzen');
+
+        i18n.setLocale('en');
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: "1"});
+        plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: "3"});
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
@@ -239,6 +262,13 @@ describe('Module API', function () {
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "de", count: "3"});
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
+      });
+
+      it('should allow two arguments', function(){
+        var singular = __n("cat", 1);
+        var plural = __n("cat", 3);
+        should.equal(singular, '1 cat');
+        should.equal(plural, '3 cats');
       });
     });
   });
@@ -260,7 +290,7 @@ describe('Module API', function () {
         directory: './locales',
         register: req
       });
-    })
+    });
 
     i18n.configure({
       locales: ['en', 'de', 'en-GB'],
@@ -364,6 +394,36 @@ describe('Module API', function () {
         });
         it('should return false when invoked with unsupported locale as parameter', function () {
           i18n.getCatalog(req, 'oO').should.equal(false);
+        });
+      });
+      describe('i18nGetLocales', function () {
+        it('should return the locales', function () {
+          var returnedLocales = i18n.getLocales();
+          returnedLocales.sort();
+          var expectedLocales = ['en', 'de', 'en-GB'];
+          expectedLocales.sort();
+
+          returnedLocales.length.should.equal(expectedLocales.length);
+
+          for (var i = 0; i < returnedLocales.length; i++) {
+            returnedLocales[i].should.equal(expectedLocales[i]);
+          }
+        });
+      });
+      describe('i18nAddLocale and i18nRemoveLocale', function () {
+        it('addLocale should add a locale', function () {
+          var oldLength = i18n.getLocales().length;
+          i18n.addLocale('fr');
+          var locales = i18n.getLocales();
+          locales.length.should.equal(oldLength + 1);
+          locales.should.containEql('fr');
+        });
+        it('removeLocale should remove a locale', function () {
+          var oldLength = i18n.getLocales().length;
+          i18n.removeLocale('fr');
+          var locales = i18n.getLocales();
+          locales.length.should.equal(oldLength - 1);
+          locales.should.not.containEql('fr');
         });
       });
       describe('i18nTranslate', function () {
