@@ -382,6 +382,7 @@ function guessLanguage(request) {
 
         if (!match && locales[lang]) {
           match = lang;
+          break;
         }
 
         if (!fallbackMatch && locales[parentLang]) {
