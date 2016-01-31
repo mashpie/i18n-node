@@ -532,6 +532,7 @@ __("greeting.placeholder.informal:Hi %s")
 
 ## Changelog
 
+* 0.6.0: __improved__: Accept-Language header parsing to ICU, delimiters with object notation, jshint, package.json, README; __new__: prefix for locale files, `i18n.getLocales()`, custom logger, fallback[s]; __fixed__: typos, badges, plural (numbers), `i18n.setLocale()` for `req` _and_ `res`
 * 0.5.0: feature release; added {{mustache}} parsing by #85, added "object.notation" by #110, fixed buggy req.__() implementation by #111 and closed 13 issues
 * 0.4.1: stable release; merged/closed: #57, #60, #67 typo fixes; added more examples and new features: #53, #65, #66 - and some more api reference
 * 0.4.0: stable release; closed: #22, #24, #4, #10, #54; added examples, clarified concurrency usage in different template engines, added `i18n.getCatalog`
@@ -550,7 +551,7 @@ __("greeting.placeholder.informal:Hi %s")
 
 ## Licensed under MIT
 
-Copyright (c) 2011-2014 Marcus Spiegel <marcus.spiegel@gmail.com>
+Copyright (c) 2011-2016 Marcus Spiegel <marcus.spiegel@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

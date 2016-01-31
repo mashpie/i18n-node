@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.4.1
+ * @version     0.6.0
  */
 
 // dependencies and "private" vars
