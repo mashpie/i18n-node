@@ -14,7 +14,7 @@ describe('Module API', function () {
       directory: './locales',
       register: global
     });
-    
+
   });
 
   describe('Global Scope', function () {
@@ -101,7 +101,7 @@ describe('Module API', function () {
         i18n.setLocale('en');
         should.equal(__('ordered arguments with numbers', "First", 2, 123.456), '2 then First then 123.46');
         i18n.setLocale('de');
-        should.equal(__('ordered arguments with numbers', "First", 2, 123.456), 'First then 2 then 123.46');        
+        should.equal(__('ordered arguments with numbers', "First", 2, 123.456), 'First then 2 then 123.46');
       });
 
       it('should allow for repeated references to the same argument.' , function () {
@@ -162,7 +162,7 @@ describe('Module API', function () {
         should.equal(__('Hello'), 'Hallo');
         // Reset so `de` fallback can be tested again
         i18n.setLocale('en');
-        
+
         i18n.setLocale('nl');
         should.equal(__('Hello'), 'Hallo');
       });
@@ -214,7 +214,7 @@ describe('Module API', function () {
 
       it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function(){
         var singular, plural;
-        
+
         i18n.setLocale('en');
         singular = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 1);
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl"}, 3);
