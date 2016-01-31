@@ -148,7 +148,6 @@ See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples)
 * [express 3 + cookie](https://gist.github.com/mashpie/5124626)
 * [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
 * [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
-* [express 3 + jade 0.3 (+ cookie)](https://gist.github.com/hankwang/5994144)
 * [express 4 + cookie](https://gist.github.com/mashpie/08e5a0ee764f7b6b1355)
 
 ## API
@@ -306,19 +305,19 @@ You might need to have repeated references to the same argument, which can be do
 var example = __('%1$s, %1$s, %1$s', 'repeat');
 ```
 
-which puts 
+which puts
 
 ```
 repeat, repeat, repeat
 ```
 
-In some cases the argument order will need to be switched for different locales.  The arguments can be strings, floats, numbers, etc.  
+In some cases the argument order will need to be switched for different locales.  The arguments can be strings, floats, numbers, etc.
 
 ```js
 var example = __('%2$d then %1$s then %3$.2f', 'First', 2, 333.333);
 ```
 
-which puts 
+which puts
 
 ```
 2 then First then 333.33
