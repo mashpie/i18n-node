@@ -7,7 +7,7 @@ Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
 [![Build Status](https://api.travis-ci.org/mashpie/i18n-node.svg?branch=master)](http://travis-ci.org/mashpie/i18n-node) [![NPM version](https://badge.fury.io/js/i18n.svg)](http://badge.fury.io/js/i18n)
-[![Dependency Status](https://gemnasium.com/mashpie/i18n-node.png)](https://gemnasium.com/mashpie/i18n-node)
+[![Dependency Status](https://gemnasium.com/mashpie/i18n-node.svg)](https://gemnasium.com/mashpie/i18n-node)
 
 ## Install
 ```sh
