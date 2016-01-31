@@ -45,7 +45,7 @@ describe('Locale switching should work on req and res', function() {
     res.getLocale().should.equal('de');
   });
 
-  it('setLocale should switch locale for req only', function() {
+  it('i18n.setLocale(req) should switch locale for req only', function() {
     i18n.init(req, res);
 
     i18n.setLocale(req, 'fr');
@@ -60,7 +60,7 @@ describe('Locale switching should work on req and res', function() {
     res.__('Hello').should.equal('Hallo');
   });
 
-  it('setLocale should switch locale for req only (alternative notation)', function() {
+  it('req.setLocale() should switch locale for req only (alternative notation)', function() {
     i18n.init(req, res);
 
     req.setLocale('fr');
@@ -75,7 +75,7 @@ describe('Locale switching should work on req and res', function() {
     res.__('Hello').should.equal('Hallo');
   });
 
-  it('setLocale should switch locale for res only', function() {
+  it('i18n.setLocale(res) should switch locale for res only', function() {
     i18n.init(req, res);
 
     i18n.setLocale(res, 'fr');
@@ -90,7 +90,7 @@ describe('Locale switching should work on req and res', function() {
     res.__('Hello').should.equal('Bonjour');
   });
 
-  it('setLocale should switch locale for res only (alternative notation)', function() {
+  it('res.setLocale() should switch locale for res only (alternative notation)', function() {
     i18n.init(req, res);
 
     res.setLocale('fr');
