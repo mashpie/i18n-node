@@ -2,6 +2,5 @@ node_modules/
 testlocales/
 .DS_Store
 /npm-debug.log
-
 /i18n-cov.js
 /coverage.html

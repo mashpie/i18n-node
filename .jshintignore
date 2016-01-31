@@ -1,1 +1,3 @@
 node_modules/
+examples/
+i18n-cov.js

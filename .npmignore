@@ -5,3 +5,4 @@ test/
 locales/
 i18n-cov.js
 coverage.html
+examples/
