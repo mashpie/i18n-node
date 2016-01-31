@@ -53,17 +53,17 @@ i18n.configure = function i18nConfigure(opt) {
   // setting defaultLocale
   defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
 
-  // read language fallback map
-  fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : {};
-
   // enable object notation?
   objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
   if( objectNotation === true ) objectNotation = '.';
 
-   // setting custom logger functions
-   logDebugFn = (typeof opt.logDebugFn === 'function') ? opt.logDebugFn : debug;
-   logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
-   logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
+  // read language fallback map
+  fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : {};
+
+  // setting custom logger functions
+  logDebugFn = (typeof opt.logDebugFn === 'function') ? opt.logDebugFn : debug;
+  logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
+  logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
 
   // implicitly read all locales
   if (Array.isArray(opt.locales)) {
@@ -371,20 +371,43 @@ function guessLanguage(request) {
 
     if (language_header) {
       var accepted_languages = getAcceptedLanguagesFromHeader(language_header),
-          match, fallbackMatch;
-      for (var i = 0, len = accepted_languages.length; i < len; i++) {
+          match, fallbackMatch, fallback;
+      for (var i = 0; i <  accepted_languages.length; i++) {
         var lang = accepted_languages[i],
             lr = lang.split('-', 2),
             parentLang = lr[0],
             region = lr[1];
 
-        languages.push(parentLang.toLowerCase());
+        // Check if we have a configured fallback set for this language.
+        if (fallbacks && fallbacks[lang]) {
+          fallback = fallbacks[lang];
+          // Fallbacks for languages should be inserted where the original, unsupported language existed.
+          var acceptedLanguageIndex = accepted_languages.indexOf(lang);
+          if(accepted_languages.indexOf(fallback) < 0) {
+            accepted_languages.splice(acceptedLanguageIndex + 1, 0, fallback);
+          }
+        }
+
+        // Check if we have a configured fallback set for the parent language of the locale.
+        if (fallbacks && fallbacks[parentLang]) {
+          fallback = fallbacks[parentLang];
+          // Fallbacks for a parent language should be inserted to the end of the list, so they're only picked
+          // if there is no better match.
+          if(accepted_languages.indexOf(fallback) < 0) {
+            accepted_languages.push(fallback);
+          }
+        }
+
+        if (languages.indexOf(parentLang) < 0) {
+          languages.push(parentLang.toLowerCase());
+        }
         if (region) {
           regions.push(region.toLowerCase());
         }
 
         if (!match && locales[lang]) {
           match = lang;
+          break;
         }
 
         if (!fallbackMatch && locales[parentLang]) {
