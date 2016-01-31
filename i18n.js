@@ -7,7 +7,7 @@
  */
 
 // dependencies and "private" vars
-var vsprintf = require('sprintf').vsprintf,
+var vsprintf = require('sprintf-js').vsprintf,
     fs = require('fs'),
     url = require('url'),
     path = require('path'),
