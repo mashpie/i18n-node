@@ -6,7 +6,7 @@ var should = require('should'),
     browserEn = new Browser(),
     browserFr = new Browser();
 
-visitLinks = function (asyncMethod) {
+var visitLinks = function (asyncMethod) {
   return it('should show /en in English and /fr in French', function (done) {
     return async[asyncMethod]([
 
@@ -40,7 +40,7 @@ visitLinks = function (asyncMethod) {
   });
 };
 
-describe('Using i18n in express 3.x with jade template engine', function () {
+describe('Using i18n in express 4.x with jade template engine', function () {
   describe('non concurrent template rendering in different languages', function () {
     return visitLinks('series');
   });
