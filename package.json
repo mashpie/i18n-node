@@ -39,5 +39,6 @@
   "scripts": {
     "jshint": "jshint --verbose .",
     "test": "npm run jshint && make test"
-  }
+  },
+  "license": "MIT"
 }
