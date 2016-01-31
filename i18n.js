@@ -348,7 +348,7 @@ function applyAPItoObject(request, response) {
     // be kind rewind, or better not touch anything already exiting
     if (!object[method]) {
       object[method] = function () {
-        return i18n[method].apply(request, arguments);
+        return i18n[method].apply(object, arguments);
       };
     }
   });
@@ -546,7 +546,7 @@ function translate(locale, singular, plural) {
 function localeAccessor(locale,singular,allowDelayedTraversal) {
   // Bail out on non-existent locales to defend against internal errors.
   if( !locales[locale] ) return Function.prototype;
-  
+
   // Handle object lookup notation
   var indexOfDot = objectNotation && singular.indexOf( objectNotation );
   if( objectNotation && ( 0 < indexOfDot && indexOfDot < singular.length ) ) {
