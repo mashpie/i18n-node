@@ -66,6 +66,7 @@ i18n.configure = function i18nConfigure(opt) {
    logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
 
   // implicitly read all locales
+  locales = {};
   if (Array.isArray(opt.locales)) {
     opt.locales.forEach(function (l) {
       read(l);
