@@ -4,3 +4,6 @@ testlocales/
 /npm-debug.log
 /i18n-cov.js
 /coverage.html
+locales/en-US.json
+locales/de-DE.json
+locales/de-AT.json
