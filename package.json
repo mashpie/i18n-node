@@ -25,7 +25,6 @@
   "devDependencies": {
     "mocha": ">=1.8.1",
     "should": ">=1.2.1",
-    "express": " < 4.0.0",
     "zombie": "<2.0.0",
     "async": "*",
     "hbs": "*",
@@ -35,7 +34,7 @@
     "jshint": "*"
   },
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.10.0"
   },
   "scripts": {
     "jshint": "jshint --verbose .",
