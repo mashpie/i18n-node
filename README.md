@@ -70,7 +70,7 @@ i18n.configure({
     prefix: 'webapp-',
 
     // enable object notation
-    objectNotation: false
+    objectNotation: false,
 
     // setting of log level DEBUG - default to require('debug')('i18n:debug')
     logDebugFn: function (msg) {
