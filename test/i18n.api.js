@@ -86,8 +86,15 @@ describe('Module API', function () {
 
       it('should return de translations as expected, using mustached messages', function () {
         i18n.setLocale('de');
+
+        // named only
         should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hallo Marcus');
+
+        // named + sprintf
         should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hallo Marcus, wie war dein Wochenende?');
+
+        // nested
+        should.equal(__(__('Hello {{name}}, how was your %s?', { name: 'Marcus' }), __('weekend')), 'Hallo Marcus, wie war dein Wochenende?');
       });
 
       it('should test the ordering in sprintf' , function () {

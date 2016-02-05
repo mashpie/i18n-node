@@ -325,19 +325,25 @@ which puts
 
 ### mustache support
 
-You may also use [mustache](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the second parameter. You can still pass unnamed parameters by adding additional arguments.
+You may also use [mustache](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the last parameter. You can still pass unnamed parameters by adding additional arguments.
 
 ```js
 var greeting = __('Hello {{name}}, how are you today?', { name: 'Marcus' });
 ```
 
-this puts *Hello Marcus, how are you today?*. You might also combine it with sprintf arguments and also nest it.
+this puts *Hello Marcus, how are you today?*. You might also combine it with sprintf arguments...
 
 ```js
-var greeting = __('Hello {{name}}, how was your %s.', { name: 'Marcus' }, __('weekend'));
+var greeting = __('Hello {{name}}, how was your %s.', __('weekend'), { name: 'Marcus' });
 ```
 
-which puts *Hello Marcus, how was your weekend.*
+and even nest it...
+
+```js
+var greeting = __( __('Hello {{name}}, how was your %s?', { name: 'Marcus' }), __('weekend') );
+```
+
+which both put *Hello Marcus, how was your weekend.*
 
 ### variable support
 
