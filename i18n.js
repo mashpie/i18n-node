@@ -16,11 +16,9 @@ var vsprintf = require('sprintf-js').vsprintf,
     error = require('debug')('i18n:error'),
     Mustache = require('mustache'),
     locales = {},
-    skippReload = false,
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog', 'getLocales', 'addLocale', 'removeLocale'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
     autoReload,
-    autoReloadUpdateGrace,
     cookiename,
     defaultLocale,
     directory,
@@ -73,9 +71,6 @@ i18n.configure = function i18nConfigure(opt) {
   // auto reload locale files when changed
   autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
 
-  // time in ms to wait until next auto fs.watch trigger reload files after updateFile operation - defaults to 500ms
-  autoReloadUpdateGrace = (typeof opt.autoReloadUpdateGrace === 'boolean') ? opt.autoReloadUpdateGrace : 500;
-
   // enable object notation?
   objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
   if( objectNotation === true ) objectNotation = '.';
@@ -98,8 +93,6 @@ i18n.configure = function i18nConfigure(opt) {
     if (autoReload) {
       // watch changes of locale files (it's called twice because fs.watch is still unstable)
       fs.watch(directory, function (event, filename) {
-        if (skippReload) return;
-
         var re = new RegExp(extension + '$');
         if (filename && filename.match(re)) {
           var locale = filename.replace(re, '');
@@ -760,9 +753,6 @@ function write(locale) {
     locales[locale] = {};
   }
 
-  // prevent reload on self update
-  skippReload = true;
-
   // writing to tmp and rename on success
   try {
     target = getStorageFilePath(locale);
@@ -771,18 +761,12 @@ function write(locale) {
     stats = fs.statSync(tmp);
     if (stats.isFile()) {
       fs.renameSync(tmp, target);
-      logDebug('successfully written ' + target);
     } else {
       logError('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ');
     }
   } catch (e) {
     logError('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
   }
-
-  setTimeout(function(){
-    skippReload = false;
-  }, autoReloadUpdateGrace);
-
 }
 
 /**
@@ -802,7 +786,7 @@ function getStorageFilePath(locale) {
       return filepathJS;
     }
   } catch (e) {
-    logDebug('will use file ' + filepath);
+    logDebug('will write to ' + filepath);
   }
   return filepath;
 }
