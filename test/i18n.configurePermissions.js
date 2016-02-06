@@ -5,6 +5,8 @@ var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n')
     path = require("path"),
     fs = require('fs');
 
+var isWin = /^win/.test(process.platform);
+
 describe('Module Config (directoryPermissions)', function () {
 
   var testScope = {};
@@ -47,7 +49,8 @@ describe('Module Config (directoryPermissions)', function () {
     });
     testScope.__('Hello');
     var stat = fs.lstatSync('./customlocales');
-    should.equal('40700', parseInt(stat.mode.toString(8), 10));
+    var mode = isWin? '40666':'40700';
+    should.equal(mode, parseInt(stat.mode.toString(8), 10));
     should.exist(stat);
   });
 
@@ -62,7 +65,8 @@ describe('Module Config (directoryPermissions)', function () {
     });
     testScope.__('Hello');
     var stat = fs.lstatSync('./customlocales');
-    should.equal('40750', parseInt(stat.mode.toString(8), 10));
+    var mode = isWin? '40666':'40750';
+    should.equal(mode, parseInt(stat.mode.toString(8), 10));
     should.exist(stat);
   });
 
