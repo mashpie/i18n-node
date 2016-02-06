@@ -148,7 +148,9 @@ app.use('/de', express.static(__dirname + '/www'));
 
 ## Examples for common setups
 
-See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples) inside `/examples` or browse these gists:
+See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples) inside `/examples` for some inspiration in node 4.x / 5.x or browse these gists:
+
+> PLEASE NOTE: Those gist examples worked until node 0.12.x only
 
 * [plain node.js + http](https://gist.github.com/mashpie/5188567)
 * [plain node.js + restify](https://gist.github.com/mashpie/5694251)
