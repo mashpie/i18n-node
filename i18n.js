@@ -16,10 +16,20 @@ var vsprintf = require('sprintf-js').vsprintf,
   error = require('debug')('i18n:error'),
   Mustache = require('mustache'),
   locales = {},
-  api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog', 'getLocales', 'addLocale', 'removeLocale'],
+  api = [
+    '__',
+    '__n',
+    'getLocale',
+    'setLocale',
+    'getCatalog',
+    'getLocales',
+    'addLocale',
+    'removeLocale'
+  ],
   pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
   autoReload,
   cookiename,
+  queryParameter,
   defaultLocale,
   directory,
   directoryPermissions,
@@ -46,6 +56,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // sets a custom cookie name to parse locale settings from
   cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
+
+  // query-string parameter to be watched
+  queryParameter = (typeof opt.queryParameter === 'string') ? opt.queryParameter : null;
 
   // where to store json files
   directory = (typeof opt.directory === 'string') ? opt.directory : __dirname + pathsep + 'locales';
@@ -351,17 +364,6 @@ i18n.removeLocale = function i18nRemoveLocale(locale) {
   delete locales[locale];
 };
 
-i18n.overrideLocaleFromQuery = function(req) {
-  if (req === null) {
-    return;
-  }
-  var urlObj = url.parse(req.url, true);
-  if (urlObj.query.locale) {
-    logDebug("Overriding locale from query: " + urlObj.query.locale);
-    i18n.setLocale(req, urlObj.query.locale.toLowerCase());
-  }
-};
-
 // ===================
 // = private methods =
 // ===================
@@ -399,6 +401,23 @@ function guessLanguage(request) {
     request.language = defaultLocale;
     request.region = defaultLocale;
 
+    // a query parameter overwrites all
+    if (queryParameter && request.url) {
+      var urlObj = url.parse(request.url, true);
+      if (urlObj.query[queryParameter]) {
+        logDebug("Overriding locale from query: " + urlObj.query[queryParameter]);
+        request.language = urlObj.query[queryParameter].toLowerCase();
+        return i18n.setLocale(request, request.language);
+      }
+    }
+
+    // a cookie overwrites headers
+    if (cookiename && request.cookies && request.cookies[cookiename]) {
+      request.language = request.cookies[cookiename];
+      return i18n.setLocale(request, request.language);
+    }
+
+    // 'accept-language' is the most common source
     if (language_header) {
       var accepted_languages = getAcceptedLanguagesFromHeader(language_header),
         match, fallbackMatch, fallback;
@@ -447,15 +466,12 @@ function guessLanguage(request) {
 
       request.language = match || fallbackMatch || request.language;
       request.region = regions[0] || request.region;
+      return i18n.setLocale(request, request.language);
     }
-
-    // setting the language by cookie
-    if (cookiename && request.cookies && request.cookies[cookiename]) {
-      request.language = request.cookies[cookiename];
-    }
-
-    i18n.setLocale(request, request.language);
   }
+
+  // last resort: defaultLocale
+  return i18n.setLocale(request, defaultLocale);
 }
 
 /**
