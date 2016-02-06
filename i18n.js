@@ -404,7 +404,7 @@ function guessLocales(directory) {
     if (prefix && !entries[i].match(prefixRegex)) continue;
     if (extension && !entries[i].match(extensionRegex)) continue;
     localesFound.push(entries[i].replace(prefix, '').replace(extensionRegex, ''));
-  };
+  }
 
   return localesFound.sort();
 }
