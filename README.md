@@ -67,6 +67,12 @@ i18n.configure({
     // whether to write new locale information to disk - defaults to true
     updateFiles: false,
 
+    // auto reload locale files when changed - defaults to false (Consider using autoreload on dev only as fs.watch might still have side effects)
+    autoReload: true,
+
+    // time in ms to wait until next auto fs.watch trigger reload files after updateFile operation - defaults to 500ms
+    autoReloadUpdateGrace: 1000,
+
     // what to use as the indentation unit - defaults to "\t"
     indent: "\t",
 
