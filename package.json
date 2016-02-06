@@ -18,20 +18,19 @@
     "lib": "."
   },
   "dependencies": {
-    "sprintf-js": ">=1.0.3",
+    "debug": "*",
     "mustache": "*",
-    "debug": "*"
+    "sprintf-js": ">=1.0.3"
   },
   "devDependencies": {
+    "async": "*",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "jshint": "*",
     "mocha": "*",
     "should": "*",
-    "zombie": "*",
-    "async": "*",
-    "hbs": "*",
-    "jade": "*",
-    "consolidate": "*",
-    "restify": "*",
-    "jshint": "*"
+    "url": "^0.11.0",
+    "zombie": "*"
   },
   "engines": {
     "node": ">=0.10.0"

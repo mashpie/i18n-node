@@ -792,7 +792,7 @@ function getStorageFilePath(locale) {
       return filepathJS;
     }
   } catch (e) {
-    logDebug('will write to ' + filepath);
+    logDebug('will use ' + filepath);
   }
   return filepath;
 }
