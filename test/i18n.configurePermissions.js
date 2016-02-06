@@ -34,7 +34,6 @@ describe('Module Config (directoryPermissions)', function () {
     });
     testScope.__('Hello');
     var stat = fs.lstatSync('./customlocales');
-    console.log(parseInt(stat.mode.toString(8), 10));
     should.exist(stat);
   });
 
