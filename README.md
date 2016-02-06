@@ -6,9 +6,9 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-[![Linux Build][travis-image]][travis-url]
+[![Linux/OSX Build][travis-image]][travis-url]
 [![Windows Build][appveyor-image]][appveyor-url]
-[![NPM version][npm-v-image]][npm-url]
+[![NPM version][npm-image]][npm-url]
 [![Dependency Status][dependency-image]][dependency-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 
@@ -540,6 +540,8 @@ __("greeting.formal:Hello")
 __("greeting.placeholder.informal:Hi %s")
 ```
 
+[![NPM](https://nodei.co/npm/i18n.svg?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/i18n/)
+
 ## Changelog
 
 * 0.6.0: __improved__: Accept-Language header parsing to ICU, delimiters with object notation, jshint, package.json, README; __new__: prefix for locale files, `i18n.getLocales()`, custom logger, fallback[s]; __fixed__: typos, badges, plural (numbers), `i18n.setLocale()` for `req` _and_ `res`
@@ -581,14 +583,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+[npm-image]: https://badge.fury.io/js/i18n.svg
 [npm-url]: https://www.npmjs.com/package/i18n
-[npm-v-image]: https://img.shields.io/npm/v/i18n.svg
-[npm-dm-image]: https://img.shields.io/npm/dm/i18n.svg
-[travis-image]: https://img.shields.io/travis/SuperPaintman/i18n-node/master.svg?label=linux
-[travis-url]: https://travis-ci.org/SuperPaintman/i18n-node
-[appveyor-image]: https://img.shields.io/appveyor/ci/SuperPaintman/i18n-node/master.svg?label=windows
-[appveyor-url]: https://ci.appveyor.com/project/SuperPaintman/i18n-node
-[coveralls-image]: https://img.shields.io/coveralls/SuperPaintman/i18n-node/master.svg
-[coveralls-url]: https://coveralls.io/r/SuperPaintman/i18n-node?branch=master
+
+[travis-image]: https://travis-ci.org/mashpie/i18n-node.svg?branch=master
+[travis-url]: https://travis-ci.org/mashpie/i18n-node
+
+[appveyor-image]: https://ci.appveyor.com/api/projects/status/677snewuop7u5xtl?svg=true
+[appveyor-url]: https://ci.appveyor.com/project/mashpie/i18n-node
+
+[coveralls-image]: https://coveralls.io/repos/github/mashpie/i18n-node/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/mashpie/i18n-node?branch=master
+
 [dependency-image]: https://img.shields.io/gemnasium/mashpie/i18n-node.svg
 [dependency-url]: https://gemnasium.com/mashpie/i18n-node
