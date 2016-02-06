@@ -394,9 +394,19 @@ function applyAPItoObject(request, response) {
  * tries to guess locales by scanning the given directory
  */
 function guessLocales(directory) {
-  var extension = new RegExp("." + extension, "g");
-  var prefix = new RegExp(prefix, "g");
-  return fs.readdirSync(directory).join(',').replace(extension, '').replace(prefix, '').split(',');
+  var extensionRegex = new RegExp(extension + '$', 'g');
+  var prefixRegex = new RegExp('^' + prefix, "g");
+  var entries = fs.readdirSync(directory);
+  var localesFound = [];
+
+  for (var i = entries.length - 1; i >= 0; i--) {
+    if (entries[i].match(/^\./)) continue;
+    if (prefix && !entries[i].match(prefixRegex)) continue;
+    if (extension && !entries[i].match(extensionRegex)) continue;
+    localesFound.push(entries[i].replace(prefix, '').replace(extensionRegex, ''));
+  };
+
+  return localesFound.sort();
 }
 
 /**
