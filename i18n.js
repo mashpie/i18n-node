@@ -38,6 +38,9 @@ i18n.configure = function i18nConfigure(opt) {
   // where to store json files
   directory = (typeof opt.directory === 'string') ? opt.directory : __dirname + pathsep + 'locales';
 
+  // permissions when creating new directories
+  directoryPermissions = (typeof opt.directoryPermissions === 'string') ? parseInt(opt.directoryPermissions, 8) : null;
+
   // write new locale information to disk
   updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
 
@@ -712,7 +715,7 @@ function write(locale) {
     stats = fs.lstatSync(directory);
   } catch (e) {
     logDebug('creating locales dir in: ' + directory);
-    fs.mkdirSync(directory);
+    fs.mkdirSync(directory, directoryPermissions);
   }
 
   // first time init has an empty file
