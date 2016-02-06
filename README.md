@@ -6,8 +6,12 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-[![Build Status](https://api.travis-ci.org/mashpie/i18n-node.svg?branch=master)](http://travis-ci.org/mashpie/i18n-node) [![NPM version](https://badge.fury.io/js/i18n.svg)](http://badge.fury.io/js/i18n)
-[![Dependency Status](https://gemnasium.com/mashpie/i18n-node.svg)](https://gemnasium.com/mashpie/i18n-node)
+[![Linux Build][travis-image]][travis-url]
+[![Windows Build][appveyor-image]][appveyor-url]
+[![NPM version][npm-v-image]][npm-url]
+[![Dependency Status][dependency-image]][dependency-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
 
 ## Install
 ```sh
@@ -576,3 +580,15 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+[npm-url]: https://www.npmjs.com/package/i18n
+[npm-v-image]: https://img.shields.io/npm/v/i18n.svg
+[npm-dm-image]: https://img.shields.io/npm/dm/i18n.svg
+[travis-image]: https://img.shields.io/travis/SuperPaintman/i18n-node/master.svg?label=linux
+[travis-url]: https://travis-ci.org/SuperPaintman/i18n-node
+[appveyor-image]: https://img.shields.io/appveyor/ci/SuperPaintman/i18n-node/master.svg?label=windows
+[appveyor-url]: https://ci.appveyor.com/project/SuperPaintman/i18n-node
+[coveralls-image]: https://img.shields.io/coveralls/SuperPaintman/i18n-node/master.svg
+[coveralls-url]: https://coveralls.io/r/SuperPaintman/i18n-node?branch=master
+[dependency-image]: https://img.shields.io/gemnasium/mashpie/i18n-node.svg
+[dependency-url]: https://gemnasium.com/mashpie/i18n-node

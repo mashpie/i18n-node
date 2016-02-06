@@ -1,3 +1,4 @@
 node_modules/
 examples/
+coverage/
 i18n-cov.js

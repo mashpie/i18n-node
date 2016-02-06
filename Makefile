@@ -11,7 +11,7 @@ lib-cov:
 
 examples:
 	for example in examples/*/test.js ; do \
-    	mocha --reporter $(REPORTER) $$example; \
+		mocha --reporter $(REPORTER) $$example; \
 	done
 
 all: test examples
