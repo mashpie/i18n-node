@@ -61,6 +61,9 @@ i18n.configure({
     // where to store json files - defaults to './locales' relative to modules directory
     directory: './mylocales',
 
+    // controll mode on directory creation - defaults to NULL which defaults to umask of process user
+    directoryPermissions: '755',
+
     // whether to write new locale information to disk - defaults to true
     updateFiles: false,
 
