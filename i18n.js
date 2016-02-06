@@ -29,7 +29,6 @@ var vsprintf = require('sprintf-js').vsprintf,
   pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
   autoReload,
   cookiename,
-  queryParameter,
   defaultLocale,
   directory,
   directoryPermissions,
@@ -40,6 +39,8 @@ var vsprintf = require('sprintf-js').vsprintf,
   logErrorF,
   logWarnFn,
   objectNotation,
+  prefix,
+  queryParameter,
   updateFiles;
 
 // public exports
@@ -95,6 +96,9 @@ i18n.configure = function i18nConfigure(opt) {
   logDebugFn = (typeof opt.logDebugFn === 'function') ? opt.logDebugFn : debug;
   logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
   logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
+
+  // when missing locales we try to guess that from directory
+  opt.locales = opt.locales || guessLocales(directory);
 
   // implicitly read all locales
   if (Array.isArray(opt.locales)) {
@@ -384,6 +388,15 @@ function applyAPItoObject(request, response) {
       };
     }
   });
+}
+
+/**
+ * tries to guess locales by scanning the given directory
+ */
+function guessLocales(directory) {
+  var extension = new RegExp("." + extension, "g");
+  var prefix = new RegExp(prefix, "g");
+  return fs.readdirSync(directory).join(',').replace(extension, '').replace(prefix, '').split(',');
 }
 
 /**
