@@ -712,7 +712,7 @@ function write(locale) {
     stats = fs.lstatSync(directory);
   } catch (e) {
     logDebug('creating locales dir in: ' + directory);
-    fs.mkdirSync(directory, parseInt('755', 8));
+    fs.mkdirSync(directory);
   }
 
   // first time init has an empty file
