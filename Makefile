@@ -2,7 +2,7 @@ test:
 	mocha
 
 cover:
-	istanbul cover mocha
+	istanbul cover ./node_modules/mocha/bin/_mocha
 
 examples:
 	for example in examples/*/test.js ; do \

@@ -108,8 +108,11 @@ i18n.configure = function i18nConfigure(opt) {
 
     // auto reload locale files when changed
     if (autoReload) {
+
       // watch changes of locale files (it's called twice because fs.watch is still unstable)
       fs.watch(directory, function(event, filename) {
+
+        // @todo: add support for prefixed files
         var re = new RegExp(extension + '$');
         if (filename && filename.match(re)) {
           var locale = filename.replace(re, '');
