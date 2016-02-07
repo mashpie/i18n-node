@@ -1,7 +1,7 @@
 /*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
 
 // now with coverage suport
-var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n'),
+var i18n = require('../i18n'),
   should = require("should"),
     path = require("path");
 
@@ -17,7 +17,7 @@ describe('Fallbacks', function () {
   describe('Fallback to language', function () {
     beforeEach(function () {
       // Force reloading of i18n, to reset configuration
-      var i18nPath = process.env.EXPRESS_COV ? 'i18n-cov' : 'i18n';
+      var i18nPath = 'i18n';
       var i18nFilename = path.resolve(i18nPath + '.js');
       delete require.cache[i18nFilename];
       i18n = require( i18nFilename );
@@ -67,7 +67,7 @@ describe('Fallbacks', function () {
   describe('Fallback to locale', function () {
     beforeEach(function () {
       // Force reloading of i18n, to reset configuration
-      var i18nPath = process.env.EXPRESS_COV ? 'i18n-cov' : 'i18n';
+      var i18nPath = 'i18n';
       var i18nFilename = path.resolve(i18nPath + '.js');
       delete require.cache[i18nFilename];
       i18n = require( i18nFilename );
@@ -102,7 +102,7 @@ describe('Fallbacks', function () {
   describe('Keep valid locale', function () {
     beforeEach(function () {
       // Force reloading of i18n, to reset configuration
-      var i18nPath = process.env.EXPRESS_COV ? 'i18n-cov' : 'i18n';
+      var i18nPath = 'i18n';
       var i18nFilename = path.resolve(i18nPath + '.js');
       delete require.cache[i18nFilename];
       i18n = require( i18nFilename );

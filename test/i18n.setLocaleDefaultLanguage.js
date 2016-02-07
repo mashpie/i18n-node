@@ -8,7 +8,7 @@
  */
 
 // now with coverage suport
-var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n'),
+var i18n = require('../i18n'),
   should = require("should"),
   path = require("path");
 
@@ -20,7 +20,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
   beforeEach(function() {
 
     // Force reloading of i18n, to reset configuration
-    var i18nPath = process.env.EXPRESS_COV ? 'i18n-cov' : 'i18n';
+    var i18nPath = 'i18n';
     var i18nFilename = path.resolve(i18nPath + '.js');
     delete require.cache[i18nFilename];
     i18n = require(i18nFilename);
