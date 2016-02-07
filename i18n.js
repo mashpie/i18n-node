@@ -142,9 +142,7 @@ i18n.init = function i18nInit(request, response, next) {
     }
 
     // bind api to req also
-    if (typeof request === 'object') {
-      applyAPItoObject(request);
-    }
+    applyAPItoObject(request);
   }
 
   if (typeof next === 'function') {
