@@ -239,7 +239,7 @@ describe('Module API', function () {
         should.equal(plural, '3 Katzen');
 
         i18n.setLocale('en');
-        ingular = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: 1});
+        singular = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: 1});
         plural = __n({singular: "%s cat", plural: "%s cats", locale: "nl", count: 3});
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
