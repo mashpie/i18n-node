@@ -379,6 +379,14 @@ i18n._renderMustach = function renderMustach(msg, namedValues) {
   return Mustache.render(msg, namedValues);
 };
 
+i18n.serializeLocale = function serializeLocal (localeObj) {
+  return JSON.stringify(localeObj, null, i18n.options.indent);
+};
+
+i18n.deserializeLocale = function serializeLocal (fileContent) {
+  return JSON.parse(fileContent);
+};
+
 // ===================
 // = private methods =
 // ===================
@@ -764,7 +772,7 @@ function read(locale) {
     localeFile = fs.readFileSync(file);
     try {
       // parsing filecontents to locales[locale]
-      locales[locale] = JSON.parse(localeFile);
+      locales[locale] = i18n.deserializeLocale(localeFile);
     } catch (parseError) {
       logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', parseError);
     }
@@ -813,7 +821,8 @@ function write(locale) {
   try {
     target = getStorageFilePath(locale);
     tmp = target + ".tmp";
-    fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, i18n.options.indent), "utf8");
+    var serialized = i18n.serializeLocale(locales[locale]);
+    fs.writeFileSync(tmp, serialized, "utf8");
     stats = fs.statSync(tmp);
     if (stats.isFile()) {
       fs.renameSync(tmp, target);
