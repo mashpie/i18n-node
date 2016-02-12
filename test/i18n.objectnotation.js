@@ -57,5 +57,4 @@ describe('Object Notation', function () {
     });
   });
 
-
 });

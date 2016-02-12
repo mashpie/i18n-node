@@ -44,6 +44,7 @@ i18n.options = {
   autoReload: false,
   objectNotation: false,
   fallbacks: {},
+  retryInDefaultLocale: false,
   logDebugFn: debug,
   logWarnFn: warn,
   logErrorFn: error
@@ -84,6 +85,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // setting defaultLocale
   i18n.options.defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+
+  // allow to retry in default locale, useful for production
+  i18n.options.retryInDefaultLocale = (typeof opt.retryInDefaultLocale == 'boolean') ? opt.retryInDefaultLocale : false;
 
   // auto reload locale files when changed
   i18n.options.autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
@@ -581,6 +585,7 @@ function translate(locale, singular, plural) {
     read(locale);
   }
 
+  // This allow pass default value as 'greeting.formal:Hello'
   var defaultSingular = singular;
   var defaultPlural = plural;
   if (i18n.options.objectNotation) {
@@ -604,16 +609,28 @@ function translate(locale, singular, plural) {
 
   if (plural) {
     if (!accessor()) {
-      mutator({
-        'one': defaultSingular || singular,
-        'other': defaultPlural || plural
-      });
+      // when retryInDefaultLocale is true - try to set default value from defaultLocale
+      if (i18n.options.retryInDefaultLocale && locale != i18n.options.defaultLocale) {
+        logDebug("Missing " + singular + " in " + locale + " retrying in " + i18n.options.defaultLocale);
+        mutator(translate(i18n.options.defaultLocale, singular, plural));
+      } else {
+        mutator({
+          'one': defaultSingular || singular,
+          'other': defaultPlural || plural
+        });
+      }
       write(locale);
     }
   }
 
   if (!accessor()) {
-    mutator(defaultSingular || singular);
+    // when retryInDefaultLocale is true - try to set default value from defaultLocale
+    if (i18n.options.retryInDefaultLocale && locale != i18n.options.defaultLocale) {
+      logDebug("Missing " + singular + " in " + locale + " retrying in " + i18n.options.defaultLocale);
+      mutator(translate(i18n.options.defaultLocale, singular, plural));
+    } else {
+      mutator(defaultSingular || singular);
+    }
     write(locale);
   }
 
