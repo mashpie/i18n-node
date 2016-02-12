@@ -7,6 +7,7 @@
  */
 
 // dependencies and "private" vars
+var Mustache;
 var vsprintf = require('sprintf-js').vsprintf,
   fs = require('fs'),
   url = require('url'),
@@ -14,7 +15,6 @@ var vsprintf = require('sprintf-js').vsprintf,
   debug = require('debug')('i18n:debug'),
   warn = require('debug')('i18n:warn'),
   error = require('debug')('i18n:error'),
-  Mustache = require('mustache'),
   locales = {},
   api = [
     '__',
@@ -184,7 +184,7 @@ i18n.__ = function i18nTranslate(phrase) {
 
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
   if ((/{{.*}}/).test(msg)) {
-    msg = Mustache.render(msg, namedValues);
+    msg = i18n._renderMustach(msg, namedValues);
   }
 
   // if we have extra arguments with values to get replaced,
@@ -252,7 +252,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
 
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
   if ((/{{.*}}/).test(msg)) {
-    msg = Mustache.render(msg, namedValues);
+    msg = i18n._renderMustach(msg, namedValues);
   }
 
   // if we have extra arguments with strings to get replaced,
@@ -367,6 +367,13 @@ i18n.addLocale = function i18nAddLocale(locale) {
 
 i18n.removeLocale = function i18nRemoveLocale(locale) {
   delete locales[locale];
+};
+
+i18n._renderMustach = function renderMustach(msg, namedValues) {
+  if (!Mustache) {
+    Mustache = require('mustache');
+  }
+  return Mustache.render(msg, namedValues);
 };
 
 // ===================
