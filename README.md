@@ -61,11 +61,11 @@ i18n.configure({
     // where to store json files - defaults to './locales' relative to modules directory
     directory: './mylocales',
 
-    // watch for changes in json files to reload locale on updates - defaults to false
-    autoReload: true,
-
     // controll mode on directory creation - defaults to NULL which defaults to umask of process user. Setting has no effect on win.
     directoryPermissions: '755',
+
+    // watch for changes in json files to reload locale on updates - defaults to false
+    autoReload: true,
 
     // whether to write new locale information to disk - defaults to true
     updateFiles: false,
