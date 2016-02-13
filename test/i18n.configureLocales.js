@@ -33,6 +33,7 @@ describe('locals configuration', function() {
     var directory = path.resolve(__dirname + '/../testlocales');
 
     fs.mkdirSync(directory);
+    fs.writeFileSync(directory + '/.gitkeepornot', 'just kidding');
     fs.writeFileSync(directory + '/app-de.json', '{}');
     fs.writeFileSync(directory + '/app-en.json', '{}');
 
@@ -44,6 +45,7 @@ describe('locals configuration', function() {
     var expected = ['de', 'en'].sort();
     should.deepEqual(i18n.getLocales(), expected);
 
+    fs.unlinkSync(directory + '/.gitkeepornot');
     fs.unlinkSync(directory + '/app-de.json');
     fs.unlinkSync(directory + '/app-en.json');
     fs.rmdirSync(directory);
