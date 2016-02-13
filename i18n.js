@@ -143,22 +143,8 @@ i18n.init = function i18nInit(request, response, next) {
   if (typeof response === 'object') {
     applyAPItoObject(response);
 
-    // init that locale to response too - @todo: refactor
-    if (!response.locale) response.locale = request.locale;
-
     // and set that locale to response too
     i18n.setLocale(response, request.locale);
-  }
-
-  // register locale to res.locals so hbs helpers know this.locale
-  if (response && typeof response.locals === 'object') {
-    applyAPItoObject(response.locals);
-
-    // init locale to res.locals so hbs helpers know this.locale - @todo: refactor
-    if (!response.locals.locale) response.locals.locale = request.locale;
-
-    // and set that locale to response.locals too
-    i18n.setLocale(response.locals, request.locale);
   }
 
   // head over to next callback when bound as middleware
@@ -411,12 +397,19 @@ function applyAPItoObject(object) {
     }
   });
 
+  // set initial locale if not set
   if(!object.locale){
     object.locale = defaultLocale;
   }
 
+  // attach to response if present (ie. in express)
   if(object.res){
     applyAPItoObject(object.res);
+  }
+
+  // attach to locals if present (ie. in express)
+  if(object.locals){
+    applyAPItoObject(object.locals);
   }
 }
 
