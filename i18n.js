@@ -127,6 +127,7 @@ i18n.configure = function i18nConfigure(opt) {
 
 i18n.init = function i18nInit(request, response, next) {
   if (typeof request === 'object') {
+
     // guess requested language/locale
     guessLanguage(request);
 
@@ -277,7 +278,15 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   return msg;
 };
 
-i18n.setLocale = function i18nSetLocale(object, locale) {
+i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
+
+  // when given an array of objects => setLocale on each
+  if(Array.isArray(object) && typeof locale === 'string'){
+    for (var i = object.length - 1; i >= 0; i--) {
+      i18n.setLocale(object[i], locale, true);
+    }
+    return i18n.getLocale(object[0]);
+  }
 
   // defaults to called like i18n.setLocale(req, 'en')
   var target_object = object;
@@ -300,6 +309,16 @@ i18n.setLocale = function i18nSetLocale(object, locale) {
   // consider any extra registered objects
   if (typeof register === 'object') {
     register.locale = target_object.locale;
+  }
+
+  // consider res
+  if(target_object.res && !skipImplicitObjects){
+    i18n.setLocale(target_object.res, target_object.locale);
+  }
+
+  // consider locals
+  if(target_object.locals && !skipImplicitObjects){
+    i18n.setLocale(target_object.locals, target_object.locale);
   }
 
   return i18n.getLocale(target_object);
@@ -379,10 +398,9 @@ i18n.removeLocale = function i18nRemoveLocale(locale) {
  * registers all public API methods to a given response object when not already declared
  */
 
-function applyAPItoObject(request, response) {
+function applyAPItoObject(object) {
 
   // attach to itself if not provided
-  var object = response || request;
   api.forEach(function(method) {
 
     // be kind rewind, or better not touch anything already exiting
@@ -392,6 +410,14 @@ function applyAPItoObject(request, response) {
       };
     }
   });
+
+  if(!object.locale){
+    object.locale = defaultLocale;
+  }
+
+  if(object.res){
+    applyAPItoObject(object.res);
+  }
 }
 
 /**

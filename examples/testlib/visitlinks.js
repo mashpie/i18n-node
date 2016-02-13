@@ -4,7 +4,7 @@ var async = require('async'),
 module.exports = visitLinks;
 
 function visitLinks(asyncMethod, url, EN, textEN, DE, textDE) {
-  return it('should show ' + textEN + ' in EN and ' + textDE + ' in DE', function(done) {
+  return it('should show ' + textEN + ' in first request and ' + textDE + ' in second request', function(done) {
     return async [asyncMethod]([
         function(cb) {
           return EN.visit('http://localhost:3000/' + url + '/?delay=1000', function() {
