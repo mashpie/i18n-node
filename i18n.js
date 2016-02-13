@@ -111,16 +111,13 @@ i18n.configure = function i18nConfigure(opt) {
 
       // watch changes of locale files (it's called twice because fs.watch is still unstable)
       fs.watch(directory, function(event, filename) {
+        var localeFromFile = guessLocaleFromFile(filename);
 
-        // @todo: add support for prefixed files
-        var re = new RegExp(extension + '$');
-        if (filename && filename.match(re)) {
-          var locale = filename.replace(re, '');
-          if (opt.locales.indexOf(locale) > -1) {
-            logDebug("Auto reloading locale file '" + filename + "'.");
-            read(locale);
-          }
+        if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
+          logDebug("Auto reloading locale file '" + filename + "'.");
+          read(localeFromFile);
         }
+
       });
     }
   }
@@ -395,19 +392,28 @@ function applyAPItoObject(request, response) {
  * tries to guess locales by scanning the given directory
  */
 function guessLocales(directory) {
-  var extensionRegex = new RegExp(extension + '$', 'g');
-  var prefixRegex = new RegExp('^' + prefix, "g");
   var entries = fs.readdirSync(directory);
   var localesFound = [];
 
   for (var i = entries.length - 1; i >= 0; i--) {
     if (entries[i].match(/^\./)) continue;
-    if (prefix && !entries[i].match(prefixRegex)) continue;
-    if (extension && !entries[i].match(extensionRegex)) continue;
-    localesFound.push(entries[i].replace(prefix, '').replace(extensionRegex, ''));
+    var localeFromFile = guessLocaleFromFile(entries[i]);
+    if (localeFromFile) localesFound.push(localeFromFile);
   }
 
   return localesFound.sort();
+}
+
+/**
+ * tries to guess locales from a given filename
+ */
+function guessLocaleFromFile(filename) {
+  var extensionRegex = new RegExp(extension + '$', 'g');
+  var prefixRegex = new RegExp('^' + prefix, "g");
+
+  if (prefix && !filename.match(prefixRegex)) return false;
+  if (extension && !filename.match(extensionRegex)) return false;
+  return filename.replace(prefix, '').replace(extensionRegex, '');
 }
 
 /**
