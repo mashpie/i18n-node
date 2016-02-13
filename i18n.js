@@ -58,7 +58,7 @@ i18n.configure = function i18nConfigure(opt) {
   // sets a custom cookie name to parse locale settings from
   cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
 
-  // query-string parameter to be watched
+  // query-string parameter to be watched - @todo: add test & doc
   queryParameter = (typeof opt.queryParameter === 'string') ? opt.queryParameter : null;
 
   // where to store json files

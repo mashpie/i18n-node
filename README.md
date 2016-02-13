@@ -55,11 +55,14 @@ i18n.configure({
     // you may alter a site wide default locale
     defaultLocale: 'de',
 
-    // sets a custom cookie name to parse locale settings from  - defaults to NULL
+    // sets a custom cookie name to parse locale settings from - defaults to NULL
     cookie: 'yourcookiename',
 
     // where to store json files - defaults to './locales' relative to modules directory
     directory: './mylocales',
+
+    // watch for changes in json files to reload locale on updates - defaults to false
+    autoReload: true,
 
     // controll mode on directory creation - defaults to NULL which defaults to umask of process user. Setting has no effect on win.
     directoryPermissions: '755',
