@@ -41,6 +41,7 @@ var vsprintf = require('sprintf-js').vsprintf,
   objectNotation,
   prefix,
   queryParameter,
+  register,
   updateFiles;
 
 // public exports
@@ -53,6 +54,7 @@ i18n.configure = function i18nConfigure(opt) {
   // you may register helpers in global scope, up to you
   if (typeof opt.register === 'object') {
     applyAPItoObject(opt.register);
+    register = opt.register;
   }
 
   // sets a custom cookie name to parse locale settings from
@@ -125,26 +127,40 @@ i18n.configure = function i18nConfigure(opt) {
 
 i18n.init = function i18nInit(request, response, next) {
   if (typeof request === 'object') {
+    // guess requested language/locale
     guessLanguage(request);
 
-    if (typeof response === 'object') {
-      applyAPItoObject(request, response);
-
-      // register locale to res.locals so hbs helpers know this.locale
-      if (!response.locale) response.locale = request.locale;
-
-      if (response.locals) {
-        applyAPItoObject(request, response.locals);
-
-        // register locale to res.locals so hbs helpers know this.locale
-        if (!response.locals.locale) response.locals.locale = request.locale;
-      }
-    }
-
-    // bind api to req also
+    // bind api to req
     applyAPItoObject(request);
+
+    // looks double but will ensure schema on api refactor
+    i18n.setLocale(request, request.locale);
+  } else {
+    return logError('i18n.init must be called with one parameter minimum, ie. i18n.init(req)');
   }
 
+  if (typeof response === 'object') {
+    applyAPItoObject(response);
+
+    // init that locale to response too - @todo: refactor
+    if (!response.locale) response.locale = request.locale;
+
+    // and set that locale to response too
+    i18n.setLocale(response, request.locale);
+  }
+
+  // register locale to res.locals so hbs helpers know this.locale
+  if (response && typeof response.locals === 'object') {
+    applyAPItoObject(response.locals);
+
+    // init locale to res.locals so hbs helpers know this.locale - @todo: refactor
+    if (!response.locals.locale) response.locals.locale = request.locale;
+
+    // and set that locale to response.locals too
+    i18n.setLocale(response.locals, request.locale);
+  }
+
+  // head over to next callback when bound as middleware
   if (typeof next === 'function') {
     next();
   }
@@ -261,83 +277,73 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   return msg;
 };
 
-i18n.setLocale = function i18nSetLocale(locale_or_request, locale) {
-  var target_locale = locale_or_request,
-    request;
+i18n.setLocale = function i18nSetLocale(object, locale) {
 
-  // called like setLocale(req, 'en')
-  if (locale_or_request && typeof locale === 'string') {
-    request = locale_or_request;
-    target_locale = locale;
+  // defaults to called like i18n.setLocale(req, 'en')
+  var target_object = object;
+  var target_locale = locale;
+
+  // called like req.setLocale('en') or i18n.setLocale('en')
+  if (locale === undefined && typeof object === 'string') {
+    target_object = this;
+    target_locale = object;
   }
 
-  // called like req.setLocale('en')
-  if (locale === undefined && typeof this.locale === 'string' && typeof locale_or_request === 'string') {
-    request = this;
-    target_locale = locale_or_request;
-  }
-
+  // consider a fallback
   if (!locales[target_locale] && fallbacks[target_locale]) {
     target_locale = fallbacks[target_locale];
   }
 
-  if (locales[target_locale]) {
+  // now set locale on object
+  target_object.locale = locales[target_locale] ? target_locale : defaultLocale;
 
-    // called like setLocale('en')
-    if (request === undefined) {
-      defaultLocale = target_locale;
-    } else {
-      request.locale = target_locale;
-    }
-  } else {
-    if ((request !== undefined)) {
-      request.locale = defaultLocale;
-    }
+  // consider any extra registered objects
+  if (typeof register === 'object') {
+    register.locale = target_object.locale;
   }
 
-  return i18n.getLocale(request);
+  return i18n.getLocale(target_object);
 };
 
 i18n.getLocale = function i18nGetLocale(request) {
 
-  // called like getLocale(req)
+  // called like i18n.getLocale(req)
   if (request && request.locale) {
     return request.locale;
   }
 
   // called like req.getLocale()
-  if (request === undefined && typeof this.locale === 'string') {
-    return this.locale;
-  }
-
-  // called like getLocale()
-  return defaultLocale;
+  return this.locale || defaultLocale;
 };
 
-i18n.getCatalog = function i18nGetCatalog(locale_or_request, locale) {
-  var target_locale = locale_or_request;
+i18n.getCatalog = function i18nGetCatalog(object, locale) {
+  var target_locale;
 
-  // called like getCatalog(req)
-  if (typeof locale_or_request === 'object' && typeof locale_or_request.locale === 'string') {
-    target_locale = locale_or_request.locale;
+  // called like i18n.getCatalog(req)
+  if (typeof object === 'object' && typeof object.locale === 'string' && locale === undefined) {
+    target_locale = object.locale;
   }
 
-  // called like getCatalog(req, 'en')
-  if (typeof locale_or_request === 'object' && typeof locale === 'string') {
+  // called like i18n.getCatalog(req, 'en')
+  if (!target_locale && typeof object === 'object' && typeof locale === 'string') {
     target_locale = locale;
   }
 
-  // called like req.getCatalog()
-  if (locale === undefined && typeof this.locale === 'string') {
-    target_locale = this.locale;
-  }
-
   // called like req.getCatalog('en')
-  if (locale === undefined && typeof locale_or_request === 'string') {
-    target_locale = locale_or_request;
+  if (!target_locale && locale === undefined && typeof object === 'string') {
+    target_locale = object;
   }
 
-  // called like getCatalog()
+  // called like req.getCatalog()
+  if (!target_locale && object === undefined && locale === undefined && typeof this.locale === 'string') {
+    if(register && register.GLOBAL){
+      target_locale = '';
+    }else{
+      target_locale = this.locale;
+    }
+  }
+
+  // called like i18n.getCatalog()
   if (target_locale === undefined || target_locale === '') {
     return locales;
   }
