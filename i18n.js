@@ -378,7 +378,17 @@ i18n.removeLocale = function i18nRemoveLocale(locale) {
 
 i18n._renderMustach = function renderMustach(msg, namedValues) {
   if (!Mustache) {
-    Mustache = require('mustache');
+    try {
+      Mustache = require('mustache');
+    } catch (error) {
+      if (error.code == 'MODULE_NOT_FOUND' || error.message.indexOf("Cannot find module") != -1) {
+        console.log("You need to run 'npm install mustache --save' in order to use mustache placeholders");
+        console.log(error.stack);
+        return msg;
+      } else {
+        throw error;
+      }
+    }
   }
   return Mustache.render(msg, namedValues);
 };
