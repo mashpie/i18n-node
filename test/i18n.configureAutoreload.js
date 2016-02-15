@@ -7,7 +7,7 @@ var i18n = require('../i18n'),
 
 var i18nPath = 'i18n';
 var i18nFilename = path.resolve(i18nPath + '.js');
-
+var timeout = 50;
 
 function reconfigure(config) {
   delete require.cache[i18nFilename];
@@ -32,14 +32,14 @@ describe('autoreload configuration', function() {
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
     setTimeout(function(){
       done();
-    }, 50);
+    }, timeout);
   });
 
   it('reloads when a catalog is altered', function(done) {
     fs.writeFileSync(directory + '/de.json', '{"Hello":"Hallo"}');
     setTimeout(function(){
       done();
-    }, 50);
+    }, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
@@ -80,14 +80,14 @@ describe('autoreload configuration with prefix', function() {
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
     setTimeout(function(){
       done();
-    }, 50);
+    }, timeout);
   });
 
   it('reloads when a catalog is altered', function(done) {
     fs.writeFileSync(directory + '/customprefix-de.json', '{"Hello":"Hallo"}');
     setTimeout(function(){
       done();
-    }, 50);
+    }, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
@@ -130,14 +130,14 @@ describe('autoreload configuration with prefix and customextension', function() 
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
     setTimeout(function(){
       done();
-    }, 50);
+    }, timeout);
   });
 
   it('reloads when a catalog is altered', function(done) {
     fs.writeFileSync(directory + '/customprefix-de.customextension', '{"Hello":"Hallo"}');
     setTimeout(function(){
       done();
-    }, 50);
+    }, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
@@ -179,14 +179,14 @@ describe('autoreload configuration with customextension', function() {
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
     setTimeout(function(){
       done();
-    }, 50);
+    }, timeout);
   });
 
   it('reloads when a catalog is altered', function(done) {
     fs.writeFileSync(directory + '/de.customextension', '{"Hello":"Hallo"}');
     setTimeout(function(){
       done();
-    }, 50);
+    }, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
