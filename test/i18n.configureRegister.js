@@ -28,6 +28,10 @@ describe('configure register', function() {
     });
 
     it('should work on global', function() {
+
+        // global is evil and will always be
+        delete global.locale;
+
         reconfigure({
             locales: ['en', 'de'],
             register: global

@@ -19,6 +19,8 @@ var vsprintf = require('sprintf-js').vsprintf,
   api = [
     '__',
     '__n',
+    '__l',
+    '__h',
     'getLocale',
     'setLocale',
     'getCatalog',
@@ -60,7 +62,7 @@ i18n.configure = function i18nConfigure(opt) {
       register.forEach(function(r) {
         applyAPItoObject(r);
       });
-    }else{
+    } else {
       applyAPItoObject(opt.register);
     }
   }
@@ -204,6 +206,24 @@ i18n.__ = function i18nTranslate(phrase) {
   return msg;
 };
 
+i18n.__l = function i18nTranslationList(phrase) {
+  var translations = [];
+  Object.keys(locales).sort().forEach(function(l) {
+    translations.push(i18n.__({ phrase: phrase, locale: l }));
+  });
+  return translations;
+};
+
+i18n.__h = function i18nTranslationHash(phrase) {
+  var translations = [];
+  Object.keys(locales).sort().forEach(function(l) {
+    var hash = {};
+    hash[l] = i18n.__({ phrase: phrase, locale: l });
+    translations.push(hash);
+  });
+  return translations;
+};
+
 i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   var msg, namedValues, args = [];
 
@@ -275,7 +295,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
 i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
 
   // when given an array of objects => setLocale on each
-  if(Array.isArray(object) && typeof locale === 'string'){
+  if (Array.isArray(object) && typeof locale === 'string') {
     for (var i = object.length - 1; i >= 0; i--) {
       i18n.setLocale(object[i], locale, true);
     }
@@ -306,18 +326,18 @@ i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
       register.forEach(function(r) {
         r.locale = target_object.locale;
       });
-    }else{
+    } else {
       register.locale = target_object.locale;
     }
   }
 
   // consider res
-  if(target_object.res && !skipImplicitObjects){
+  if (target_object.res && !skipImplicitObjects) {
     i18n.setLocale(target_object.res, target_object.locale);
   }
 
   // consider locals
-  if(target_object.locals && !skipImplicitObjects){
+  if (target_object.locals && !skipImplicitObjects) {
     i18n.setLocale(target_object.locals, target_object.locale);
   }
 
@@ -355,9 +375,9 @@ i18n.getCatalog = function i18nGetCatalog(object, locale) {
 
   // called like req.getCatalog()
   if (!target_locale && object === undefined && locale === undefined && typeof this.locale === 'string') {
-    if(register && register.GLOBAL){
+    if (register && register.GLOBAL) {
       target_locale = '';
-    }else{
+    } else {
       target_locale = this.locale;
     }
   }
@@ -412,17 +432,17 @@ function applyAPItoObject(object) {
   });
 
   // set initial locale if not set
-  if(!object.locale){
+  if (!object.locale) {
     object.locale = defaultLocale;
   }
 
   // attach to response if present (ie. in express)
-  if(object.res){
+  if (object.res) {
     applyAPItoObject(object.res);
   }
 
   // attach to locals if present (ie. in express)
-  if(object.locals){
+  if (object.locals) {
     applyAPItoObject(object.locals);
   }
 }
