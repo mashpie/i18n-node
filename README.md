@@ -341,6 +341,37 @@ __n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
 __n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
 ```
 
+### i18n.__l()
+
+Returns a list of translations for a given phrase in each language. 
+
+```js
+i18n.__l('Hello'); // --> [ 'Hallo', 'Hello' ]
+```
+
+This will be usefull when setting up localized routes for example (kudos to @xpepermint, #150):
+
+```js
+// this will match routes
+// EN --> /:locale/products/:id?
+// ES --> /:locale/productos/:id?
+app.get( __l('/:locale/products/:id?'), function (req, res) {
+    // guess what you might use req.params.locale for?
+});
+```
+
+> i18n.__ln() to get plurals will come up in another release...
+
+### i18n.__h()
+
+Returns a hash of translations for a given phrase in each language. 
+
+```js
+i18n.__h('Hello'); // --> [ { de: 'Hallo' }, { en: 'Hello' } ]
+```
+
+> i18n.__hn() to get plurals will come up in another release...
+
 ### i18n.setLocale()
 
 Setting the current locale (ie.: `en`) globally or in current scope.
