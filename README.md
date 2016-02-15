@@ -364,7 +364,7 @@ app.get( __l('/:locale/products/:id?'), function (req, res) {
 
 ### i18n.__h()
 
-Returns a hash of translations for a given phrase in each language. 
+Returns a hashed list of translations for a given phrase in each language. 
 
 ```js
 i18n.__h('Hello'); // --> [ { de: 'Hallo' }, { en: 'Hello' } ]
