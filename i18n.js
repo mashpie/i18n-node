@@ -51,10 +51,18 @@ i18n.version = '0.6.0';
 
 i18n.configure = function i18nConfigure(opt) {
 
-  // you may register helpers in global scope, up to you
+  // you may register i18n in global scope, up to you
   if (typeof opt.register === 'object') {
-    applyAPItoObject(opt.register);
     register = opt.register;
+    // or give an array objects to register to
+    if (Array.isArray(opt.register)) {
+      register = opt.register;
+      register.forEach(function(r) {
+        applyAPItoObject(r);
+      });
+    }else{
+      applyAPItoObject(opt.register);
+    }
   }
 
   // sets a custom cookie name to parse locale settings from
@@ -294,7 +302,13 @@ i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
 
   // consider any extra registered objects
   if (typeof register === 'object') {
-    register.locale = target_object.locale;
+    if (Array.isArray(register) && !skipImplicitObjects) {
+      register.forEach(function(r) {
+        r.locale = target_object.locale;
+      });
+    }else{
+      register.locale = target_object.locale;
+    }
   }
 
   // consider res

@@ -184,6 +184,9 @@ i18n.configure({
     logErrorFn: function (msg) {
         console.log('error', msg);
     }
+
+    // object or [obj1, obj2] to bind the i18n api and current locale to - defaults to null
+    register: global
 });
 ```
 
@@ -196,6 +199,34 @@ res.cookie('yourcookiename', 'de', { maxAge: 900000, httpOnly: true });
 ```
 
 After this and until the cookie expires, `i18n.init()` will get the value of the cookie to set that language instead of default for every page.
+
+#### Some words on `register` option
+
+Esp. when used in a cli like scriptyou won't use any `i18n.init()` to guess language settings from your user. Thus `i18n` won't bind itself to any `res` or `req` object and will work like a static module. 
+
+```js
+var anyObject = {};
+
+i18n.configure({
+  locales: ['en', 'de'],
+  register: anyObject
+});
+
+anyObject.setLocale('de');
+anyObject.__('Hallo'); // --> Hallo`
+```
+
+Cli usage is a special use case, as we won't need to maintain any transaction / concurrency aware setting of locale, so you could even choose to bind `i18n` to _global_ scope of node:
+
+```js
+i18n.configure({
+  locales: ['en', 'de'],
+  register: global
+});
+
+i18n.setLocale('de');
+__('Hello'); // --> Hallo`
+```
 
 ### i18n.init()
 
