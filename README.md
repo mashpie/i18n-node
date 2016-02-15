@@ -50,6 +50,7 @@ In your cli, when not registered to a specific object:
 var greeting = i18n.__('Hello');
 ```
 
+
 > **Global** assumes you share a common state of localization in any time and any part of your app. This is usually fine in cli-style scripts. When serving responses to http requests you'll need to make sure that scope is __NOT__ shared globally but attached to your request object.
 
 ## Example usage in express.js
@@ -118,6 +119,14 @@ You should configure your application once to bootstrap all aspects of `i18n`. Y
 ```js
 i18n.configure({
     locales:['en', 'de'],
+    directory: __dirname + '/locales'
+});
+```
+
+**Since 0.7.0** you may even omit the `locales` setting and just configure a `directory`. `i18n` will read all files within that directory and detect all given locales by their filenames.
+
+```js
+i18n.configure({
     directory: __dirname + '/locales'
 });
 ```
