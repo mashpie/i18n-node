@@ -16,18 +16,18 @@ var vsprintf = require('sprintf-js').vsprintf,
   error = require('debug')('i18n:error'),
   Mustache = require('mustache'),
   locales = {},
-  api = [
-    '__',
-    '__n',
-    '__l',
-    '__h',
-    'getLocale',
-    'setLocale',
-    'getCatalog',
-    'getLocales',
-    'addLocale',
-    'removeLocale'
-  ],
+  api = { // hash of i18n method -> alias
+    '__': '__',
+    '__n': '__n',
+    '__l': '__l',
+    '__h': '__h',
+    'getLocale': 'getLocale',
+    'setLocale': 'setLocale',
+    'getCatalog': 'getCatalog',
+    'getLocales': 'getLocales',
+    'addLocale': 'addLocale',
+    'removeLocale': 'removeLocale'
+  },
   pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
   autoReload,
   cookiename,
@@ -52,6 +52,19 @@ var i18n = exports;
 i18n.version = '0.7.0';
 
 i18n.configure = function i18nConfigure(opt) {
+
+  // Provide custom API method aliases if desired
+  // This needs to be processed before the first call to applyAPItoObject()
+  if (opt.api && typeof opt.api === 'object') {
+    for (var method in opt.api) {
+      if (opt.api.hasOwnProperty(method)) {
+        var alias = opt.api[method];
+        if (typeof api[method] !== 'undefined') {
+          api[method] = alias;
+        }
+      }
+    }
+  }
 
   // you may register i18n in global scope, up to you
   if (typeof opt.register === 'object') {
@@ -83,7 +96,7 @@ i18n.configure = function i18nConfigure(opt) {
   updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
 
   // what to use as the indentation unit (ex: "\t", "  ")
-  indent = (typeof opt.indent === 'string') ? opt.indent : "\t";
+  indent = (typeof opt.indent === 'string') ? opt.indent : '\t';
 
   // json files prefix
   prefix = (typeof opt.prefix === 'string') ? opt.prefix : '';
@@ -126,7 +139,7 @@ i18n.configure = function i18nConfigure(opt) {
         var localeFromFile = guessLocaleFromFile(filename);
 
         if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
-          logDebug("Auto reloading locale file '" + filename + "'.");
+          logDebug('Auto reloading locale file \'' + filename + '\'.');
           read(localeFromFile);
         }
 
@@ -171,7 +184,7 @@ i18n.__ = function i18nTranslate(phrase) {
   if (
     arguments.length > 1 &&
     arguments[arguments.length - 1] !== null &&
-    typeof arguments[arguments.length - 1] === "object"
+    typeof arguments[arguments.length - 1] === 'object'
   ) {
     namedValues = arguments[arguments.length - 1];
     args = Array.prototype.slice.call(arguments, 1, -1);
@@ -231,7 +244,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   if (
     arguments.length >= 2 &&
     arguments[arguments.length - 1] !== null &&
-    typeof arguments[arguments.length - 1] === "object"
+    typeof arguments[arguments.length - 1] === 'object'
   ) {
     namedValues = arguments[arguments.length - 1];
     args = arguments.length >= 5 ? Array.prototype.slice.call(arguments, 3, -1) : [];
@@ -247,7 +260,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     }
     args.unshift(count);
     // some template engines pass all values as strings -> so we try to convert them to numbers
-    if (typeof plural === 'number' || parseInt(plural, 10) + "" === plural) {
+    if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
       count = plural;
     }
 
@@ -258,7 +271,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     }
   } else {
     // called like  __n('cat', 3)
-    if (typeof plural === 'number' || parseInt(plural, 10) + "" === plural) {
+    if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
       count = plural;
       args.unshift(count);
       args.unshift(plural);
@@ -269,7 +282,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   }
   if (count === null) count = namedValues.count;
 
-  // parse translation and replace all digets '%d' by `count`
+  // parse translation and replace all digits '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
   // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
   if (count > 1) {
@@ -421,15 +434,16 @@ i18n.removeLocale = function i18nRemoveLocale(locale) {
 function applyAPItoObject(object) {
 
   // attach to itself if not provided
-  api.forEach(function(method) {
+  for (var method in api) {
+    if (api.hasOwnProperty(method)) {
+      var alias = api[method];
 
-    // be kind rewind, or better not touch anything already exiting
-    if (!object[method]) {
-      object[method] = function() {
-        return i18n[method].apply(object, arguments);
-      };
+      // be kind rewind, or better not touch anything already existing
+      if (!object[alias]) {
+        object[alias] = i18n[method].bind(object);
+      }
     }
-  });
+  }
 
   // set initial locale if not set
   if (!object.locale) {
@@ -468,7 +482,7 @@ function guessLocales(directory) {
  */
 function guessLocaleFromFile(filename) {
   var extensionRegex = new RegExp(extension + '$', 'g');
-  var prefixRegex = new RegExp('^' + prefix, "g");
+  var prefixRegex = new RegExp('^' + prefix, 'g');
 
   if (prefix && !filename.match(prefixRegex)) return false;
   if (extension && !filename.match(extensionRegex)) return false;
@@ -494,7 +508,7 @@ function guessLanguage(request) {
     if (queryParameter && request.url) {
       var urlObj = url.parse(request.url, true);
       if (urlObj.query[queryParameter]) {
-        logDebug("Overriding locale from query: " + urlObj.query[queryParameter]);
+        logDebug('Overriding locale from query: ' + urlObj.query[queryParameter]);
         request.language = urlObj.query[queryParameter].toLowerCase();
         return i18n.setLocale(request, request.language);
       }
@@ -608,7 +622,7 @@ function getLocaleFromObject(obj) {
 
 function translate(locale, singular, plural) {
   if (locale === undefined) {
-    logWarn("WARN: No locale found - check the context of the call to __(). Using " + defaultLocale + " as current locale");
+    logWarn('WARN: No locale found - check the context of the call to __(). Using ' + defaultLocale + ' as current locale');
     locale = defaultLocale;
   }
 
@@ -623,7 +637,7 @@ function translate(locale, singular, plural) {
 
   // fallback to default when missed
   if (!locales[locale]) {
-    logWarn("WARN: Locale " + locale + " couldn't be read - check the context of the call to $__. Using " + defaultLocale + " (default) as current locale");
+    logWarn('WARN: Locale ' + locale + ' couldn\'t be read - check the context of the call to $__. Using ' + defaultLocale + ' (default) as current locale');
     locale = defaultLocale;
     read(locale);
   }
@@ -686,7 +700,7 @@ function localeAccessor(locale, singular, allowDelayedTraversal) {
   var indexOfDot = objectNotation && singular.indexOf(objectNotation);
   if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length)) {
     // If delayed traversal wasn't specifically forbidden, it is allowed.
-    if (typeof allowDelayedTraversal == "undefined") allowDelayedTraversal = true;
+    if (typeof allowDelayedTraversal == 'undefined') allowDelayedTraversal = true;
     // The accessor we're trying to find and which we want to return.
     var accessor = null;
     // An accessor that returns null.
@@ -752,7 +766,7 @@ function localeMutator(locale, singular, allowBranching) {
   var indexOfDot = objectNotation && singular.indexOf(objectNotation);
   if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length)) {
     // If branching wasn't specifically allowed, disable it.
-    if (typeof allowBranching == "undefined") allowBranching = false;
+    if (typeof allowBranching == 'undefined') allowBranching = false;
     // This will become the function we want to return.
     var accessor = null;
     // An accessor that takes one argument and returns null.
