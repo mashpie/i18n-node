@@ -29,7 +29,7 @@ var vsprintf = require('sprintf-js').vsprintf,
     'addLocale',
     'removeLocale'
   ],
-  pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
+  pathsep = path.sep, // ---> means win support will be available in node 0.8.x and above
   autoReload,
   cookiename,
   defaultLocale,
@@ -193,6 +193,21 @@ i18n.__ = function i18nTranslate(phrase) {
     msg = translate(getLocaleFromObject(this), phrase);
   }
 
+  // postprocess to get compatible to plurals
+  if(typeof msg === 'object' && msg.one){
+    msg = msg.one;
+  }
+
+  // in case there is no 'one' but an 'other' rule
+  if(typeof msg === 'object' && msg.other){
+    msg = msg.other;
+  }
+
+  // test for parsable interval string
+  if ((/\|/).test(msg)) {
+    msg = parsePluralInterval(msg, false);
+  }
+
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
   if ((/{{.*}}/).test(msg)) {
     msg = Mustache.render(msg, namedValues);
@@ -275,15 +290,16 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
   if(typeof msg === 'object'){
     if (count == 1 || count == -1) {
-      msg = msg.one;
+      // support (cr|l)azy people only using 'other' (like "all")
+      msg = msg.one || msg.other;
     } else {
       msg = msg.other;
     }
   }
 
-  // test for parsable string
+  // test for parsable interval string
   if ((/\|/).test(msg)) {
-    msg = parsePluralRule(msg, count);
+    msg = parsePluralInterval(msg, count);
   }
 
   // replace the counter
@@ -301,44 +317,6 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   }
 
   return msg;
-};
-
-var parsePluralRule = function(phrase, count) {
-  var returnPhrase = phrase;
-  var phrases = phrase.split(/\|/);
-
-  // some() breaks on 1st true
-  phrases.some(function(p) {
-    var matches = p.match(/^\s*([\(\)\[\]\d,]+)?\s*(.*)$/);
-
-    // not the same as in combined condition
-    if (matches[1]) {
-      if (matchInterval(count, matches[1]) === true) {
-        returnPhrase = matches[2];
-        return true;
-      }
-    } else {
-      returnPhrase = p;
-    }
-  });
-
-  return returnPhrase;
-};
-
-var matchInterval = function(number, interval) {
-  interval = parseInterval(interval);
-  if (interval) {
-    if (interval.from.value === number) {
-      return interval.from.included;
-    }
-    if (interval.to.value === number) {
-      return interval.to.included;
-    }
-
-    return (Math.min(interval.from.value, number) === interval.from.value &&
-      Math.max(interval.to.value, number) === interval.to.value);
-  }
-  return false;
 };
 
 i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
@@ -467,7 +445,7 @@ i18n.removeLocale = function i18nRemoveLocale(locale) {
  * registers all public API methods to a given response object when not already declared
  */
 
-function applyAPItoObject(object) {
+var applyAPItoObject = function (object) {
 
   // attach to itself if not provided
   api.forEach(function(method) {
@@ -499,7 +477,7 @@ function applyAPItoObject(object) {
 /**
  * tries to guess locales by scanning the given directory
  */
-function guessLocales(directory) {
+var guessLocales = function (directory) {
   var entries = fs.readdirSync(directory);
   var localesFound = [];
 
@@ -515,7 +493,7 @@ function guessLocales(directory) {
 /**
  * tries to guess locales from a given filename
  */
-function guessLocaleFromFile(filename) {
+var guessLocaleFromFile = function (filename) {
   var extensionRegex = new RegExp(extension + '$', 'g');
   var prefixRegex = new RegExp('^' + prefix, "g");
 
@@ -528,7 +506,7 @@ function guessLocaleFromFile(filename) {
  * guess language setting based on http headers
  */
 
-function guessLanguage(request) {
+var guessLanguage = function (request) {
   if (typeof request === 'object') {
     var language_header = request.headers['accept-language'],
       languages = [],
@@ -615,7 +593,7 @@ function guessLanguage(request) {
 /**
  * Get a sorted list of accepted languages from the HTTP Accept-Language header
  */
-function getAcceptedLanguagesFromHeader(header) {
+var getAcceptedLanguagesFromHeader = function (header) {
   var languages = header.split(','),
     preferences = {};
   return languages.map(function parseLanguagePreference(item) {
@@ -640,7 +618,7 @@ function getAcceptedLanguagesFromHeader(header) {
  * searches for locale in given object
  */
 
-function getLocaleFromObject(obj) {
+var getLocaleFromObject = function (obj) {
   var locale;
   if (obj && obj.scope) {
     locale = obj.scope.locale;
@@ -652,10 +630,58 @@ function getLocaleFromObject(obj) {
 }
 
 /**
+ * splits and parses a phrase for mathematical interval expressions
+ */
+var parsePluralInterval = function(phrase, count) {
+  var returnPhrase = phrase;
+  var phrases = phrase.split(/\|/);
+
+  // some() breaks on 1st true
+  phrases.some(function(p) {
+    var matches = p.match(/^\s*([\(\)\[\]\d,]+)?\s*(.*)$/);
+
+    // not the same as in combined condition
+    if (matches[1]) {
+      if (matchInterval(count, matches[1]) === true) {
+        returnPhrase = matches[2];
+        return true;
+      }
+    } else {
+      returnPhrase = p;
+    }
+
+  });
+  return returnPhrase;
+};
+
+/**
+ * test a number to match mathematical interval expressions
+ * [0,2] - 0 to 2 (including, matches: 0, 1, 2)
+ * ]0,3[ - 0 to 3 (excluding, matches: 1, 2)
+ * [1]   - 1 (matches: 1)
+ * [20,] - all numbers ≥20 (matches: 20, 21, 22, ...)
+ * [,20] - all numbers ≤20 (matches: 20, 21, 22, ...)
+ */
+var matchInterval = function(number, interval) {
+  interval = parseInterval(interval);
+  if (interval && typeof number === 'number') {
+    if (interval.from.value === number) {
+      return interval.from.included;
+    }
+    if (interval.to.value === number) {
+      return interval.to.included;
+    }
+
+    return (Math.min(interval.from.value, number) === interval.from.value &&
+      Math.max(interval.to.value, number) === interval.to.value);
+  }
+  return false;
+};
+
+/**
  * read locale file, translate a msg and write to fs if new
  */
-
-function translate(locale, singular, plural) {
+var translate = function (locale, singular, plural) {
   if (locale === undefined) {
     logWarn("WARN: No locale found - check the context of the call to __(). Using " + defaultLocale + " as current locale");
     locale = defaultLocale;
@@ -727,7 +753,7 @@ function translate(locale, singular, plural) {
  * @returns {Function} A function that, when invoked, returns the current value stored
  * in the object at the requested location.
  */
-function localeAccessor(locale, singular, allowDelayedTraversal) {
+var localeAccessor = function (locale, singular, allowDelayedTraversal) {
   // Bail out on non-existent locales to defend against internal errors.
   if (!locales[locale]) return Function.prototype;
 
@@ -793,7 +819,7 @@ function localeAccessor(locale, singular, allowDelayedTraversal) {
  * @returns {Function} A function that takes one argument. When the function is
  * invoked, the targeted translation term will be set to the given value inside the locale table.
  */
-function localeMutator(locale, singular, allowBranching) {
+var localeMutator = function (locale, singular, allowBranching) {
   // Bail out on non-existent locales to defend against internal errors.
   if (!locales[locale]) return Function.prototype;
 
@@ -859,8 +885,7 @@ function localeMutator(locale, singular, allowBranching) {
 /**
  * try reading a file
  */
-
-function read(locale) {
+var read = function (locale) {
   var localeFile = {},
     file = getStorageFilePath(locale);
   try {
@@ -891,8 +916,7 @@ function read(locale) {
 /**
  * try writing a file in a created directory
  */
-
-function write(locale) {
+var write = function (locale) {
   var stats, target, tmp;
 
   // don't write new locale information to disk if updateFiles isn't true
@@ -932,8 +956,7 @@ function write(locale) {
 /**
  * basic normalization of filepath
  */
-
-function getStorageFilePath(locale) {
+var getStorageFilePath = function (locale) {
   // changed API to use .json as default, #16
   var ext = extension || '.json',
     filepath = path.normalize(directory + pathsep + prefix + locale + ext),
@@ -954,7 +977,6 @@ function getStorageFilePath(locale) {
 /**
  * Logging proxies
  */
-
 function logDebug(msg) {
   logDebugFn(msg);
 }
