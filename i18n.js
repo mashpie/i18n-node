@@ -472,7 +472,7 @@ var applyAPItoObject = function (object) {
   if (object.locals) {
     applyAPItoObject(object.locals);
   }
-}
+};
 
 /**
  * tries to guess locales by scanning the given directory
@@ -488,7 +488,7 @@ var guessLocales = function (directory) {
   }
 
   return localesFound.sort();
-}
+};
 
 /**
  * tries to guess locales from a given filename
@@ -500,7 +500,7 @@ var guessLocaleFromFile = function (filename) {
   if (prefix && !filename.match(prefixRegex)) return false;
   if (extension && !filename.match(extensionRegex)) return false;
   return filename.replace(prefix, '').replace(extensionRegex, '');
-}
+};
 
 /**
  * guess language setting based on http headers
@@ -588,7 +588,7 @@ var guessLanguage = function (request) {
 
   // last resort: defaultLocale
   return i18n.setLocale(request, defaultLocale);
-}
+};
 
 /**
  * Get a sorted list of accepted languages from the HTTP Accept-Language header
@@ -612,7 +612,7 @@ var getAcceptedLanguagesFromHeader = function (header) {
   }).sort(function sortLanguages(a, b) {
     return preferences[b] - preferences[a];
   });
-}
+};
 
 /**
  * searches for locale in given object
@@ -627,7 +627,7 @@ var getLocaleFromObject = function (obj) {
     locale = obj.locale;
   }
   return locale;
-}
+};
 
 /**
  * splits and parses a phrase for mathematical interval expressions
@@ -740,7 +740,7 @@ var translate = function (locale, singular, plural) {
   }
 
   return accessor();
-}
+};
 
 /**
  * Allows delayed access to translations nested inside objects.
@@ -804,7 +804,7 @@ var localeAccessor = function (locale, singular, allowDelayedTraversal) {
       return locales[locale][singular];
     };
   }
-}
+};
 
 /**
  * Allows delayed mutation of a translation nested inside objects.
@@ -880,7 +880,7 @@ var localeMutator = function (locale, singular, allowBranching) {
       return value;
     };
   }
-}
+};
 
 /**
  * try reading a file
@@ -911,7 +911,7 @@ var read = function (locale) {
     logDebug('initializing ' + file);
     write(locale);
   }
-}
+};
 
 /**
  * try writing a file in a created directory
@@ -951,7 +951,7 @@ var write = function (locale) {
   } catch (e) {
     logError('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
   }
-}
+};
 
 /**
  * basic normalization of filepath
@@ -972,7 +972,7 @@ var getStorageFilePath = function (locale) {
     logDebug('will use ' + filepath);
   }
   return filepath;
-}
+};
 
 /**
  * Logging proxies
