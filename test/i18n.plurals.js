@@ -53,6 +53,46 @@ describe('parsing plurals from strings', function() {
     );
   });
 
+  it('plurals with intervals in string (no object)', function() {
+    var p = 'plurals with intervals in string (no object)';
+    should.equal(
+      pluralTest.__n(p, 2),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n(p, 5),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n(p, 3),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n(p, 6),
+      "and a catchall rule"
+    );
+  });
+
+  it('plurals with intervals in _other_ missing _one_', function() {
+    var p = 'plurals with intervals in _other_ missing _one_';
+    should.equal(
+      pluralTest.__n(p, 2),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n(p, 5),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n(p, 3),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n(p, 6),
+      "and a catchall rule"
+    );
+  });
+
   it('returns correctly for 2 and 5 and included 3', function() {
     should.equal(
       pluralTest.__n('plurals with intervals as string', 2),

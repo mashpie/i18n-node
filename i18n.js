@@ -273,10 +273,12 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   // parse translation and replace all digets '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
   // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
-  if (count == 1 || count == -1) {
-    msg = msg.one;
-  } else {
-    msg = msg.other;
+  if(typeof msg === 'object'){
+    if (count == 1 || count == -1) {
+      msg = msg.one;
+    } else {
+      msg = msg.other;
+    }
   }
 
   // test for parsable string
@@ -334,7 +336,7 @@ var matchInterval = function(number, interval) {
     }
 
     return (Math.min(interval.from.value, number) === interval.from.value &&
-      Math.max(interval.to.value, number) === interval.to.value)
+      Math.max(interval.to.value, number) === interval.to.value);
   }
   return false;
 };
