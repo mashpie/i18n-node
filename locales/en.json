@@ -52,5 +52,10 @@
 	},
 	"ordered arguments": "%2$s then %1$s",
 	"ordered arguments with numbers": "%2$d then %1$s then %3$.2f",
-	"repeated argument": "%1$s, %1$s, %1$s"
+	"repeated argument": "%1$s, %1$s, %1$s",
+	". is first character": "Dot is first character",
+	"last character is .": "last character is Dot",
+	"last character is ": {
+		"": "last character is ."
+	}
 }
