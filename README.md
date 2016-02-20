@@ -785,7 +785,7 @@ $ DEBUG=i18n:warn,i18n:error node app.js
 
 Combine those settings with you existing application if any of you other modules or libs also uses __debug__
 
-## Using custom logger
+### Using custom logger
 
 You can configure i18n to use a custom logger. For example attach some simple `console`-logging:
 

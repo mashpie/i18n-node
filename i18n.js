@@ -6,6 +6,8 @@
  * @version     0.7.0
  */
 
+'use strict';
+
 // dependencies and "private" vars
 var vsprintf = require('sprintf-js').vsprintf,
   fs = require('fs'),
@@ -39,7 +41,7 @@ var vsprintf = require('sprintf-js').vsprintf,
   fallbacks,
   indent,
   logDebugFn,
-  logErrorF,
+  logErrorFn,
   logWarnFn,
   objectNotation,
   prefix,
@@ -78,13 +80,14 @@ i18n.configure = function i18nConfigure(opt) {
   directory = (typeof opt.directory === 'string') ? opt.directory : __dirname + pathsep + 'locales';
 
   // permissions when creating new directories
-  directoryPermissions = (typeof opt.directoryPermissions === 'string') ? parseInt(opt.directoryPermissions, 8) : null;
+  directoryPermissions = (typeof opt.directoryPermissions === 'string') ?
+    parseInt(opt.directoryPermissions, 8) : null;
 
   // write new locale information to disk
   updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
 
   // what to use as the indentation unit (ex: "\t", "  ")
-  indent = (typeof opt.indent === 'string') ? opt.indent : "\t";
+  indent = (typeof opt.indent === 'string') ? opt.indent : '\t';
 
   // json files prefix
   prefix = (typeof opt.prefix === 'string') ? opt.prefix : '';
@@ -127,7 +130,7 @@ i18n.configure = function i18nConfigure(opt) {
         var localeFromFile = guessLocaleFromFile(filename);
 
         if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
-          logDebug("Auto reloading locale file '" + filename + "'.");
+          logDebug('Auto reloading locale file "' + filename + '".');
           read(localeFromFile);
         }
 
@@ -172,7 +175,7 @@ i18n.__ = function i18nTranslate(phrase) {
   if (
     arguments.length > 1 &&
     arguments[arguments.length - 1] !== null &&
-    typeof arguments[arguments.length - 1] === "object"
+    typeof arguments[arguments.length - 1] === 'object'
   ) {
     namedValues = arguments[arguments.length - 1];
     args = Array.prototype.slice.call(arguments, 1, -1);
@@ -194,12 +197,12 @@ i18n.__ = function i18nTranslate(phrase) {
   }
 
   // postprocess to get compatible to plurals
-  if(typeof msg === 'object' && msg.one){
+  if (typeof msg === 'object' && msg.one) {
     msg = msg.one;
   }
 
   // in case there is no 'one' but an 'other' rule
-  if(typeof msg === 'object' && msg.other){
+  if (typeof msg === 'object' && msg.other) {
     msg = msg.other;
   }
 
@@ -247,7 +250,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   if (
     arguments.length >= 2 &&
     arguments[arguments.length - 1] !== null &&
-    typeof arguments[arguments.length - 1] === "object"
+    typeof arguments[arguments.length - 1] === 'object'
   ) {
     namedValues = arguments[arguments.length - 1];
     args = arguments.length >= 5 ? Array.prototype.slice.call(arguments, 3, -1) : [];
@@ -258,12 +261,17 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
 
   // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
   if (typeof singular === 'object') {
-    if (typeof singular.locale === 'string' && typeof singular.singular === 'string' && typeof singular.plural === 'string') {
+    if (
+      typeof singular.locale === 'string' &&
+      typeof singular.singular === 'string' &&
+      typeof singular.plural === 'string'
+    ) {
       msg = translate(singular.locale, singular.singular, singular.plural);
     }
     args.unshift(count);
+
     // some template engines pass all values as strings -> so we try to convert them to numbers
-    if (typeof plural === 'number' || parseInt(plural, 10) + "" === plural) {
+    if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
       count = plural;
     }
 
@@ -274,7 +282,7 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     }
   } else {
     // called like  __n('cat', 3)
-    if (typeof plural === 'number' || parseInt(plural, 10) + "" === plural) {
+    if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
       count = plural;
       args.unshift(count);
       args.unshift(plural);
@@ -283,13 +291,18 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
     // get translated message with locale from scope (deprecated) or object
     msg = translate(getLocaleFromObject(this), singular, plural);
   }
+
   if (count === null) count = namedValues.count;
+
+  // enforce number
+  count = parseInt(count, 10);
 
   // parse translation and replace all digets '%d' by `count`
   // this also replaces extra strings '%%s' to parseble '%s' for next step
-  // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
-  if(typeof msg === 'object'){
-    if (count == 1 || count == -1) {
+  // simplest 2 form implementation of plural, like
+  // @see https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
+  if (typeof msg === 'object') {
+    if (count === 1 || count === -1) {
       // support (cr|l)azy people only using 'other' (like "all")
       msg = msg.one || msg.other;
     } else {
@@ -330,45 +343,45 @@ i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
   }
 
   // defaults to called like i18n.setLocale(req, 'en')
-  var target_object = object;
-  var target_locale = locale;
+  var targetObject = object;
+  var targetLocale = locale;
 
   // called like req.setLocale('en') or i18n.setLocale('en')
   if (locale === undefined && typeof object === 'string') {
-    target_object = this;
-    target_locale = object;
+    targetObject = this;
+    targetLocale = object;
   }
 
   // consider a fallback
-  if (!locales[target_locale] && fallbacks[target_locale]) {
-    target_locale = fallbacks[target_locale];
+  if (!locales[targetLocale] && fallbacks[targetLocale]) {
+    targetLocale = fallbacks[targetLocale];
   }
 
   // now set locale on object
-  target_object.locale = locales[target_locale] ? target_locale : defaultLocale;
+  targetObject.locale = locales[targetLocale] ? targetLocale : defaultLocale;
 
   // consider any extra registered objects
   if (typeof register === 'object') {
     if (Array.isArray(register) && !skipImplicitObjects) {
       register.forEach(function(r) {
-        r.locale = target_object.locale;
+        r.locale = targetObject.locale;
       });
     } else {
-      register.locale = target_object.locale;
+      register.locale = targetObject.locale;
     }
   }
 
   // consider res
-  if (target_object.res && !skipImplicitObjects) {
-    i18n.setLocale(target_object.res, target_object.locale);
+  if (targetObject.res && !skipImplicitObjects) {
+    i18n.setLocale(targetObject.res, targetObject.locale);
   }
 
   // consider locals
-  if (target_object.locals && !skipImplicitObjects) {
-    i18n.setLocale(target_object.locals, target_object.locale);
+  if (targetObject.locals && !skipImplicitObjects) {
+    i18n.setLocale(targetObject.locals, targetObject.locale);
   }
 
-  return i18n.getLocale(target_object);
+  return i18n.getLocale(targetObject);
 };
 
 i18n.getLocale = function i18nGetLocale(request) {
@@ -383,45 +396,50 @@ i18n.getLocale = function i18nGetLocale(request) {
 };
 
 i18n.getCatalog = function i18nGetCatalog(object, locale) {
-  var target_locale;
+  var targetLocale;
 
   // called like i18n.getCatalog(req)
   if (typeof object === 'object' && typeof object.locale === 'string' && locale === undefined) {
-    target_locale = object.locale;
+    targetLocale = object.locale;
   }
 
   // called like i18n.getCatalog(req, 'en')
-  if (!target_locale && typeof object === 'object' && typeof locale === 'string') {
-    target_locale = locale;
+  if (!targetLocale && typeof object === 'object' && typeof locale === 'string') {
+    targetLocale = locale;
   }
 
   // called like req.getCatalog('en')
-  if (!target_locale && locale === undefined && typeof object === 'string') {
-    target_locale = object;
+  if (!targetLocale && locale === undefined && typeof object === 'string') {
+    targetLocale = object;
   }
 
   // called like req.getCatalog()
-  if (!target_locale && object === undefined && locale === undefined && typeof this.locale === 'string') {
+  if (
+    !targetLocale &&
+    object === undefined &&
+    locale === undefined &&
+    typeof this.locale === 'string'
+  ) {
     if (register && register.GLOBAL) {
-      target_locale = '';
+      targetLocale = '';
     } else {
-      target_locale = this.locale;
+      targetLocale = this.locale;
     }
   }
 
   // called like i18n.getCatalog()
-  if (target_locale === undefined || target_locale === '') {
+  if (targetLocale === undefined || targetLocale === '') {
     return locales;
   }
 
-  if (!locales[target_locale] && fallbacks[target_locale]) {
-    target_locale = fallbacks[target_locale];
+  if (!locales[targetLocale] && fallbacks[targetLocale]) {
+    targetLocale = fallbacks[targetLocale];
   }
 
-  if (locales[target_locale]) {
-    return locales[target_locale];
+  if (locales[targetLocale]) {
+    return locales[targetLocale];
   } else {
-    logWarn('No catalog found for "' + target_locale + '"');
+    logWarn('No catalog found for "' + targetLocale + '"');
     return false;
   }
 };
@@ -444,8 +462,7 @@ i18n.removeLocale = function i18nRemoveLocale(locale) {
 /**
  * registers all public API methods to a given response object when not already declared
  */
-
-var applyAPItoObject = function (object) {
+var applyAPItoObject = function(object) {
 
   // attach to itself if not provided
   api.forEach(function(method) {
@@ -477,7 +494,7 @@ var applyAPItoObject = function (object) {
 /**
  * tries to guess locales by scanning the given directory
  */
-var guessLocales = function (directory) {
+var guessLocales = function(directory) {
   var entries = fs.readdirSync(directory);
   var localesFound = [];
 
@@ -493,9 +510,9 @@ var guessLocales = function (directory) {
 /**
  * tries to guess locales from a given filename
  */
-var guessLocaleFromFile = function (filename) {
+var guessLocaleFromFile = function(filename) {
   var extensionRegex = new RegExp(extension + '$', 'g');
-  var prefixRegex = new RegExp('^' + prefix, "g");
+  var prefixRegex = new RegExp('^' + prefix, 'g');
 
   if (prefix && !filename.match(prefixRegex)) return false;
   if (extension && !filename.match(extensionRegex)) return false;
@@ -506,9 +523,9 @@ var guessLocaleFromFile = function (filename) {
  * guess language setting based on http headers
  */
 
-var guessLanguage = function (request) {
+var guessLanguage = function(request) {
   if (typeof request === 'object') {
-    var language_header = request.headers['accept-language'],
+    var languageHeader = request.headers['accept-language'],
       languages = [],
       regions = [];
 
@@ -521,7 +538,7 @@ var guessLanguage = function (request) {
     if (queryParameter && request.url) {
       var urlObj = url.parse(request.url, true);
       if (urlObj.query[queryParameter]) {
-        logDebug("Overriding locale from query: " + urlObj.query[queryParameter]);
+        logDebug('Overriding locale from query: ' + urlObj.query[queryParameter]);
         request.language = urlObj.query[queryParameter].toLowerCase();
         return i18n.setLocale(request, request.language);
       }
@@ -534,11 +551,11 @@ var guessLanguage = function (request) {
     }
 
     // 'accept-language' is the most common source
-    if (language_header) {
-      var accepted_languages = getAcceptedLanguagesFromHeader(language_header),
+    if (languageHeader) {
+      var acceptedLanguages = getAcceptedLanguagesFromHeader(languageHeader),
         match, fallbackMatch, fallback;
-      for (var i = 0; i < accepted_languages.length; i++) {
-        var lang = accepted_languages[i],
+      for (var i = 0; i < acceptedLanguages.length; i++) {
+        var lang = acceptedLanguages[i],
           lr = lang.split('-', 2),
           parentLang = lr[0],
           region = lr[1];
@@ -546,20 +563,22 @@ var guessLanguage = function (request) {
         // Check if we have a configured fallback set for this language.
         if (fallbacks && fallbacks[lang]) {
           fallback = fallbacks[lang];
-          // Fallbacks for languages should be inserted where the original, unsupported language existed.
-          var acceptedLanguageIndex = accepted_languages.indexOf(lang);
-          if (accepted_languages.indexOf(fallback) < 0) {
-            accepted_languages.splice(acceptedLanguageIndex + 1, 0, fallback);
+          // Fallbacks for languages should be inserted
+          // where the original, unsupported language existed.
+          var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
+          if (acceptedLanguages.indexOf(fallback) < 0) {
+            acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
           }
         }
 
         // Check if we have a configured fallback set for the parent language of the locale.
         if (fallbacks && fallbacks[parentLang]) {
           fallback = fallbacks[parentLang];
-          // Fallbacks for a parent language should be inserted to the end of the list, so they're only picked
+          // Fallbacks for a parent language should be inserted
+          // to the end of the list, so they're only picked
           // if there is no better match.
-          if (accepted_languages.indexOf(fallback) < 0) {
-            accepted_languages.push(fallback);
+          if (acceptedLanguages.indexOf(fallback) < 0) {
+            acceptedLanguages.push(fallback);
           }
         }
 
@@ -593,7 +612,7 @@ var guessLanguage = function (request) {
 /**
  * Get a sorted list of accepted languages from the HTTP Accept-Language header
  */
-var getAcceptedLanguagesFromHeader = function (header) {
+var getAcceptedLanguagesFromHeader = function(header) {
   var languages = header.split(','),
     preferences = {};
   return languages.map(function parseLanguagePreference(item) {
@@ -618,7 +637,7 @@ var getAcceptedLanguagesFromHeader = function (header) {
  * searches for locale in given object
  */
 
-var getLocaleFromObject = function (obj) {
+var getLocaleFromObject = function(obj) {
   var locale;
   if (obj && obj.scope) {
     locale = obj.scope.locale;
@@ -681,9 +700,10 @@ var matchInterval = function(number, interval) {
 /**
  * read locale file, translate a msg and write to fs if new
  */
-var translate = function (locale, singular, plural) {
+var translate = function(locale, singular, plural) {
   if (locale === undefined) {
-    logWarn("WARN: No locale found - check the context of the call to __(). Using " + defaultLocale + " as current locale");
+    logWarn('WARN: No locale found - check the context of the call to __(). Using ' +
+      defaultLocale + ' as current locale');
     locale = defaultLocale;
   }
 
@@ -698,7 +718,11 @@ var translate = function (locale, singular, plural) {
 
   // fallback to default when missed
   if (!locales[locale]) {
-    logWarn("WARN: Locale " + locale + " couldn't be read - check the context of the call to $__. Using " + defaultLocale + " (default) as current locale");
+
+    logWarn('WARN: Locale ' + locale +
+      ' couldn\'t be read - check the context of the call to $__. Using ' +
+      defaultLocale + ' (default) as current locale');
+
     locale = defaultLocale;
     read(locale);
   }
@@ -707,7 +731,8 @@ var translate = function (locale, singular, plural) {
   var defaultPlural = plural;
   if (objectNotation) {
     var indexOfColon = singular.indexOf(':');
-    // We compare against 0 instead of -1 because we don't really expect the string to start with ':'.
+    // We compare against 0 instead of -1 because
+    // we don't really expect the string to start with ':'.
     if (0 < indexOfColon) {
       defaultSingular = singular.substring(indexOfColon + 1);
       singular = singular.substring(0, indexOfColon);
@@ -753,7 +778,7 @@ var translate = function (locale, singular, plural) {
  * @returns {Function} A function that, when invoked, returns the current value stored
  * in the object at the requested location.
  */
-var localeAccessor = function (locale, singular, allowDelayedTraversal) {
+var localeAccessor = function(locale, singular, allowDelayedTraversal) {
   // Bail out on non-existent locales to defend against internal errors.
   if (!locales[locale]) return Function.prototype;
 
@@ -761,7 +786,7 @@ var localeAccessor = function (locale, singular, allowDelayedTraversal) {
   var indexOfDot = objectNotation && singular.indexOf(objectNotation);
   if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length)) {
     // If delayed traversal wasn't specifically forbidden, it is allowed.
-    if (typeof allowDelayedTraversal == "undefined") allowDelayedTraversal = true;
+    if (typeof allowDelayedTraversal === 'undefined') allowDelayedTraversal = true;
     // The accessor we're trying to find and which we want to return.
     var accessor = null;
     // An accessor that returns null.
@@ -819,7 +844,7 @@ var localeAccessor = function (locale, singular, allowDelayedTraversal) {
  * @returns {Function} A function that takes one argument. When the function is
  * invoked, the targeted translation term will be set to the given value inside the locale table.
  */
-var localeMutator = function (locale, singular, allowBranching) {
+var localeMutator = function(locale, singular, allowBranching) {
   // Bail out on non-existent locales to defend against internal errors.
   if (!locales[locale]) return Function.prototype;
 
@@ -827,7 +852,7 @@ var localeMutator = function (locale, singular, allowBranching) {
   var indexOfDot = objectNotation && singular.indexOf(objectNotation);
   if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length)) {
     // If branching wasn't specifically allowed, disable it.
-    if (typeof allowBranching == "undefined") allowBranching = false;
+    if (typeof allowBranching === 'undefined') allowBranching = false;
     // This will become the function we want to return.
     var accessor = null;
     // An accessor that takes one argument and returns null.
@@ -868,7 +893,8 @@ var localeMutator = function (locale, singular, allowBranching) {
     // Return the final mutator.
     return function(value) {
       // If we need to re-traverse the tree
-      // invoke the search again, but allow branching this time (because here the mutator is being invoked)
+      // invoke the search again, but allow branching
+      // this time (because here the mutator is being invoked)
       // otherwise, just change the value directly.
       return (reTraverse) ? localeMutator(locale, singular, true)(value) : accessor(value);
     };
@@ -885,7 +911,7 @@ var localeMutator = function (locale, singular, allowBranching) {
 /**
  * try reading a file
  */
-var read = function (locale) {
+var read = function(locale) {
   var localeFile = {},
     file = getStorageFilePath(locale);
   try {
@@ -895,7 +921,8 @@ var read = function (locale) {
       // parsing filecontents to locales[locale]
       locales[locale] = JSON.parse(localeFile);
     } catch (parseError) {
-      logError('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', parseError);
+      logError('unable to parse locales from file (maybe ' +
+        file + ' is empty or invalid json?): ', parseError);
     }
   } catch (readError) {
     // unable to read, so intialize that file
@@ -916,7 +943,7 @@ var read = function (locale) {
 /**
  * try writing a file in a created directory
  */
-var write = function (locale) {
+var write = function(locale) {
   var stats, target, tmp;
 
   // don't write new locale information to disk if updateFiles isn't true
@@ -940,23 +967,25 @@ var write = function (locale) {
   // writing to tmp and rename on success
   try {
     target = getStorageFilePath(locale);
-    tmp = target + ".tmp";
-    fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), "utf8");
+    tmp = target + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), 'utf8');
     stats = fs.statSync(tmp);
     if (stats.isFile()) {
       fs.renameSync(tmp, target);
     } else {
-      logError('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ');
+      logError('unable to write locales to file (either ' +
+        tmp + ' or ' + target + ' are not writeable?): ');
     }
   } catch (e) {
-    logError('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
+    logError('unexpected error writing files (either ' +
+      tmp + ' or ' + target + ' are not writeable?): ', e);
   }
 };
 
 /**
  * basic normalization of filepath
  */
-var getStorageFilePath = function (locale) {
+var getStorageFilePath = function(locale) {
   // changed API to use .json as default, #16
   var ext = extension || '.json',
     filepath = path.normalize(directory + pathsep + prefix + locale + ext),
