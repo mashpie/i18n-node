@@ -581,12 +581,15 @@ __n('dogs', 199) // --> too many dogs
 The rules are parsed in sequenced order, so the first match will skip any extra rules. Example:
 
 ```json
-"dogs":"[0]no dog|[1]one dog|[,10[ less than ten dogs|[,20[ less than 20 dogs|too many dogs"
+{
+    "dogs":"[0]no dog|[1]one dog|[,10[ less than ten dogs|[,20[ less than 20 dogs|too many dogs"
+}
 ```
 
 results in
 
 ```js
+// interval matched by number
 __n('dogs', 0) // --> no dog
 __n('dogs', 1) // --> one dog
 __n('dogs', 2) // --> less than ten dogs
@@ -595,6 +598,9 @@ __n('dogs', 10) // --> less than 20 dogs
 __n('dogs', 19) // --> less than 20 dogs
 __n('dogs', 20) // --> too many dogs
 __n('dogs', 199) // --> too many dogs
+
+// no interval returned, but found a catchall 
+__('dogs') // --> too many dogs
 ```
 
 See [en.json example](https://github.com/mashpie/i18n-node/blob/master/locales/en.json) inside `/locales` for some inspiration on use cases. Each phrase might get decorated further with mustache and sprintf expressions:
@@ -609,8 +615,12 @@ will put (as taken from tests):
 
 ```js
 var p = 'example'
+
+// will always use a found catchall
 __(p, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number %s
 __(p, ['one'], {me: 'marcus'}) // --> and a catchall rule for marcus to get my number one
+
+// will search a matching interval or fallback to catchall
 __n(p, 1, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 1
 __n(p, 2, {me: 'marcus'}) // --> 2 is between two and five for marcus
 __n(p, 5, {me: 'marcus'}) // --> 5 is between two and five for marcus
