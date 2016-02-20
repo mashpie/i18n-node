@@ -11,8 +11,7 @@ describe('Module API', function () {
     i18n.configure({
       locales: ['en', 'de'],
       fallbacks: {'nl': 'de'},
-      directory: './locales',
-      register: global
+      directory: './locales'
     });
 
   });
