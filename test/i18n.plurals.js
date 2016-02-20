@@ -27,7 +27,7 @@ describe('parsing plurals from strings', function() {
     );
   });
 
-  // // @todo: recheck for writing those
+  // @todo: recheck for writing those
   it('should work with short signature', function() {
     should.equal(
       pluralTest.__n('There is one monkey in the tree', 3),
@@ -50,6 +50,63 @@ describe('parsing plurals from strings', function() {
     should.equal(
       pluralTest.__n('plurals with intervals as string', 0),
       "a zero rule"
+    );
+  });
+
+  it('returns correctly for 2 and 5 and included 3', function() {
+    should.equal(
+      pluralTest.__n('plurals with intervals as string', 2),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n('plurals with intervals as string', 5),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n('plurals with intervals as string', 3),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n('plurals with intervals as string', 6),
+      "and a catchall rule"
+    );
+  });
+
+  it('returns correctly for 2 and 5 and included 3 in mixed order', function() {
+    should.equal(
+      pluralTest.__n('plurals in any order', 2),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n('plurals in any order', 5),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n('plurals in any order', 3),
+      "two to five (included)"
+    );
+    should.equal(
+      pluralTest.__n('plurals in any order', 6),
+      "and a catchall rule"
+    );
+  });
+
+  it('returns correctly catchall for 2 and 5 when excluded and an included 3', function() {
+    should.equal(
+      pluralTest.__n('plurals with intervals as string (excluded)', 2),
+      "and a catchall rule"
+    );
+    should.equal(
+      pluralTest.__n('plurals with intervals as string (excluded)', 5),
+      "and a catchall rule"
+    );
+    should.equal(
+      pluralTest.__n('plurals with intervals as string (excluded)', 3),
+      "two to five (excluded)"
+    );
+    should.equal(
+      pluralTest.__n('plurals with intervals as string (excluded)', 6),
+      "and a catchall rule"
     );
   });
 

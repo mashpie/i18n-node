@@ -36,7 +36,15 @@
 	},
 	"plurals with intervals as string":{
 		"one": "The default 'one' rule",
-		"other": "{0} a zero rule|[2,5] two to five (included)|]2,5[ two to five (excluded)"
+		"other": "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+	},
+	"plurals with intervals as string (excluded)":{
+		"one": "The default 'one' rule",
+		"other": "[0] a zero rule|]2,5[ two to five (excluded)|and a catchall rule"
+	},
+	"plurals in any order":{
+		"one": "The default 'one' rule",
+		"other": "[0] a zero rule|and a catchall rule|[2,5] two to five (included)"
 	},
 	"Hello %s": "Hello %s",
 	"Hello {{name}}": "Hello {{name}}",

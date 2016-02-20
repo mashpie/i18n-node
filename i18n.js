@@ -15,6 +15,7 @@ var vsprintf = require('sprintf-js').vsprintf,
   warn = require('debug')('i18n:warn'),
   error = require('debug')('i18n:error'),
   Mustache = require('mustache'),
+  parseInterval = require('math-interval-parser').default,
   locales = {},
   api = [
     '__',
@@ -273,10 +274,18 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   // this also replaces extra strings '%%s' to parseble '%s' for next step
   // simplest 2 form implementation of plural, like https://developer.mozilla.org/en/docs/Localization_and_Plurals#Plural_rule_.231_.282_forms.29
   if (count == 1 || count == -1) {
-    msg = vsprintf(msg.one, [parseInt(count, 10)]);
+    msg = msg.one;
   } else {
-    msg = vsprintf(msg.other, [parseInt(count, 10)]);
+    msg = msg.other;
   }
+
+  // test for parsable string
+  if ((/\|/).test(msg)) {
+    msg = parsePluralRule(msg, count);
+  }
+
+  // replace the counter
+  msg = vsprintf(msg, [parseInt(count, 10)]);
 
   // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
   if ((/{{.*}}/).test(msg)) {
@@ -290,6 +299,44 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   }
 
   return msg;
+};
+
+var parsePluralRule = function(phrase, count) {
+  var returnPhrase = phrase;
+  var phrases = phrase.split(/\|/);
+
+  // some() breaks on 1st true
+  phrases.some(function(p) {
+    var matches = p.match(/^\s*([\(\)\[\]\d,]+)?\s*(.*)$/);
+
+    // not the same as in combined condition
+    if (matches[1]) {
+      if (matchInterval(count, matches[1]) === true) {
+        returnPhrase = matches[2];
+        return true;
+      }
+    } else {
+      returnPhrase = p;
+    }
+  });
+
+  return returnPhrase;
+};
+
+var matchInterval = function(number, interval) {
+  interval = parseInterval(interval);
+  if (interval) {
+    if (interval.from.value === number) {
+      return interval.from.included;
+    }
+    if (interval.to.value === number) {
+      return interval.to.included;
+    }
+
+    return (Math.min(interval.from.value, number) === interval.from.value &&
+      Math.max(interval.to.value, number) === interval.to.value)
+  }
+  return false;
 };
 
 i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {

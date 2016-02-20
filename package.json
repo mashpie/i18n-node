@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "debug": "*",
+    "math-interval-parser": "^1.1.0",
     "mustache": "*",
     "sprintf-js": ">=1.0.3"
   },
