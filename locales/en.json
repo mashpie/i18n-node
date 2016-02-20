@@ -30,6 +30,14 @@
 		"one": "There is one monkey in the %s",
 		"other": "There are %d monkeys in the %s"
 	},
+	"There is one monkey in the tree": {
+		"one": "There is one monkey in the tree",
+		"other": "There are %d monkeys in the tree"
+	},
+	"plurals with intervals as string":{
+		"one": "The default 'one' rule",
+		"other": "{0} a zero rule|[2,5] two to five (included)|]2,5[ two to five (excluded)"
+	},
 	"Hello %s": "Hello %s",
 	"Hello {{name}}": "Hello {{name}}",
 	"Hello {{name}}, how was your %s?": "Hello {{name}}, how was your %s?",
