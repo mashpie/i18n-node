@@ -309,6 +309,10 @@ describe('parsing plural intervals from strings', function() {
       "and a catchall rule for marcus to get my number %s"
     );
     should.equal(
+      pluralTest.__(p, ['one'], {me: 'marcus'}),
+      "and a catchall rule for marcus to get my number one"
+    );
+    should.equal(
       pluralTest.__n(p, 1, {me: 'marcus'}),
       "and a catchall rule for marcus to get my number 1"
     );

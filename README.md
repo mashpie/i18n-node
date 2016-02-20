@@ -532,6 +532,89 @@ var greeting = __( __('Hello {{name}}, how was your %s?', { name: 'Marcus' }), _
 
 which both put *Hello Marcus, how was your weekend.*
 
+### basic plural support
+
+two different plural forms are supported as response to `count`:
+
+```js
+var singular = __n('%s cat', '%s cats', 1);
+var plural = __n('%s cat', '%s cats', 3);
+```
+
+this puts **1 cat** or **3 cats**
+and again these could get nested:
+
+```js
+var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, 'tree');
+var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, 'tree');
+```
+putting *There is one monkey in the tree* or *There are 3 monkeys in the tree*. Passing all 3 parameters would write a `one` and `other` to your json. For reading you might just use 2 parameters, too:
+
+```js
+__n('%s cat', 1) // --> 1 Katze
+__n('%s cat', 3) // --> 3 Katzen
+```
+
+### ranged interval support
+
+use mathematical intervals to declare any own plural rules base in [ISO 31-11](https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals) notation. Let's assume the following json snippet:
+
+```json
+"dogs": {
+    "one": "one dog",
+    "other": "[0] no dog|[2,5] some dogs|[6,11] many dogs|[12,36] dozens of dogs|a horde of %s dogs|[100,] too many dogs"
+}
+```
+
+this will result in
+
+```js
+__n('dogs', 0) // --> no dog
+__n('dogs', 1) // --> one dog
+__n('dogs', 2) // --> some dogs
+__n('dogs', 10) // --> many dogs
+__n('dogs', 25) // --> dozens of dogs
+__n('dogs', 42) // --> a horde of 42 dogs
+__n('dogs', 199) // --> too many dogs
+```
+
+The rules are parsed in sequenced order, so the first match will skip any extra rules. Example:
+
+```json
+"dogs":"[0]no dog|[1]one dog|[,10[ less than ten dogs|[,20[ less than 20 dogs|too many dogs"
+```
+
+results in
+
+```js
+__n('dogs', 0) // --> no dog
+__n('dogs', 1) // --> one dog
+__n('dogs', 2) // --> less than ten dogs
+__n('dogs', 9) // --> less than ten dogs
+__n('dogs', 10) // --> less than 20 dogs
+__n('dogs', 19) // --> less than 20 dogs
+__n('dogs', 20) // --> too many dogs
+__n('dogs', 199) // --> too many dogs
+```
+
+See [en.json example](https://github.com/mashpie/i18n-node/blob/master/locales/en.json) inside `/locales` for some inspiration on use cases. Each phrase might get decorated further with mustache and sprintf expressions:
+
+```json
+"example":"[0] %s is zero rule for {{me}}|[2,5] %s is between two and five for {{me}}|and a catchall rule for {{me}} to get my number %s"
+```
+
+will put (as taken from tests):
+
+```js
+__(p, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number %s
+__(p, ['one'], {me: 'marcus'}) // --> and a catchall rule for marcus to get my number one
+__n(p, 1, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 1
+__n(p, 2, {me: 'marcus'}) // --> 2 is between two and five for marcus
+__n(p, 5, {me: 'marcus'}) // --> 5 is between two and five for marcus
+__n(p, 3, {me: 'marcus'}) // --> 3 is between two and five for marcus
+__n(p, 6, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 6
+```
+
 ### variable support
 
 you might even use dynamic variables as they get interpreted on the fly. Better make sure no user input finds it's way to that point as they all get added to the `en.js` file if not yet existing.
@@ -551,24 +634,61 @@ Hello
 Howdy
 ```
 
-### basic plural support
+## Object notation
 
-two different plural forms are supported as response to `count`:
+In addition to the traditional, linear translation lists, i18n also supports hierarchical translation catalogs.
 
-```js
-var singular = __n('%s cat', '%s cats', 1);
-var plural = __n('%s cat', '%s cats', 3);
-```
+To enable this feature, be sure to set `objectNotation` to `true` in your `configure()` call. **Note**: If you can't or don't want to use `.` as a delimiter, set `objectNotation` to any other delimiter you like.
 
-this puts **1 cat** or **3 cats**
-and again these could get nested:
+Instead of calling `__("Hello")` you might call `__("greeting.formal")` to retrieve a formal greeting from a translation document like this one:
 
 ```js
-var singular = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 1, 'tree');
-var plural = __n('There is one monkey in the %%s', 'There are %d monkeys in the %%s', 3, 'tree');
+"greeting": {
+    "formal": "Hello",
+    "informal": "Hi",
+    "placeholder": {
+        "formal": "Hello %s",
+        "informal": "Hi %s"
+    }
+}
 ```
 
-putting *There is one monkey in the tree* or *There are 3 monkeys in the tree*
+In the document, the translation terms, which include placeholders, are nested inside the "greeting" translation. They can be accessed and used in the same way, like so `__('greeting.placeholder.informal', 'Marcus')`.
+
+### Pluralization
+
+Object notation also supports pluralization. When making use of it, the "one" and "other" entries are used implicitly for an object in the translation document. For example, consider the following document:
+
+```json
+"pets":{
+    "cat": {
+        "one": "Katze",
+        "other": "Katzen"
+    }
+}
+```
+
+When accessing these, you would use `__n("pets.cat", "pets.cat", 3)` to tell i18n to use both the singular and plural form of the "cat" entry. Naturally, you could also access these members explicitly with `__("pets.cat.one")` and `__("pets.cat.other")`.
+
+### Defaults
+
+When starting a project from scratch, your translation documents will probably be empty. i18n takes care of filling your translation documents for you. Whenever you use an unknown object, it is added to the translation documents.
+
+By default, when using object notation, the provided string literal will be inserted and returned as the default string. As an example, this is what the "greeting" object shown earlier would look like by default:
+
+```js
+"greeting": {
+    "formal": "greeting.formal",
+    "informal": "greeting.informal"
+}
+```
+
+In case you would prefer to have a default string automatically inserted and returned, you can provide that default string by appending it to your object literal, delimited by a `:`. For example:
+
+```js
+__("greeting.formal:Hello")
+__("greeting.placeholder.informal:Hi %s")
+```
 
 ## Storage
 
@@ -594,7 +714,11 @@ the above will automatically generate a `en.json` by default inside `./locales/`
         "one": "There is one monkey in the %%s",
         "other": "There are %d monkeys in the %%s"
     },
-    "tree": "tree"
+    "tree": "tree",
+    "%s dog": {
+        "one": "one dog",
+        "other": "[0] no dog|[2,5] some dogs|[6,11] many dogs|[12,36] dozens of dogs|a horde of %s dogs"
+    }
 }
 ```
 
@@ -616,7 +740,11 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
         "one": "Im %%s sitzt ein Affe",
         "other": "Im %%s sitzen %d Affen"
     },
-    "tree": "Baum"
+    "tree": "Baum",
+    "%s dog": {
+        "one": "Ein Hund",
+        "other": "[0] Kein Hund|[2,5] Ein paar Hunde|[6,11] Viele Hunde|[12,36] Dutzende Hunde|Ein Rudel von %s Hunden"
+    }
 }
 ```
 
@@ -666,61 +794,6 @@ i18n.configure({
         console.log('error', msg);
     }
 });
-```
-
-
-## Object notation
-
-In addition to the traditional, linear translation lists, i18n also supports hierarchical translation catalogs.
-
-To enable this feature, be sure to set `objectNotation` to `true` in your `configure()` call. **Note**: If you can't or don't want to use `.` as a delimiter, set `objectNotation` to any other delimiter you like.
-
-Instead of calling `__("Hello")` you might call `__("greeting.formal")` to retrieve a formal greeting from a translation document like this one:
-
-```js
-"greeting": {
-    "formal": "Hello",
-    "informal": "Hi",
-    "placeholder": {
-        "formal": "Hello %s",
-        "informal": "Hi %s"
-    }
-}
-```
-
-In the document, the translation terms, which include placeholders, are nested inside the "greeting" translation. They can be accessed and used in the same way, like so `__('greeting.placeholder.informal', 'Marcus')`.
-
-### Pluralization
-
-Object notation also supports pluralization. When making use of it, the "one" and "other" entries are used implicitly for an object in the translation document. For example, consider the following document:
-
-```js
-"cat": {
-    "one": "Katze",
-    "other": "Katzen"
-}
-```
-
-When accessing these, you would use `__n("cat", "cat", 3)` to tell i18n to use both the singular and plural form of the "cat" entry. Naturally, you could also access these members explicitly with `__("cat.one")` and `__("cat.other")`.
-
-### Defaults
-
-When starting a project from scratch, your translation documents will probably be empty. i18n takes care of filling your translation documents for you. Whenever you use an unknown object, it is added to the translation documents.
-
-By default, when using object notation, the provided string literal will be inserted and returned as the default string. As an example, this is what the "greeting" object shown earlier would look like by default:
-
-```js
-"greeting": {
-    "formal": "greeting.formal",
-    "informal": "greeting.informal"
-}
-```
-
-In case you would prefer to have a default string automatically inserted and returned, you can provide that default string by appending it to your object literal, delimited by a `:`. For example:
-
-```js
-__("greeting.formal:Hello")
-__("greeting.placeholder.informal:Hi %s")
 ```
 
 [![NPM](https://nodei.co/npm/i18n.svg?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/i18n/)
