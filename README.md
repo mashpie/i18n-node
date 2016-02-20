@@ -557,7 +557,7 @@ __n('%s cat', 3) // --> 3 Katzen
 
 ### ranged interval support
 
-use mathematical intervals to declare any own plural rules base in [ISO 31-11](https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals) notation. Let's assume the following json snippet:
+use mathematical intervals to declare any own plural rules based on [ISO 31-11](https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals) notation. Let's assume the following json snippet:
 
 ```json
 "dogs": {
@@ -600,12 +600,15 @@ __n('dogs', 199) // --> too many dogs
 See [en.json example](https://github.com/mashpie/i18n-node/blob/master/locales/en.json) inside `/locales` for some inspiration on use cases. Each phrase might get decorated further with mustache and sprintf expressions:
 
 ```json
-"example":"[0] %s is zero rule for {{me}}|[2,5] %s is between two and five for {{me}}|and a catchall rule for {{me}} to get my number %s"
+{
+    "example":"[0] %s is zero rule for {{me}}|[2,5] %s is between two and five for {{me}}|and a catchall rule for {{me}} to get my number %s"
+}
 ```
 
 will put (as taken from tests):
 
 ```js
+var p = 'example'
 __(p, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number %s
 __(p, ['one'], {me: 'marcus'}) // --> and a catchall rule for marcus to get my number one
 __n(p, 1, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 1
@@ -614,6 +617,8 @@ __n(p, 5, {me: 'marcus'}) // --> 5 is between two and five for marcus
 __n(p, 3, {me: 'marcus'}) // --> 3 is between two and five for marcus
 __n(p, 6, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 6
 ```
+> __Notice__: the "example" object in your json doesn't use any "one", "other" subnodes although you _could_ use and even combine them. Currently "one" referres to the value of exactly 1 while "other" referres to every other value (think of 0, -10, null, false)
+
 
 ### variable support
 
