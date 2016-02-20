@@ -41,7 +41,7 @@ describe('Object Notation', function () {
       should.throws(__('greeting.placeholder.loud', 'Marcus'));
     });
 
-    it('should return en translations as expected, then dot is first or last character', function () {
+    it('should return en translations as expected, when dot is first or last character', function () {
       i18n.setLocale('en');
       should.equal(__('. is first character'), 'Dot is first character');
       should.equal(__('last character is .'), 'last character is Dot');
