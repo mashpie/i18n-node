@@ -17,13 +17,16 @@ var vsprintf = require('sprintf-js').vsprintf,
   warn = require('debug')('i18n:warn'),
   error = require('debug')('i18n:error'),
   Mustache = require('mustache'),
+  Messageformat = require('messageformat'),
   parseInterval = require('math-interval-parser').default,
+  MessageformatInstanceForLocale = {},
   locales = {},
   api = [
     '__',
     '__n',
     '__l',
     '__h',
+    '__mf',
     'getLocale',
     'setLocale',
     'getCatalog',
@@ -206,23 +209,66 @@ i18n.__ = function i18nTranslate(phrase) {
     msg = msg.other;
   }
 
-  // test for parsable interval string
-  if ((/\|/).test(msg)) {
-    msg = parsePluralInterval(msg, false);
+  // head over to postProcessing
+  return postProcess(msg, namedValues, args);
+};
+
+i18n.__mf = function i18nMessageformat(phrase){
+  var targetLocale = defaultLocale;
+  var msg, namedValues, args, mf, f;
+
+  // --- start get msg, @todo: factor out & combine with __()
+  // Accept an object with named values as the last parameter
+  // And collect all other arguments, except the first one in args
+  if (
+    arguments.length > 1 &&
+    arguments[arguments.length - 1] !== null &&
+    typeof arguments[arguments.length - 1] === 'object'
+  ) {
+    namedValues = arguments[arguments.length - 1];
+    args = Array.prototype.slice.call(arguments, 1, -1);
+  } else {
+    namedValues = {};
+    args = arguments.length >= 2 ? Array.prototype.slice.call(arguments, 1) : [];
   }
 
-  // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
-  if ((/{{.*}}/).test(msg)) {
-    msg = Mustache.render(msg, namedValues);
+  // called like __({phrase: "Hello", locale: "en"})
+  if (typeof phrase === 'object') {
+    if (typeof phrase.locale === 'string' && typeof phrase.phrase === 'string') {
+      msg = phrase.phrase;
+      targetLocale = phrase.locale;
+    }
+  }
+  // called like __("Hello")
+  else {
+    // get translated message with locale from scope (deprecated) or object
+    msg = phrase;
+    targetLocale = getLocaleFromObject(this);
   }
 
-  // if we have extra arguments with values to get replaced,
-  // an additional substition injects those strings afterwards
-  if ((/%/).test(msg) && args && args.length > 0) {
-    msg = vsprintf(msg, args);
+  msg = translate(targetLocale, msg);
+  // --- end get msg
+
+  // now head over to Messageformat
+  // and try to cache instance
+  if(MessageformatInstanceForLocale[targetLocale]){
+    mf = MessageformatInstanceForLocale[targetLocale];
+  }else{
+    mf = new Messageformat(targetLocale);
+    mf.compiledFunctions = {};
   }
 
-  return msg;
+  // let's try to cache that function
+  if(mf.compiledFunctions[msg]){
+    f = mf.compiledFunctions[msg];
+  }else{
+    f = mf.compile(msg);
+    mf.compiledFunctions[msg] = f;
+  }
+
+  // console.log(targetLocale);
+
+  return postProcess(f(namedValues), namedValues, args);
 };
 
 i18n.__l = function i18nTranslationList(phrase) {
@@ -324,6 +370,34 @@ i18n.__n = function i18nTranslatePlural(singular, plural, count) {
   }
 
   // if we have extra arguments with strings to get replaced,
+  // an additional substition injects those strings afterwards
+  if ((/%/).test(msg) && args && args.length > 0) {
+    msg = vsprintf(msg, args);
+  }
+
+  return msg;
+};
+
+
+var postProcess = function(msg, namedValues, args, counter){
+  var count = counter || false;
+
+  // test for parsable interval string
+  if ((/\|/).test(msg)) {
+    msg = parsePluralInterval(msg, count);
+  }
+
+  // replace the counter
+  if(count){
+    msg = vsprintf(msg, [parseInt(count, 10)]);
+  }
+
+  // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
+  if ((/{{.*}}/).test(msg)) {
+    msg = Mustache.render(msg, namedValues);
+  }
+
+  // if we have extra arguments with values to get replaced,
   // an additional substition injects those strings afterwards
   if ((/%/).test(msg) && args && args.length > 0) {
     msg = vsprintf(msg, args);
