@@ -334,4 +334,23 @@ describe('parsing plural intervals from strings', function() {
     );
   });
 
+  it('should resolve "Simpler dot notation for plurals #177"', function(){
+
+    should.equal(
+      pluralTest.__n('cats.n', 1),
+      '1 cat'
+    );
+
+    should.equal(
+      pluralTest.__n('cats.n', 2),
+      '2 cats'
+    );
+
+    should.equal(
+      pluralTest.__n('cats.n', 0),
+      '0 cats'
+    );
+
+  });
+
 });

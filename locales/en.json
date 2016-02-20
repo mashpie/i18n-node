@@ -13,6 +13,12 @@
 		"one": "%s cat",
 		"other": "%s cats"
 	},
+	"cats": {
+    	"n": {
+      		"one": "%s cat",
+      		"other": "%s cats"
+    	}
+  	},
 	"nested": {
 		"deep": {
 			"plural": {
