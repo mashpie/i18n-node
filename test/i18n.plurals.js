@@ -276,27 +276,27 @@ describe('parsing plural intervals from strings', function() {
     var p = 'another.nested.extra.mustache.example';
 
     should.equal(
-      pluralTest.__(p, {me: 'marcus'}),
+      pluralTest.__(p, { me: 'marcus' }),
       "and a catchall rule for marcus"
     );
     should.equal(
-      pluralTest.__n(p, 1, {me: 'marcus'}),
+      pluralTest.__n(p, 1, { me: 'marcus' }),
       "and a catchall rule for marcus"
     );
     should.equal(
-      pluralTest.__n(p, 2, {me: 'marcus'}),
+      pluralTest.__n(p, 2, { me: 'marcus' }),
       "two to five (included) for marcus"
     );
     should.equal(
-      pluralTest.__n(p, 5, {me: 'marcus'}),
+      pluralTest.__n(p, 5, { me: 'marcus' }),
       "two to five (included) for marcus"
     );
     should.equal(
-      pluralTest.__n(p, 3, {me: 'marcus'}),
+      pluralTest.__n(p, 3, { me: 'marcus' }),
       "two to five (included) for marcus"
     );
     should.equal(
-      pluralTest.__n(p, 6, {me: 'marcus'}),
+      pluralTest.__n(p, 6, { me: 'marcus' }),
       "and a catchall rule for marcus"
     );
   });
@@ -305,36 +305,36 @@ describe('parsing plural intervals from strings', function() {
     var p = 'another.nested.extra.mustacheprintf.example';
 
     should.equal(
-      pluralTest.__(p, {me: 'marcus'}),
+      pluralTest.__(p, { me: 'marcus' }),
       "and a catchall rule for marcus to get my number %s"
     );
     should.equal(
-      pluralTest.__(p, ['one'], {me: 'marcus'}),
+      pluralTest.__(p, ['one'], { me: 'marcus' }),
       "and a catchall rule for marcus to get my number one"
     );
     should.equal(
-      pluralTest.__n(p, 1, {me: 'marcus'}),
+      pluralTest.__n(p, 1, { me: 'marcus' }),
       "and a catchall rule for marcus to get my number 1"
     );
     should.equal(
-      pluralTest.__n(p, 2, {me: 'marcus'}),
+      pluralTest.__n(p, 2, { me: 'marcus' }),
       "2 is between two and five (included) for marcus"
     );
     should.equal(
-      pluralTest.__n(p, 5, {me: 'marcus'}),
+      pluralTest.__n(p, 5, { me: 'marcus' }),
       "5 is between two and five (included) for marcus"
     );
     should.equal(
-      pluralTest.__n(p, 3, {me: 'marcus'}),
+      pluralTest.__n(p, 3, { me: 'marcus' }),
       "3 is between two and five (included) for marcus"
     );
     should.equal(
-      pluralTest.__n(p, 6, {me: 'marcus'}),
+      pluralTest.__n(p, 6, { me: 'marcus' }),
       "and a catchall rule for marcus to get my number 6"
     );
   });
 
-  it('should resolve "Simpler dot notation for plurals #177"', function(){
+  it('should resolve "Simpler dot notation for plurals #177"', function() {
 
     should.equal(
       pluralTest.__n('cats.n', 1),

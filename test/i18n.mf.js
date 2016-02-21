@@ -1,30 +1,14 @@
-var i18nMF = require('../i18n'),
+var i18n = require('../i18n'),
   should = require("should"),
   fs = require('fs'),
   path = require('path');
 
-var i18nPath = 'i18n';
-var i18nFilename = path.resolve(i18nPath + '.js');
-
 describe('parsing Messageformat phrases', function() {
-
-  // beforeEach(function() {
-  //   // reserve a "private" scope
-  //   var mfTest = {};
-  //   reconfigure({
-  //     locales: ['en', 'de', 'fr', 'ru'],
-  //     directory: './locales',
-  //     register: mfTest,
-  //     updateFiles: false,
-  //     objectNotation: true
-  //   });
-  //   // mfTest.setLocale('en');
-  // });
 
   var mfTest = {};
 
   beforeEach(function() {
-    i18nMF.configure({
+    i18n.configure({
       locales: ['en', 'de', 'fr', 'ru'],
       register: mfTest,
       directory: './locales',
@@ -40,7 +24,7 @@ describe('parsing Messageformat phrases', function() {
     mfTest.setLocale('de');
     should.equal('Hallo', mfTest.__mf('Hello'));
     should.equal('Hallo Marcus, wie geht es dir heute?', mfTest.__mf('Hello %s, how are you today?', 'Marcus'));
-    should.equal('Hello', i18nMF.__mf({ phrase: 'Hello', locale: 'en' }));
+    should.equal('Hello', i18n.__mf({ phrase: 'Hello', locale: 'en' }));
     should.equal('Hello', mfTest.__mf({ phrase: 'Hello', locale: 'en' }));
   });
 
