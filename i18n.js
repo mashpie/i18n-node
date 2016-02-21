@@ -791,7 +791,7 @@ module.exports = (function() {
   /**
    * read locale file, translate a msg and write to fs if new
    */
-  var translate = function(locale, singular, plural) {
+  var translate = function(locale, singular, plural, skipSyncToAllFiles) {
     if (locale === undefined) {
       logWarn('WARN: No locale found - check the context of the call to __(). Using ' +
         defaultLocale + ' as current locale');
@@ -818,6 +818,7 @@ module.exports = (function() {
       read(locale);
     }
 
+    // dotnotaction add on, @todo: factor out
     var defaultSingular = singular;
     var defaultPlural = plural;
     if (objectNotation) {
@@ -855,8 +856,26 @@ module.exports = (function() {
       write(locale);
     }
 
+    // add same key to all translations
+    if(skipSyncToAllFiles !== true){
+      syncToAllFiles(locales, singular, plural);
+    }
+
     return accessor();
   };
+
+  /**
+   * initialize the same key in all locales
+   * when not already existing, checked via translate
+   */
+  var syncToAllFiles = function(locales, singular, plural){
+    // iterate over locales and translate again
+    // this will implicitly write/sync missing keys
+    // to the rest of locales
+    for(var l in locales){
+      translate(l, singular, plural, true);
+    }
+  }
 
   /**
    * Allows delayed access to translations nested inside objects.
