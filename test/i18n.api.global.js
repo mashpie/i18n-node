@@ -97,6 +97,13 @@ describe('Module API', function () {
         should.equal(__(__('Hello {{name}}, how was your %s?', { name: 'Marcus' }), __('weekend')), 'Hallo Marcus, wie war dein Wochenende?');
       });
 
+      it('simple translation should work on global', function() {
+          i18n.setLocale('en');
+          should.equal(__('Hello'), 'Hello');
+          i18n.setLocale('de');
+          should.equal(__('Hello'), 'Hallo');
+      });
+
       it('should test the ordering in sprintf' , function () {
         i18n.setLocale('en');
         should.equal(__('ordered arguments', "First", "Second"), 'Second then First');
