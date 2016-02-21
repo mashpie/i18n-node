@@ -195,21 +195,10 @@ module.exports = (function() {
   };
 
   i18n.__ = function i18nTranslate(phrase) {
-    var msg, namedValues, args;
-
-    // Accept an object with named values as the last parameter
-    // And collect all other arguments, except the first one in args
-    if (
-      arguments.length > 1 &&
-      arguments[arguments.length - 1] !== null &&
-      typeof arguments[arguments.length - 1] === 'object'
-    ) {
-      namedValues = arguments[arguments.length - 1];
-      args = Array.prototype.slice.call(arguments, 1, -1);
-    } else {
-      namedValues = {};
-      args = arguments.length >= 2 ? Array.prototype.slice.call(arguments, 1) : [];
-    }
+    var msg;
+    var argv = parseArgv(arguments);
+    var namedValues = argv[0];
+    var args = argv[1];
 
     // called like __({phrase: "Hello", locale: "en"})
     if (typeof phrase === 'object') {
@@ -238,23 +227,11 @@ module.exports = (function() {
   };
 
   i18n.__mf = function i18nMessageformat(phrase) {
+    var msg, mf, f;
     var targetLocale = defaultLocale;
-    var msg, namedValues, args, mf, f;
-
-    // --- start get msg, @todo: factor out & combine with __()
-    // Accept an object with named values as the last parameter
-    // And collect all other arguments, except the first one in args
-    if (
-      arguments.length > 1 &&
-      arguments[arguments.length - 1] !== null &&
-      typeof arguments[arguments.length - 1] === 'object'
-    ) {
-      namedValues = arguments[arguments.length - 1];
-      args = Array.prototype.slice.call(arguments, 1, -1);
-    } else {
-      namedValues = {};
-      args = arguments.length >= 2 ? Array.prototype.slice.call(arguments, 1) : [];
-    }
+    var argv = parseArgv(arguments);
+    var namedValues = argv[0];
+    var args = argv[1];
 
     // called like __({phrase: "Hello", locale: "en"})
     if (typeof phrase === 'object') {
@@ -317,11 +294,7 @@ module.exports = (function() {
     var msg, namedValues, args = [];
 
     // Accept an object with named values as the last parameter
-    if (
-      arguments.length >= 2 &&
-      arguments[arguments.length - 1] !== null &&
-      typeof arguments[arguments.length - 1] === 'object'
-    ) {
+    if (argsEndWithNamedObject(arguments)) {
       namedValues = arguments[arguments.length - 1];
       args = arguments.length >= 5 ? Array.prototype.slice.call(arguments, 3, -1) : [];
     } else {
@@ -394,34 +367,6 @@ module.exports = (function() {
     }
 
     // if we have extra arguments with strings to get replaced,
-    // an additional substition injects those strings afterwards
-    if ((/%/).test(msg) && args && args.length > 0) {
-      msg = vsprintf(msg, args);
-    }
-
-    return msg;
-  };
-
-
-  var postProcess = function(msg, namedValues, args, counter) {
-    var count = counter || false;
-
-    // test for parsable interval string
-    if ((/\|/).test(msg)) {
-      msg = parsePluralInterval(msg, count);
-    }
-
-    // replace the counter
-    if (count) {
-      msg = vsprintf(msg, [parseInt(count, 10)]);
-    }
-
-    // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
-    if ((/{{.*}}/).test(msg)) {
-      msg = Mustache.render(msg, namedValues);
-    }
-
-    // if we have extra arguments with values to get replaced,
     // an additional substition injects those strings afterwards
     if ((/%/).test(msg) && args && args.length > 0) {
       msg = vsprintf(msg, args);
@@ -556,6 +501,54 @@ module.exports = (function() {
   // ===================
   // = private methods =
   // ===================
+
+  var postProcess = function(msg, namedValues, args, counter) {
+    var count = counter || false;
+
+    // test for parsable interval string
+    if ((/\|/).test(msg)) {
+      msg = parsePluralInterval(msg, count);
+    }
+
+    // replace the counter
+    if (count) {
+      msg = vsprintf(msg, [parseInt(count, 10)]);
+    }
+
+    // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
+    if ((/{{.*}}/).test(msg)) {
+      msg = Mustache.render(msg, namedValues);
+    }
+
+    // if we have extra arguments with values to get replaced,
+    // an additional substition injects those strings afterwards
+    if ((/%/).test(msg) && args && args.length > 0) {
+      msg = vsprintf(msg, args);
+    }
+
+    return msg;
+  };
+
+  var argsEndWithNamedObject = function (args) {
+    return (args.length > 1 &&
+      args[args.length - 1] !== null &&
+      typeof args[args.length - 1] === 'object');
+  };
+
+  var parseArgv = function (args) {
+    var namedValues, returnArgs;
+
+    if (argsEndWithNamedObject(args)) {
+      namedValues = args[args.length - 1];
+      returnArgs = Array.prototype.slice.call(args, 1, -1);
+    } else {
+      namedValues = {};
+      returnArgs = args.length >= 2 ? Array.prototype.slice.call(args, 1) : [];
+    }
+
+    return [namedValues, returnArgs];
+  };
+
   /**
    * registers all public API methods to a given response object when not already declared
    */
