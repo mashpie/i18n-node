@@ -25,19 +25,19 @@ module.exports = function() {
 
   var MessageformatInstanceForLocale = {},
     locales = {},
-    api = [
-      '__',
-      '__n',
-      '__l',
-      '__h',
-      '__mf',
-      'getLocale',
-      'setLocale',
-      'getCatalog',
-      'getLocales',
-      'addLocale',
-      'removeLocale'
-    ],
+    api = {
+      '__': '__',
+      '__n': '__n',
+      '__l': '__l',
+      '__h': '__h',
+      '__mf': '__mf',
+      'getLocale': 'getLocale',
+      'setLocale': 'setLocale',
+      'getCatalog': 'getCatalog',
+      'getLocales': 'getLocales',
+      'addLocale': 'addLocale',
+      'removeLocale': 'removeLocale'
+    },
     pathsep = path.sep, // ---> means win support will be available in node 0.8.x and above
     autoReload,
     cookiename,
@@ -68,6 +68,19 @@ module.exports = function() {
     // reset locales
     locales = {};
 
+    // Provide custom API method aliases if desired
+    // This needs to be processed before the first call to applyAPItoObject()
+    if (opt.api && typeof opt.api === 'object') {
+      for (var method in opt.api) {
+        if (opt.api.hasOwnProperty(method)) {
+          var alias = opt.api[method];
+          if (typeof api[method] !== 'undefined') {
+            api[method] = alias;
+          }
+        }
+      }
+    }
+
     // you may register i18n in global scope, up to you
     if (typeof opt.register === 'object') {
       register = opt.register;
@@ -89,7 +102,8 @@ module.exports = function() {
     queryParameter = (typeof opt.queryParameter === 'string') ? opt.queryParameter : null;
 
     // where to store json files
-    directory = (typeof opt.directory === 'string') ? opt.directory : __dirname + pathsep + 'locales';
+    directory = (typeof opt.directory === 'string') ?
+      opt.directory : __dirname + pathsep + 'locales';
 
     // permissions when creating new directories
     directoryPermissions = (typeof opt.directoryPermissions === 'string') ?
@@ -548,15 +562,16 @@ module.exports = function() {
   var applyAPItoObject = function(object) {
 
     // attach to itself if not provided
-    api.forEach(function(method) {
+    for (var method in api) {
+      if (api.hasOwnProperty(method)) {
+        var alias = api[method];
 
-      // be kind rewind, or better not touch anything already exiting
-      if (!object[method]) {
-        object[method] = function() {
-          return i18n[method].apply(object, arguments);
-        };
+        // be kind rewind, or better not touch anything already existing
+        if (!object[alias]) {
+          object[alias] = i18n[method].bind(object);
+        }
       }
-    });
+    }
 
     // set initial locale if not set
     if (!object.locale) {
