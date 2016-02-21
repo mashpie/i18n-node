@@ -23,6 +23,7 @@ describe('parsing Messageformat phrases', function() {
 
     mfTest.setLocale('de');
     should.equal('Hallo', mfTest.__mf('Hello'));
+    should.equal('Hallo', mfTest.__mf('Hello'));
     should.equal('Hallo Marcus, wie geht es dir heute?', mfTest.__mf('Hello %s, how are you today?', 'Marcus'));
     should.equal('Hello', i18n.__mf({ phrase: 'Hello', locale: 'en' }));
     should.equal('Hello', mfTest.__mf({ phrase: 'Hello', locale: 'en' }));
