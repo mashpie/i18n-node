@@ -154,7 +154,11 @@ describe('Module API', function () {
           locales.should.containEql('fr');
         });
         it('removeLocale should remove a locale', function () {
+          var initialLength = i18n.getLocales().length;
+          // ensure we have an extra locale
+          i18n.addLocale('fr');
           var oldLength = i18n.getLocales().length;
+          oldLength.should.equal(initialLength + 1);
           i18n.removeLocale('fr');
           var locales = i18n.getLocales();
           locales.length.should.equal(oldLength - 1);
