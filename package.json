@@ -8,6 +8,11 @@
     "url": "http://github.com/mashpie/i18n-node.git"
   },
   "author": "Marcus Spiegel <marcus.spiegel@gmail.com>",
+  "contributors": [{
+    "name": "Adam Buczynski",
+    "email": "me@adambuczynski.com",
+    "url": "http://adambuczynski.com/"
+  }],
   "main": "./index",
   "keywords": [
     "template",

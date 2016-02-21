@@ -186,10 +186,17 @@ i18n.configure({
     // setting of log level ERROR - default to require('debug')('i18n:error')
     logErrorFn: function (msg) {
         console.log('error', msg);
-    }
+    },
 
     // object or [obj1, obj2] to bind the i18n api and current locale to - defaults to null
-    register: global
+    register: global,
+
+    // hash to specify different aliases for i18n's internal methods to apply on the request/response objects (method -> alias).
+    // note that this will *not* overwrite existing properties with the same name
+    api: {
+      '__': 't',  //now req.__ becomes req.t
+      '__n': 'tn' //and req.__n can be called as req.tn
+    }
 });
 ```
 
@@ -205,7 +212,7 @@ After this and until the cookie expires, `i18n.init()` will get the value of the
 
 #### Some words on `register` option
 
-Esp. when used in a cli like scriptyou won't use any `i18n.init()` to guess language settings from your user. Thus `i18n` won't bind itself to any `res` or `req` object and will work like a static module. 
+Esp. when used in a cli like scriptyou won't use any `i18n.init()` to guess language settings from your user. Thus `i18n` won't bind itself to any `res` or `req` object and will work like a static module.
 
 ```js
 var anyObject = {};
@@ -346,7 +353,7 @@ __n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
 
 ### i18n.__l()
 
-Returns a list of translations for a given phrase in each language. 
+Returns a list of translations for a given phrase in each language.
 
 ```js
 i18n.__l('Hello'); // --> [ 'Hallo', 'Hello' ]
@@ -367,7 +374,7 @@ app.get( __l('/:locale/products/:id?'), function (req, res) {
 
 ### i18n.__h()
 
-Returns a hashed list of translations for a given phrase in each language. 
+Returns a hashed list of translations for a given phrase in each language.
 
 ```js
 i18n.__h('Hello'); // --> [ { de: 'Hallo' }, { en: 'Hello' } ]
@@ -819,9 +826,9 @@ i18n.configure({
     * __improved__: `i18n.setLocale()` and `i18n.init()` refactored to comply with most common use cases, much better test coverage and docs
     * __new__: options: `autoReload`, `directoryPermissions`, `register`, `queryParameter`, read locales from filenames with empty `locales` option (#134)
     * __fixed__: typos, missing and wrong docs, issues related to `i18n.setLocale()`
-* 0.6.0: 
-    * __improved__: Accept-Language header parsing to ICU, delimiters with object notation, jshint, package.json, README; 
-    * __new__: prefix for locale files, `i18n.getLocales()`, custom logger, fallback[s]; 
+* 0.6.0:
+    * __improved__: Accept-Language header parsing to ICU, delimiters with object notation, jshint, package.json, README;
+    * __new__: prefix for locale files, `i18n.getLocales()`, custom logger, fallback[s];
     * __fixed__: typos, badges, plural (numbers), `i18n.setLocale()` for `req` _and_ `res`
 * 0.5.0: feature release; added {{mustache}} parsing by #85, added "object.notation" by #110, fixed buggy req.__() implementation by #111 and closed 13 issues
 * 0.4.1: stable release; merged/closed: #57, #60, #67 typo fixes; added more examples and new features: #53, #65, #66 - and some more api reference
