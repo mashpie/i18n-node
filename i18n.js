@@ -261,6 +261,7 @@ module.exports = (function() {
     } else {
       mf = new Messageformat(targetLocale);
       mf.compiledFunctions = {};
+      MessageformatInstanceForLocale[targetLocale] = mf;
     }
 
     // let's try to cache that function
