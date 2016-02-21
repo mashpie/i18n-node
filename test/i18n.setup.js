@@ -1,5 +1,3 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
-
 var i18n = require('../i18n'),
     should = require("should");
 

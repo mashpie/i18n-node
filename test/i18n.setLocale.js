@@ -1,6 +1,3 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
-
-// now with coverage suport
 var i18n = require('../i18n'),
   should = require("should"),
   path = require("path");
@@ -11,12 +8,6 @@ describe('Locale switching should work on req and res', function() {
   var res;
 
   beforeEach(function() {
-
-    // Force reloading of i18n, to reset configuration
-    var i18nPath = 'i18n';
-    var i18nFilename = path.resolve(i18nPath + '.js');
-    delete require.cache[i18nFilename];
-    i18n = require(i18nFilename);
 
     i18n.configure({
       locales: ['en', 'de', 'fr'],

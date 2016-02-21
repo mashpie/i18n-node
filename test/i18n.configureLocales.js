@@ -1,29 +1,18 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
-
 var i18n = require('../i18n'),
   should = require("should"),
   fs = require('fs'),
   path = require('path');
-
-var i18nPath = 'i18n';
-var i18nFilename = path.resolve(i18nPath + '.js');
-
-function reconfigure(config) {
-  delete require.cache[i18nFilename];
-  i18n = require(i18nFilename);
-  i18n.configure(config);
-}
 
 describe('locals configuration', function() {
 
   it('omitting it should read all directory contents', function(done) {
     var directory = path.resolve(__dirname + '/../locales');
 
-    reconfigure({
+    i18n.configure({
       directory: directory
     });
 
-    var expected = ['de', 'de-AT', 'de-DE', 'en', 'en-GB', 'en-US', 'fr', 'nl'].sort();
+    var expected = ['de', 'de-AT', 'de-DE', 'en', 'en-GB', 'en-US', 'fr', 'nl', 'ru'].sort();
     should.deepEqual(i18n.getLocales(), expected);
 
     done();
@@ -37,7 +26,7 @@ describe('locals configuration', function() {
     fs.writeFileSync(directory + '/app-de.json', '{}');
     fs.writeFileSync(directory + '/app-en.json', '{}');
 
-    reconfigure({
+    i18n.configure({
       directory: directory,
       prefix: 'app-'
     });
@@ -60,7 +49,7 @@ describe('locals configuration', function() {
     fs.writeFileSync(directory + '/app-de.js', '{}');
     fs.writeFileSync(directory + '/app-en.js', '{}');
 
-    reconfigure({
+    i18n.configure({
       directory: directory,
       prefix: 'app-',
       extension: '.js'
@@ -84,7 +73,7 @@ describe('locals configuration', function() {
     fs.writeFileSync(directory + '/app-en.js', '{}');
     fs.writeFileSync(directory + '/web-fr.json', '{}');
 
-    reconfigure({
+    i18n.configure({
       directory: directory,
       prefix: 'app-',
       extension: '.js'

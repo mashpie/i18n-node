@@ -1,17 +1,15 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
-
 var i18n = require('../i18n'),
-    should = require("should"),
-    path = require("path"),
-    fs = require('fs');
+  should = require("should"),
+  path = require("path"),
+  fs = require('fs');
 
 var isWin = /^win/.test(process.platform);
 
-describe('Module Config (directoryPermissions)', function () {
+describe('Module Config (directoryPermissions)', function() {
 
   var testScope = {};
 
-  afterEach(function () {
+  afterEach(function() {
     var stats = fs.lstatSync('./customlocales');
     should.exist(stats);
     if (stats) {
@@ -24,47 +22,47 @@ describe('Module Config (directoryPermissions)', function () {
 
   });
 
-  it('should be possible to setup a custom directory with default permissions', function () {
+  it('should be possible to setup a custom directory with default permissions', function() {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
       directory: './customlocales',
       extension: '.customextension',
-      prefix:'customprefix-'
+      prefix: 'customprefix-'
     });
     testScope.__('Hello');
     var stat = fs.lstatSync('./customlocales');
     should.exist(stat);
   });
 
-  it('should be possible to setup a custom directory with customized permissions', function () {
+  it('should be possible to setup a custom directory with customized permissions', function() {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
       directoryPermissions: '700',
       directory: './customlocales',
       extension: '.customextension',
-      prefix:'customprefix-'
+      prefix: 'customprefix-'
     });
     testScope.__('Hello');
     var stat = fs.lstatSync('./customlocales');
-    var mode = isWin? '40666':'40700';
+    var mode = isWin ? '40666' : '40700';
     should.equal(mode, parseInt(stat.mode.toString(8), 10));
     should.exist(stat);
   });
 
-  it('should be possible to setup a custom directory with customized permissions', function () {
+  it('should be possible to setup a custom directory with customized permissions', function() {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
       directoryPermissions: '750',
       directory: './customlocales',
       extension: '.customextension',
-      prefix:'customprefix-'
+      prefix: 'customprefix-'
     });
     testScope.__('Hello');
     var stat = fs.lstatSync('./customlocales');
-    var mode = isWin? '40666':'40750';
+    var mode = isWin ? '40666' : '40750';
     should.equal(mode, parseInt(stat.mode.toString(8), 10));
     should.exist(stat);
   });

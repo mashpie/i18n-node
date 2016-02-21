@@ -16,7 +16,7 @@ function reconfigure(config) {
 
 describe('configure register', function() {
 
-    it('should work on a custom object', function() {
+    it('should work on a custom object', function(done) {
         var customObject = {};
         reconfigure({
             locales: ['en', 'de'],
@@ -25,20 +25,7 @@ describe('configure register', function() {
         should.equal(customObject.__('Hello'), 'Hello');
         customObject.setLocale('de');
         should.equal(customObject.__('Hello'), 'Hallo');
-    });
-
-    it('should work on global', function() {
-
-        // global is evil and will always be
-        delete global.locale;
-
-        reconfigure({
-            locales: ['en', 'de'],
-            register: global
-        });
-        should.equal(__('Hello'), 'Hello');
-        i18n.setLocale('de');
-        should.equal(__('Hello'), 'Hallo');
+        done();
     });
 
     it('should work on list of objects', function() {
