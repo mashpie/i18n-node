@@ -103,7 +103,7 @@ module.exports = (function() {
 
     // where to store json files
     directory = (typeof opt.directory === 'string') ?
-      opt.directory : __dirname + pathsep + 'locales';
+      opt.directory : path.join(__dirname, 'locales');
 
     // permissions when creating new directories
     directoryPermissions = (typeof opt.directoryPermissions === 'string') ?
@@ -190,7 +190,7 @@ module.exports = (function() {
 
     // head over to next callback when bound as middleware
     if (typeof next === 'function') {
-      next();
+      return next();
     }
   };
 
