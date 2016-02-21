@@ -886,7 +886,7 @@ module.exports = (function() {
     for(var l in locales){
       translate(l, singular, plural, true);
     }
-  }
+  };
 
   /**
    * Allows delayed access to translations nested inside objects.
