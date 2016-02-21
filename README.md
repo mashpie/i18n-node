@@ -161,6 +161,9 @@ i18n.configure({
     // whether to write new locale information to disk - defaults to true
     updateFiles: false,
 
+    // sync locale information accros all files - defaults to false
+    syncFiles: false,
+
     // what to use as the indentation unit - defaults to "\t"
     indent: "\t",
 
@@ -326,6 +329,67 @@ __({phrase: 'Hello %s', locale: 'fr'}, 'Marcus'); // Salut Marcus
 __({phrase: 'Hello {{name}}', locale: 'fr'}, { name: 'Marcus' }); // Salut Marcus
 ```
 
+### i18n.__mf()
+
+Support for the advanced MessageFormat as provided by excellent [messageformat module](https://www.npmjs.com/package/messageformat). You should definetly head over to [messageformat.github.io](https://messageformat.github.io) for a guide to MessageFormat. i18n takes care of `new MessageFormat('en').compile(msg);` with the current `msg` loaded from it's json files and cache that complied fn in memory. So in short you might use it similar to `__()` plus extra object to accomblish MessageFormat's formating. Ok, some examples:
+
+```js
+// assume res is set to german
+res.setLocale('de');
+
+// start simple
+res.__mf('Hello'); // --> Hallo
+
+// can replace too
+res.__mf('Hello {name}', { name: 'Marcus' }) // --> Hallo Marcus
+
+// and combines with sprintf
+res.__mf('Hello {name}, how was your %s?', 'test', { name: 'Marcus' }) // --> Hallo Marcus, wie war dein test?
+
+// now check out a plural rule
+res.__mf('{N, plural, one{# cat} few{# cats} many{# cats} others{# cats}}', {N: 1})
+
+// results for "1" in   (all use "one")
+// en --> 1 cat
+// de --> 1 Katze
+// fr --> 1 chat
+// ru --> 1 кошка       ru uses "__one__" when ending on "1"
+
+// results for "0" in   (most use "others")
+// en --> 0 cats
+// de --> 0 Katzen
+// fr --> 0 chat        fr uses "__one__" for zero
+// ru --> 0 кошек       ru uses "__many__"
+
+// results for "2" in   (most use "others")
+// en --> 1 cat
+// de --> 1 Katze
+// fr --> 1 chat
+// ru --> 2 или         ru uses "__few__" when ending on "1"
+
+// results for "5" in   (most use "others")
+// en --> 1 cat
+// de --> 1 Katze
+// fr --> 1 chat
+// ru --> 2 кошек       ru uses "__many__"
+
+// results for "21" in  (most use "others")
+// en --> 1 cat
+// de --> 1 Katze
+// fr --> 1 chat
+// ru --> 2 кошка       ru uses "__one__" when ending on "1"
+```
+
+Take a look at [Mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals) to quickly get an idea of what pluralization has to deal with. With `__mf()` you get a very powerfull tool, but you need to handle it correctly.
+
+But MessageFormat can handle more! You get ability to handle:
+
+* Simple Variable Replacement (similar to mustache placeholders)
+* SelectFormat (ie. switch msg based on gender)
+* PluralFormat (see above and [ranges](#ranged-interval-support))
+
+Combinations of those give superpower, but should get tested well (contribute your use case, please!) on integration.
+
 ### i18n.__n()
 
 Plurals translation of a single phrase. Singular and plural forms will get added to locales if unknown. Returns translated parsed and substituted string based on `count` parameter.
@@ -350,6 +414,7 @@ __n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 3); // 3 chat
 __n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
 __n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
 ```
+> __Note__: The `__n()` method will get support to handle plurals in all required nodes as soon as theirs some time to add it. The current "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly.
 
 ### i18n.__l()
 
@@ -411,7 +476,6 @@ or disable inheritance by passing true as third parameter:
 ```js
 i18n.setLocale(res, 'ar', true); // --> req: Hallo res: مرحبا res.locals: Hallo
 ```
-
 
 ### i18n.getLocale()
 
@@ -606,7 +670,7 @@ __n('dogs', 19) // --> less than 20 dogs
 __n('dogs', 20) // --> too many dogs
 __n('dogs', 199) // --> too many dogs
 
-// no interval returned, but found a catchall 
+// no interval returned, but found a catchall
 __('dogs') // --> too many dogs
 ```
 
@@ -621,18 +685,16 @@ See [en.json example](https://github.com/mashpie/i18n-node/blob/master/locales/e
 will put (as taken from tests):
 
 ```js
-var p = 'example'
-
 // will always use a found catchall
-__(p, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number %s
-__(p, ['one'], {me: 'marcus'}) // --> and a catchall rule for marcus to get my number one
+__('example', {me: 'marcus'}) // --> and a catchall rule for marcus to get my number %s
+__('example', ['one'], {me: 'marcus'}) // --> and a catchall rule for marcus to get my number one
 
 // will search a matching interval or fallback to catchall
-__n(p, 1, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 1
-__n(p, 2, {me: 'marcus'}) // --> 2 is between two and five for marcus
-__n(p, 5, {me: 'marcus'}) // --> 5 is between two and five for marcus
-__n(p, 3, {me: 'marcus'}) // --> 3 is between two and five for marcus
-__n(p, 6, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 6
+__n('example', 1, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 1
+__n('example', 2, {me: 'marcus'}) // --> 2 is between two and five for marcus
+__n('example', 5, {me: 'marcus'}) // --> 5 is between two and five for marcus
+__n('example', 3, {me: 'marcus'}) // --> 3 is between two and five for marcus
+__n('example', 6, {me: 'marcus'}) // --> and a catchall rule for marcus to get my number 6
 ```
 > __Notice__: the "example" object in your json doesn't use any "one", "other" subnodes although you _could_ use and even combine them. Currently "one" referres to the value of exactly 1 while "other" referres to every other value (think of 0, -10, null, false)
 
