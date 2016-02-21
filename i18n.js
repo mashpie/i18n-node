@@ -54,7 +54,8 @@ module.exports = (function() {
     prefix,
     queryParameter,
     register,
-    updateFiles;
+    updateFiles,
+    syncFiles;
 
   // public exports
   var i18n = {};
@@ -111,6 +112,9 @@ module.exports = (function() {
 
     // write new locale information to disk
     updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
+
+    // sync locale information accros all files
+    syncFiles = (typeof opt.syncFiles === 'boolean') ? opt.syncFiles : false;
 
     // what to use as the indentation unit (ex: "\t", "  ")
     indent = (typeof opt.indent === 'string') ? opt.indent : '\t';
@@ -327,6 +331,12 @@ module.exports = (function() {
       // called like  __n('cat', 3)
       if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
         count = plural;
+
+        // we add same string as default
+        // which efectivly copies the key to the plural.value
+        // this is for initialization of new empty translations
+        plural = singular;
+
         args.unshift(count);
         args.unshift(plural);
       }
@@ -792,6 +802,12 @@ module.exports = (function() {
    * read locale file, translate a msg and write to fs if new
    */
   var translate = function(locale, singular, plural, skipSyncToAllFiles) {
+
+    // add same key to all translations
+    if(!skipSyncToAllFiles && syncFiles){
+      syncToAllFiles(singular, plural);
+    }
+
     if (locale === undefined) {
       logWarn('WARN: No locale found - check the context of the call to __(). Using ' +
         defaultLocale + ' as current locale');
@@ -856,11 +872,6 @@ module.exports = (function() {
       write(locale);
     }
 
-    // add same key to all translations
-    if(skipSyncToAllFiles !== true){
-      syncToAllFiles(locales, singular, plural);
-    }
-
     return accessor();
   };
 
@@ -868,7 +879,7 @@ module.exports = (function() {
    * initialize the same key in all locales
    * when not already existing, checked via translate
    */
-  var syncToAllFiles = function(locales, singular, plural){
+  var syncToAllFiles = function(singular, plural){
     // iterate over locales and translate again
     // this will implicitly write/sync missing keys
     // to the rest of locales

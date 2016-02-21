@@ -6,3 +6,4 @@ coverage/
 /i18n-cov.js
 /coverage.html
 defaultlocales
+localestowrite
