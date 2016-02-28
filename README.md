@@ -946,6 +946,10 @@ i18n.configure({
 
 ## Changelog
 
+* 0.8.0:
+    * __improved__: `i18n.__n()` supports all plurals
+    * __new__: added MessageFormat by explicit `i18n.__mf()`, `api` alias option, `syncFiles` option
+    * __fixed__: typos, missing and wrong docs, plural bugs like: #210, #191, #190 
 * 0.7.0:
     * __improved__: `i18n.setLocale()` and `i18n.init()` refactored to comply with most common use cases, much better test coverage and docs
     * __new__: options: `autoReload`, `directoryPermissions`, `register`, `queryParameter`, read locales from filenames with empty `locales` option (#134)
