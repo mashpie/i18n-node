@@ -45,7 +45,6 @@ describe('i18n.init()', function() {
   it('should break silently when called without parameters', function(done) {
     should.equal(i18n.init(), undefined);
     should.equal(TestScope.__('Hello'), 'Hello');
-    console.log(UnboundTestScope);
     done();
   });
 
