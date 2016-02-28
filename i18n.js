@@ -18,6 +18,8 @@ var vsprintf = require('sprintf-js').vsprintf,
   error = require('debug')('i18n:error'),
   Mustache = require('mustache'),
   Messageformat = require('messageformat'),
+  plurals = require('make-plural/plurals'),
+  // pluralCategories = require('make-plural/pluralCategories'), // ---> still WIP
   parseInterval = require('math-interval-parser').default;
 
 // exports an instance
@@ -296,7 +298,7 @@ module.exports = (function() {
   };
 
   i18n.__n = function i18nTranslatePlural(singular, plural, count) {
-    var msg, namedValues, args = [];
+    var msg, namedValues, targetLocale, args = [];
 
     // Accept an object with named values as the last parameter
     if (argsEndWithNamedObject(arguments)) {
@@ -314,6 +316,7 @@ module.exports = (function() {
         typeof singular.singular === 'string' &&
         typeof singular.plural === 'string'
       ) {
+        targetLocale = singular.locale;
         msg = translate(singular.locale, singular.singular, singular.plural);
       }
       args.unshift(count);
@@ -344,6 +347,7 @@ module.exports = (function() {
       // called like __n('%s cat', '%s cats', 3)
       // get translated message with locale from scope (deprecated) or object
       msg = translate(getLocaleFromObject(this), singular, plural);
+      targetLocale = getLocaleFromObject(this);
     }
 
     if (count === null) count = namedValues.count;
@@ -351,17 +355,22 @@ module.exports = (function() {
     // enforce number
     count = parseInt(count, 10);
 
-    // parse translation and replace all digets '%d' by `count`
-    // this also replaces extra strings '%%s' to parseble '%s' for next step
     // simplest 2 form implementation of plural, like
     // @see https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
     if (typeof msg === 'object') {
-      if (count === 1 || count === -1) {
-        // support (cr|l)azy people only using 'other' (like "all")
-        msg = msg.one || msg.other;
-      } else {
-        msg = msg.other;
-      }
+
+      var p = plurals[targetLocale](count);
+
+      // console.log(count + ' ----------> ' + p);
+      // support (cr|l)azy people only using 'other' (like "all")
+      msg = msg[p] || msg.other;
+
+      // if (count === 1 || count === -1) {
+      //   // support (cr|l)azy people only using 'other' (like "all")
+      //   msg = msg.one || msg.other;
+      // } else {
+      //   msg = msg.other;
+      // }
     }
 
     // test for parsable interval string
@@ -370,6 +379,8 @@ module.exports = (function() {
     }
 
     // replace the counter
+    // parses translation and replaces all digets '%d' by `count`
+    // this also replaces extra strings '%%s' to parseble '%s' for last step
     msg = vsprintf(msg, [parseInt(count, 10)]);
 
     // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
@@ -540,13 +551,13 @@ module.exports = (function() {
     return msg;
   };
 
-  var argsEndWithNamedObject = function (args) {
+  var argsEndWithNamedObject = function(args) {
     return (args.length > 1 &&
       args[args.length - 1] !== null &&
       typeof args[args.length - 1] === 'object');
   };
 
-  var parseArgv = function (args) {
+  var parseArgv = function(args) {
     var namedValues, returnArgs;
 
     if (argsEndWithNamedObject(args)) {
@@ -805,7 +816,7 @@ module.exports = (function() {
   var translate = function(locale, singular, plural, skipSyncToAllFiles) {
 
     // add same key to all translations
-    if(!skipSyncToAllFiles && syncFiles){
+    if (!skipSyncToAllFiles && syncFiles) {
       syncToAllFiles(singular, plural);
     }
 
@@ -880,11 +891,11 @@ module.exports = (function() {
    * initialize the same key in all locales
    * when not already existing, checked via translate
    */
-  var syncToAllFiles = function(singular, plural){
+  var syncToAllFiles = function(singular, plural) {
     // iterate over locales and translate again
     // this will implicitly write/sync missing keys
     // to the rest of locales
-    for(var l in locales){
+    for (var l in locales) {
       translate(l, singular, plural, true);
     }
   };
