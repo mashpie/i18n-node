@@ -328,9 +328,98 @@ __({phrase: 'Hello %s', locale: 'fr'}, 'Marcus'); // Salut Marcus
 __({phrase: 'Hello {{name}}', locale: 'fr'}, { name: 'Marcus' }); // Salut Marcus
 ```
 
+### i18n.__n()
+
+Plurals translation of a single phrase. Singular and plural forms will get added to locales if unknown. Returns translated parsed and substituted string based on last `count` parameter.
+
+```js
+// short syntax is best suited for reading
+// --> writes '%s cat' to both `one` and `other` plurals
+__n('%s cat', 1) // --> 1 Katze
+__n('%s cat', 3) // --> 3 Katzen
+
+// long syntax works fine in combination with `updateFiles`
+// --> writes '%s cat' to `one` and '%s cats' to `other` plurals
+// "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly. 
+__n("%s cat", "%s cats", 1); // 1 Katze
+__n("%s cat", "%s cats", 3); // 3 Katzen
+
+// scoped via req object (req.locale == 'de')
+req.__n("%s cat", 1); // 1 Katze
+req.__n("%s cat", 3); // 3 Katzen
+
+// scoped via res object (res.locale == 'de')
+res.__n("%s cat", 1); // 1 Katze
+res.__n("%s cat", 3); // 3 Katzen
+
+// passing specific locale
+__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 1); // 1 chat
+__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 3); // 3 chat
+
+// the all in one object signature
+__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
+__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
+```
+
+When used in short form like `__n(phrase, count)` the following will get added to your json files:
+
+```js
+__n('%s dog', 1)
+```
+
+```json
+{
+  "%s dog": {
+    "one": "%s dog",
+    "other": "%s dog"
+  }
+}
+```
+
+When used in long form like `__n(singular, plural, count)` you benefit form passing defaults to both forms:
+
+```js
+__n('%s kitty', '%s kittens', 0)
+```
+
+```json
+{
+  "%s kitty": {
+    "one": "%s kitty",
+    "other": "%s kittens"
+  }
+}
+```
+
+You might now add extra forms to certain json files to support the complete set of plural forms, like for example in russian:
+
+```json
+{
+  "%s cat": {
+    "one": "%d кошка",
+    "few": "%d или",
+    "many": "%d кошек",
+    "other": "%d кошка",
+  }
+}
+```
+
+and let `__n()` select the correct form for you:
+
+```js
+__n('%s cat', 0); // --> 0 кошек
+__n('%s cat', 1); // --> 1 кошка
+__n('%s cat', 2); // --> 2 или
+__n('%s cat', 5); // --> 5 кошек
+__n('%s cat', 6); // --> 6 кошек
+__n('%s cat', 21); // --> 21 кошка
+```
+
+> __Note__ i18n.__n() will add a blueprint ("one, other" or "one, few, other" for eaxmple) for each locale to your json on updateFiles in a future version.
+
 ### i18n.__mf()
 
-Support for the advanced MessageFormat as provided by excellent [messageformat module](https://www.npmjs.com/package/messageformat). You should definetly head over to [messageformat.github.io](https://messageformat.github.io) for a guide to MessageFormat. i18n takes care of `new MessageFormat('en').compile(msg);` with the current `msg` loaded from it's json files and cache that complied fn in memory. So in short you might use it similar to `__()` plus extra object to accomblish MessageFormat's formating. Ok, some examples:
+Supports the advanced MessageFormat as provided by excellent [messageformat module](https://www.npmjs.com/package/messageformat). You should definetly head over to [messageformat.github.io](https://messageformat.github.io) for a guide to MessageFormat. i18n takes care of `new MessageFormat('en').compile(msg);` with the current `msg` loaded from it's json files and cache that complied fn in memory. So in short you might use it similar to `__()` plus extra object to accomblish MessageFormat's formating. Ok, some examples:
 
 ```js
 // assume res is set to german
@@ -381,45 +470,13 @@ res.__mf('{N, plural, one{# cat} few{# cats} many{# cats} others{# cats}}', {N: 
 
 Take a look at [Mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals) to quickly get an idea of what pluralization has to deal with. With `__mf()` you get a very powerfull tool, but you need to handle it correctly.
 
-But MessageFormat can handle more! You get ability to handle:
+But MessageFormat can handle more! You get ability to process:
 
 * Simple Variable Replacement (similar to mustache placeholders)
 * SelectFormat (ie. switch msg based on gender)
 * PluralFormat (see above and [ranges](#ranged-interval-support))
 
 Combinations of those give superpower, but should get tested well (contribute your use case, please!) on integration.
-
-### i18n.__n()
-
-Plurals translation of a single phrase. Singular and plural forms will get added to locales if unknown. Returns translated parsed and substituted string based on last `count` parameter.
-
-```js
-// template and global (this.locale == 'de')
-// --> writes '%s cat' to `one` and '%s cats' to `other` plurals
-__n("%s cat", "%s cats", 1); // 1 Katze
-__n("%s cat", "%s cats", 3); // 3 Katzen
-
-// short syntax 
-// --> writes '%s cat' to both `one` and `other` plurals
-__n('%s cat', 1) // --> 1 Katze
-__n('%s cat', 3) // --> 3 Katzen
-
-// scoped via req object (req.locale == 'de')
-req.__n("%s cat", "%s cats", 1); // 1 Katze
-req.__n("%s cat", "%s cats", 3); // 3 Katzen
-
-// scoped via res object (res.locale == 'de')
-res.__n("%s cat", "%s cats", 1); // 1 Katze
-res.__n("%s cat", "%s cats", 3); // 3 Katzen
-
-// passing specific locale
-__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 1); // 1 chat
-__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 3); // 3 chat
-
-__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
-__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
-```
-> __Note__: The `__n()` method will get support to handle plurals in all required nodes as soon as theirs some time to add it. The current "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly.
 
 ### i18n.__l()
 

@@ -355,8 +355,7 @@ module.exports = (function() {
     // enforce number
     count = parseInt(count, 10);
 
-    // simplest 2 form implementation of plural, like
-    // @see https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
+    // find the correct plural rule for given locale
     if (typeof msg === 'object') {
       var p;
       // create a new Plural for locale
@@ -368,8 +367,7 @@ module.exports = (function() {
         PluralsForLocale[targetLocale] = p;
       }
 
-      // console.log(count + ' ----------> ' + p.categories.cardinal );
-      // support (cr|l)azy people only using 'other' (like "all")
+      // fallback to 'other' on case of missing translations
       msg = msg[p(count)] || msg.other;
     }
 
