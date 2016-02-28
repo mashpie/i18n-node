@@ -361,22 +361,22 @@ res.__mf('{N, plural, one{# cat} few{# cats} many{# cats} others{# cats}}', {N: 
 // ru --> 0 кошек       ru uses "__many__"
 
 // results for "2" in   (most use "others")
-// en --> 1 cat
-// de --> 1 Katze
-// fr --> 1 chat
+// en --> 2 cat
+// de --> 2 Katze
+// fr --> 2 chat
 // ru --> 2 или         ru uses "__few__" when ending on "1"
 
 // results for "5" in   (most use "others")
-// en --> 1 cat
-// de --> 1 Katze
-// fr --> 1 chat
-// ru --> 2 кошек       ru uses "__many__"
+// en --> 5 cat
+// de --> 5 Katze
+// fr --> 5 chat
+// ru --> 5 кошек       ru uses "__many__"
 
 // results for "21" in  (most use "others")
-// en --> 1 cat
-// de --> 1 Katze
-// fr --> 1 chat
-// ru --> 2 кошка       ru uses "__one__" when ending on "1"
+// en --> 21 cat
+// de --> 21 Katze
+// fr --> 21 chat
+// ru --> 21 кошка       ru uses "__one__" when ending on "1"
 ```
 
 Take a look at [Mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals) to quickly get an idea of what pluralization has to deal with. With `__mf()` you get a very powerfull tool, but you need to handle it correctly.
