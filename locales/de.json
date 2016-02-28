@@ -24,7 +24,9 @@
 	},
 	"Hello %s": "Hallo %s",
 	"Hello {{name}}": "Hallo {{name}}",
+	"Hello {name}": "Hallo {name}",
 	"Hello {{name}}, how was your %s?": "Hallo {{name}}, wie war dein %s?",
+	"Hello {name}, how was your %s?": "Hallo {name}, wie war dein %s?",
 	"format": {
 		"date": "DD.MM.YYYY",
 		"time": "hh:mm:ss"
