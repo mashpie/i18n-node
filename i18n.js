@@ -18,14 +18,16 @@ var vsprintf = require('sprintf-js').vsprintf,
   error = require('debug')('i18n:error'),
   Mustache = require('mustache'),
   Messageformat = require('messageformat'),
-  plurals = require('make-plural/plurals'),
-  // pluralCategories = require('make-plural/pluralCategories'), // ---> still WIP
+  MakePlural = require('make-plural/make-plural').load(
+    require('make-plural/data/plurals.json')
+  ),
   parseInterval = require('math-interval-parser').default;
 
 // exports an instance
 module.exports = (function() {
 
   var MessageformatInstanceForLocale = {},
+    PluralsForLocale = {},
     locales = {},
     api = {
       '__': '__',
@@ -274,8 +276,6 @@ module.exports = (function() {
       mf.compiledFunctions[msg] = f;
     }
 
-    // console.log(targetLocale);
-
     return postProcess(f(namedValues), namedValues, args);
   };
 
@@ -358,19 +358,19 @@ module.exports = (function() {
     // simplest 2 form implementation of plural, like
     // @see https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
     if (typeof msg === 'object') {
+      var p;
+      // create a new Plural for locale
+      // and try to cache instance
+      if (PluralsForLocale[targetLocale]) {
+        p = PluralsForLocale[targetLocale];
+      } else {
+        p = new MakePlural(targetLocale);
+        PluralsForLocale[targetLocale] = p;
+      }
 
-      var p = plurals[targetLocale](count);
-
-      // console.log(count + ' ----------> ' + p);
+      // console.log(count + ' ----------> ' + p.categories.cardinal );
       // support (cr|l)azy people only using 'other' (like "all")
-      msg = msg[p] || msg.other;
-
-      // if (count === 1 || count === -1) {
-      //   // support (cr|l)azy people only using 'other' (like "all")
-      //   msg = msg.one || msg.other;
-      // } else {
-      //   msg = msg.other;
-      // }
+      msg = msg[p(count)] || msg.other;
     }
 
     // test for parsable interval string
