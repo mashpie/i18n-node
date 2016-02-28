@@ -312,7 +312,6 @@ __('Hello'); // Hallo
 __('Hello %s', 'Marcus'); // Hallo Marcus
 __('Hello {{name}}', { name: 'Marcus' }); // Hallo Marcus
 
-
 // scoped via req object (req.locale == 'de')
 req.__('Hello'); // Hallo
 req.__('Hello %s', 'Marcus'); // Hallo Marcus
@@ -392,12 +391,18 @@ Combinations of those give superpower, but should get tested well (contribute yo
 
 ### i18n.__n()
 
-Plurals translation of a single phrase. Singular and plural forms will get added to locales if unknown. Returns translated parsed and substituted string based on `count` parameter.
+Plurals translation of a single phrase. Singular and plural forms will get added to locales if unknown. Returns translated parsed and substituted string based on last `count` parameter.
 
 ```js
 // template and global (this.locale == 'de')
+// --> writes '%s cat' to `one` and '%s cats' to `other` plurals
 __n("%s cat", "%s cats", 1); // 1 Katze
 __n("%s cat", "%s cats", 3); // 3 Katzen
+
+// short syntax 
+// --> writes '%s cat' to both `one` and `other` plurals
+__n('%s cat', 1) // --> 1 Katze
+__n('%s cat', 3) // --> 3 Katzen
 
 // scoped via req object (req.locale == 'de')
 req.__n("%s cat", "%s cats", 1); // 1 Katze
