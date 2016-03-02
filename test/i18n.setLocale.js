@@ -240,7 +240,7 @@ describe('Locale switching should work on req and res', function() {
   });
 
 
-  it('setLocale(object) should escape recursion', function() {
+  it('setLocale(object) should escape res -> locals -> res recursion', function() {
     // add locals to res
     res.locals = { res: res };
 

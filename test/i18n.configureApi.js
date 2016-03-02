@@ -69,7 +69,7 @@ describe('configure api', function() {
         should.equal(typeof customObject.__, 'undefined');
     });
 
-    it('should escape recursion', function() {
+    it('should escape res -> locals -> res recursion', function() {
         var customObject = {};
         customObject.locals = { res: customObject };
         reconfigure({
