@@ -1,5 +1,3 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
-
 var i18n = require('../i18n'),
   should = require("should"),
   fs = require('fs'),
@@ -30,16 +28,12 @@ describe('autoreload configuration', function() {
       autoReload: true
     });
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
-    setTimeout(function(){
-      done();
-    }, timeout);
+    setTimeout(done, timeout);
   });
 
   it('reloads when a catalog is altered', function(done) {
     fs.writeFileSync(directory + '/de.json', '{"Hello":"Hallo"}');
-    setTimeout(function(){
-      done();
-    }, timeout);
+    setTimeout(done, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
@@ -55,7 +49,7 @@ describe('autoreload configuration', function() {
     done();
   });
 
-  it('will remove testlocalesauto after tests', function(){
+  it('will remove testlocalesauto after tests', function() {
     fs.unlinkSync(directory + '/de.json');
     fs.unlinkSync(directory + '/en.json');
     fs.rmdirSync(directory);
@@ -74,20 +68,16 @@ describe('autoreload configuration with prefix', function() {
     reconfigure({
       directory: directory,
       register: testScope,
-      prefix:'customprefix-',
+      prefix: 'customprefix-',
       autoReload: true
     });
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
-    setTimeout(function(){
-      done();
-    }, timeout);
+    setTimeout(done, timeout);
   });
 
   it('reloads when a catalog is altered', function(done) {
     fs.writeFileSync(directory + '/customprefix-de.json', '{"Hello":"Hallo"}');
-    setTimeout(function(){
-      done();
-    }, timeout);
+    setTimeout(done, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
@@ -103,7 +93,7 @@ describe('autoreload configuration with prefix', function() {
     done();
   });
 
-  it('will remove testlocalesautoprefixed after tests', function(){
+  it('will remove testlocalesautoprefixed after tests', function() {
     fs.unlinkSync(directory + '/customprefix-de.json');
     fs.unlinkSync(directory + '/customprefix-en.json');
     fs.rmdirSync(directory);
@@ -123,21 +113,17 @@ describe('autoreload configuration with prefix and customextension', function() 
     reconfigure({
       directory: directory,
       register: testScope,
-      prefix:'customprefix-',
+      prefix: 'customprefix-',
       extension: '.customextension',
       autoReload: true
     });
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
-    setTimeout(function(){
-      done();
-    }, timeout);
+    setTimeout(done, timeout);
   });
 
   it('reloads when a catalog is altered', function(done) {
     fs.writeFileSync(directory + '/customprefix-de.customextension', '{"Hello":"Hallo"}');
-    setTimeout(function(){
-      done();
-    }, timeout);
+    setTimeout(done, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
@@ -153,7 +139,7 @@ describe('autoreload configuration with prefix and customextension', function() 
     done();
   });
 
-  it('will remove testlocalesautoprefixed after tests', function(){
+  it('will remove testlocalesautoprefixed after tests', function() {
     fs.unlinkSync(directory + '/customprefix-de.customextension');
     fs.unlinkSync(directory + '/customprefix-en.customextension');
     fs.rmdirSync(directory);
@@ -177,16 +163,12 @@ describe('autoreload configuration with customextension', function() {
       autoReload: true
     });
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
-    setTimeout(function(){
-      done();
-    }, timeout);
+    setTimeout(done, timeout);
   });
 
   it('reloads when a catalog is altered', function(done) {
     fs.writeFileSync(directory + '/de.customextension', '{"Hello":"Hallo"}');
-    setTimeout(function(){
-      done();
-    }, timeout);
+    setTimeout(done, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
@@ -202,7 +184,7 @@ describe('autoreload configuration with customextension', function() {
     done();
   });
 
-  it('will remove testlocalesautoprefixed after tests', function(){
+  it('will remove testlocalesautoprefixed after tests', function() {
     fs.unlinkSync(directory + '/de.customextension');
     fs.unlinkSync(directory + '/en.customextension');
     fs.rmdirSync(directory);

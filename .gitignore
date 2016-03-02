@@ -5,3 +5,6 @@ coverage/
 /npm-debug.log
 /i18n-cov.js
 /coverage.html
+defaultlocales
+localestowrite
+localesmakeplural

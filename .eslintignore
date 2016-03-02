@@ -1,0 +1,7 @@
+coverage/
+examples/
+locales/
+node_modules/
+test/
+i18n-cov.js
+index.js

@@ -13,6 +13,12 @@
 		"one": "%s cat",
 		"other": "%s cats"
 	},
+	"cats": {
+    	"n": {
+      		"one": "%s cat",
+      		"other": "%s cats"
+    	}
+  	},
 	"nested": {
 		"deep": {
 			"plural": {
@@ -30,6 +36,36 @@
 		"one": "There is one monkey in the %s",
 		"other": "There are %d monkeys in the %s"
 	},
+	"There is one monkey in the tree": {
+		"one": "There is one monkey in the tree",
+		"other": "There are %d monkeys in the tree"
+	},
+
+	"plurals with intervals in string (no object)":"[0] a zero rule|[2,5] two to five (included)|and a catchall rule",
+
+	"plurals with intervals in _other_ missing _one_":{
+		"other": "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+	},
+
+	"plurals with intervals as string":{
+		"one": "The default 'one' rule",
+		"other": "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+	},
+
+	"plurals with intervals as string (excluded)":{
+		"one": "The default 'one' rule",
+		"other": "[0] a zero rule|]2,5[ two to five (excluded)|and a catchall rule"
+	},
+
+	"plurals in any order":{
+		"one": "The default 'one' rule",
+		"other": "[0] a zero rule|and a catchall rule|[2,5] two to five (included)"
+	},
+
+	"plurals to eternity":"[0,] this will last forever|but only gt 0",
+
+	"plurals from eternity":"[,0] this was born long before|but only lt 0",
+
 	"Hello %s": "Hello %s",
 	"Hello {{name}}": "Hello {{name}}",
 	"Hello {{name}}, how was your %s?": "Hello {{name}}, how was your %s?",
@@ -44,6 +80,33 @@
 			"formal": "Hello %s",
 			"informal": "Hi %s",
 			"loud": "greeting.placeholder.loud"
+		},
+		"plurals": {
+			"one": "The default 'one' rule",
+			"other": "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+		}
+	},
+	"another": {
+		"nested":{
+			"extra":{
+				"deep":{
+					"example":{
+						"one": "The default 'one' rule",
+						"other": "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+					}
+				},
+				"lazy":{
+					"example":{
+						"other": "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+					}
+				},
+				"mustache":{
+					"example":"[0] a zero rule for {{me}}|[2,5] two to five (included) for {{me}}|and a catchall rule for {{me}}"
+				},
+				"mustacheprintf":{
+					"example":"[0] %s is zero rule for {{me}}|[2,5] %s is between two and five (included) for {{me}}|and a catchall rule for {{me}} to get my number %s"
+				}
+			}
 		}
 	},
 	"nested.deep.plural": {

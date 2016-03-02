@@ -1,5 +1,3 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
-
 var i18n = require('../i18n'),
     should = require("should");
 
@@ -12,7 +10,7 @@ i18n.configure({
 
 describe('Module Setup', function () {
   it('should export a valid version', function () {
-    should.equal(i18n.version, '0.7.0');
+    should.equal(i18n.version, '0.8.0');
   });
 
   it('should export configure as i18nConfigure', function () {
