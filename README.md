@@ -946,6 +946,8 @@ i18n.configure({
 
 ## Changelog
 
+* 0.8.1:
+    * __hotfix__: fixes `i18n.setLocale()` recursion bug on nested res-/req-objects [sails#3631](https://github.com/balderdashy/sails/pull/3631)
 * 0.8.0:
     * __improved__: `i18n.__n()` supports all plurals
     * __new__: added MessageFormat by explicit `i18n.__mf()`, `api` alias option, `syncFiles` option
