@@ -436,12 +436,26 @@ module.exports = (function() {
 
     // consider res
     if (targetObject.res && !skipImplicitObjects) {
-      i18n.setLocale(targetObject.res, targetObject.locale);
+
+      // escape recursion
+      if (targetObject.res.locals) {
+        i18n.setLocale(targetObject.res, targetObject.locale, true);
+        i18n.setLocale(targetObject.res.locals, targetObject.locale, true);
+      } else {
+        i18n.setLocale(targetObject.res, targetObject.locale);
+      }
     }
 
     // consider locals
     if (targetObject.locals && !skipImplicitObjects) {
-      i18n.setLocale(targetObject.locals, targetObject.locale);
+
+      // escape recursion
+      if (targetObject.locals.res) {
+        i18n.setLocale(targetObject.locals, targetObject.locale, true);
+        i18n.setLocale(targetObject.locals.res, targetObject.locale, true);
+      } else {
+        i18n.setLocale(targetObject.locals, targetObject.locale);
+      }
     }
 
     return i18n.getLocale(targetObject);
@@ -574,6 +588,8 @@ module.exports = (function() {
    */
   var applyAPItoObject = function(object) {
 
+    var alreadySetted = true;
+
     // attach to itself if not provided
     for (var method in api) {
       if (api.hasOwnProperty(method)) {
@@ -581,6 +597,7 @@ module.exports = (function() {
 
         // be kind rewind, or better not touch anything already existing
         if (!object[alias]) {
+          alreadySetted = false;
           object[alias] = i18n[method].bind(object);
         }
       }
@@ -589,6 +606,11 @@ module.exports = (function() {
     // set initial locale if not set
     if (!object.locale) {
       object.locale = defaultLocale;
+    }
+
+    // escape recursion
+    if (alreadySetted) {
+      return;
     }
 
     // attach to response if present (ie. in express)
