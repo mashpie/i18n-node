@@ -68,4 +68,18 @@ describe('configure api', function() {
         });
         should.equal(typeof customObject.__, 'undefined');
     });
+
+    it('should escape res -> locals -> res recursion', function() {
+        var customObject = {};
+        customObject.locals = { res: customObject };
+        reconfigure({
+            locales: ['en', 'de'],
+            register: customObject,
+            api: {
+              '__': 't'
+            }
+        });
+        should.equal(typeof customObject.t, 'function');
+        should.equal(typeof customObject.locals.t, 'function');
+    });
 });

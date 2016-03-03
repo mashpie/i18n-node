@@ -239,4 +239,18 @@ describe('Locale switching should work on req and res', function() {
     res.locals.__('Hello').should.equal('Bonjour');
   });
 
+
+  it('setLocale(object) should escape res -> locals -> res recursion', function() {
+    // add locals to res
+    res.locals = { res: res };
+
+    // add res to req to simulate express 4.x schema
+    req.res = res;
+    i18n.init(req, res);
+    i18n.setLocale(req, 'fr');
+
+    res.locale.should.equal('fr');
+    res.locals.locale.should.equal('fr');
+  });
+
 });
