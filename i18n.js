@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.8.0
+ * @version     0.8.1
  */
 
 'use strict';
@@ -66,7 +66,7 @@ module.exports = (function() {
 
   i18n.locales = locales;
 
-  i18n.version = '0.8.0';
+  i18n.version = '0.8.1';
 
   i18n.configure = function i18nConfigure(opt) {
 
@@ -438,6 +438,8 @@ module.exports = (function() {
     if (targetObject.res && !skipImplicitObjects) {
 
       // escape recursion
+      // @see  - https://github.com/balderdashy/sails/pull/3631
+      //       - https://github.com/mashpie/i18n-node/pull/218
       if (targetObject.res.locals) {
         i18n.setLocale(targetObject.res, targetObject.locale, true);
         i18n.setLocale(targetObject.res.locals, targetObject.locale, true);
@@ -450,6 +452,8 @@ module.exports = (function() {
     if (targetObject.locals && !skipImplicitObjects) {
 
       // escape recursion
+      // @see  - https://github.com/balderdashy/sails/pull/3631
+      //       - https://github.com/mashpie/i18n-node/pull/218
       if (targetObject.locals.res) {
         i18n.setLocale(targetObject.locals, targetObject.locale, true);
         i18n.setLocale(targetObject.locals.res, targetObject.locale, true);
