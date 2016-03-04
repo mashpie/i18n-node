@@ -39,7 +39,7 @@ describe('i18n supports MakePlural', function() {
     ru: {
       "%s cat": {
         one: '%d кошка',
-        few: '%d или',
+        few: '%d кошки',
         many: '%d кошек'
       }
     },
@@ -77,7 +77,7 @@ describe('i18n supports MakePlural', function() {
     should.deepEqual(getJson('en')['%s cat'], { one: '%d cat', other: '%d cats' } );
     should.deepEqual(getJson('de')['%s cat'], { one: '%d Katze', other: '%d Katzen' } );
     should.deepEqual(getJson('fr')['%s cat'], { one: '%d chat', other: '%d chats' } );
-    should.deepEqual(getJson('ru')['%s cat'], { one: '%d кошка', few: '%d или', many: '%d кошек' });
+    should.deepEqual(getJson('ru')['%s cat'], { one: '%d кошка', few: '%d кошки', many: '%d кошек' });
     done();
   });
 
@@ -85,7 +85,7 @@ describe('i18n supports MakePlural', function() {
     TestScope.setLocale('ru');
     should.deepEqual(TestScope.__n('%s cat', 0), '0 кошек');
     should.deepEqual(TestScope.__n('%s cat', 1), '1 кошка');
-    should.deepEqual(TestScope.__n('%s cat', 2), '2 или');
+    should.deepEqual(TestScope.__n('%s cat', 2), '2 кошки');
     should.deepEqual(TestScope.__n('%s cat', 5), '5 кошек');
     should.deepEqual(TestScope.__n('%s cat', 6), '6 кошек');
     should.deepEqual(TestScope.__n('%s cat', 21), '21 кошка');
