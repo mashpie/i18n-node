@@ -371,28 +371,8 @@ module.exports = (function() {
       msg = msg[p(count)] || msg.other;
     }
 
-    // test for parsable interval string
-    if ((/\|/).test(msg)) {
-      msg = parsePluralInterval(msg, count);
-    }
-
-    // replace the counter
-    // parses translation and replaces all digets '%d' by `count`
-    // this also replaces extra strings '%%s' to parseble '%s' for last step
-    msg = vsprintf(msg, [parseInt(count, 10)]);
-
-    // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
-    if ((/{{.*}}/).test(msg)) {
-      msg = Mustache.render(msg, namedValues);
-    }
-
-    // if we have extra arguments with strings to get replaced,
-    // an additional substition injects those strings afterwards
-    if ((/%/).test(msg) && args && args.length > 0) {
-      msg = vsprintf(msg, args);
-    }
-
-    return msg;
+    // head over to postProcessing
+    return postProcess(msg, namedValues, args, count);
   };
 
   i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
@@ -536,8 +516,7 @@ module.exports = (function() {
   // = private methods =
   // ===================
 
-  var postProcess = function(msg, namedValues, args, counter) {
-    var count = counter || false;
+  var postProcess = function(msg, namedValues, args, count) {
 
     // test for parsable interval string
     if ((/\|/).test(msg)) {
@@ -545,7 +524,7 @@ module.exports = (function() {
     }
 
     // replace the counter
-    if (count) {
+    if (typeof count === 'number') {
       msg = vsprintf(msg, [parseInt(count, 10)]);
     }
 
