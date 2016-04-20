@@ -997,6 +997,10 @@ module.exports = (function() {
       var nullAccessor = function() {
         return null;
       };
+      // Fix object path.
+      var fixObject = function() {
+        return {};
+      };
       // Are we going to need to re-traverse the tree when the mutator is invoked?
       var reTraverse = false;
       // Split the provided term and run the callback for each subterm.
@@ -1008,6 +1012,10 @@ module.exports = (function() {
         if (null === object || !object.hasOwnProperty(index)) {
           // ...check if we're allowed to create new branches.
           if (allowBranching) {
+            // Fix `object` if `object` is not Object.
+            if (null === object || typeof object !== 'object') {
+              object = fixObject();
+            }
             // If we are allowed to, create a new object along the path.
             object[index] = {};
           } else {
@@ -1021,6 +1029,11 @@ module.exports = (function() {
         accessor = function(value) {
           object[index] = value;
           return value;
+        };
+        // Generate a fixer for the current level.
+        fixObject = function() {
+          object[index] = {};
+          return object[index];
         };
 
         // Return a reference to the next deeper level in the locale tree.
