@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.8.1
+ * @version     0.8.2
  */
 
 'use strict';
@@ -66,7 +66,7 @@ module.exports = (function() {
 
   i18n.locales = locales;
 
-  i18n.version = '0.8.1';
+  i18n.version = '0.8.2';
 
   i18n.configure = function i18nConfigure(opt) {
 
