@@ -25,9 +25,6 @@
 				"one": "plural",
 				"other": "plurals"
 			}
-		},
-		"path": {
-			"sub": "nested.path.sub"
 		}
 	},
 	"There is one monkey in the %%s": {
