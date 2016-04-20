@@ -28,6 +28,12 @@ describe('Object Notation', function() {
   });
 
   describe('i18nTranslate', function() {
+
+    beforeEach(function() {
+      var catalog = i18n.getCatalog('en');
+      delete catalog.nested.path;
+    });
+
     it('should return en translations as expected, using object traversal notation', function() {
       i18n.setLocale('en');
       should.equal(__('greeting.formal'), 'Hello');
@@ -50,6 +56,14 @@ describe('Object Notation', function() {
       var plural = __n("nested.deep.plural", 3);
       should.equal(singular, 'plural');
       should.equal(plural, 'plurals');
+    });
+
+    it('should correctly update files', function() {
+      should.equal(__("nested.path"), "nested.path");
+      should.equal(__("nested.path.sub"), "nested.path.sub");
+      should.deepEqual(__("nested.path"), {
+        sub: "nested.path.sub"
+      });
     });
   });
 });
