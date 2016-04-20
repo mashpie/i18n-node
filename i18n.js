@@ -37,7 +37,6 @@ module.exports = (function() {
       '__mf': '__mf',
       'getLocale': 'getLocale',
       'setLocale': 'setLocale',
-      'setCatalog': 'setCatalog',
       'getCatalog': 'getCatalog',
       'getLocales': 'getLocales',
       'addLocale': 'addLocale',
@@ -457,11 +456,6 @@ module.exports = (function() {
     return this.locale || defaultLocale;
   };
 
-  // Write back to the catalog with updated translations.
-  i18n.setCatalog = function i18nSetCatalog(locale) {
-    write(locale);
-  };
-  
   i18n.getCatalog = function i18nGetCatalog(object, locale) {
     var targetLocale;
 
