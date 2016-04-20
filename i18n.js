@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.8.1
+ * @version     0.8.2
  */
 
 'use strict';
@@ -66,7 +66,7 @@ module.exports = (function() {
 
   i18n.locales = locales;
 
-  i18n.version = '0.8.1';
+  i18n.version = '0.8.2';
 
   i18n.configure = function i18nConfigure(opt) {
 
@@ -371,28 +371,8 @@ module.exports = (function() {
       msg = msg[p(count)] || msg.other;
     }
 
-    // test for parsable interval string
-    if ((/\|/).test(msg)) {
-      msg = parsePluralInterval(msg, count);
-    }
-
-    // replace the counter
-    // parses translation and replaces all digets '%d' by `count`
-    // this also replaces extra strings '%%s' to parseble '%s' for last step
-    msg = vsprintf(msg, [parseInt(count, 10)]);
-
-    // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
-    if ((/{{.*}}/).test(msg)) {
-      msg = Mustache.render(msg, namedValues);
-    }
-
-    // if we have extra arguments with strings to get replaced,
-    // an additional substition injects those strings afterwards
-    if ((/%/).test(msg) && args && args.length > 0) {
-      msg = vsprintf(msg, args);
-    }
-
-    return msg;
+    // head over to postProcessing
+    return postProcess(msg, namedValues, args, count);
   };
 
   i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
@@ -540,8 +520,7 @@ module.exports = (function() {
   // = private methods =
   // ===================
 
-  var postProcess = function(msg, namedValues, args, counter) {
-    var count = counter || false;
+  var postProcess = function(msg, namedValues, args, count) {
 
     // test for parsable interval string
     if ((/\|/).test(msg)) {
@@ -549,7 +528,7 @@ module.exports = (function() {
     }
 
     // replace the counter
-    if (count) {
+    if (typeof count === 'number') {
       msg = vsprintf(msg, [parseInt(count, 10)]);
     }
 
@@ -703,9 +682,11 @@ module.exports = (function() {
             // Fallbacks for languages should be inserted
             // where the original, unsupported language existed.
             var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
-            if (acceptedLanguages.indexOf(fallback) < 0) {
-              acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
+            var fallbackIndex = acceptedLanguages.indexOf(fallback);
+            if(fallbackIndex > -1) {
+              acceptedLanguages.splice(fallbackIndex, 1);
             }
+            acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
           }
 
           // Check if we have a configured fallback set for the parent language of the locale.
@@ -1016,6 +997,10 @@ module.exports = (function() {
       var nullAccessor = function() {
         return null;
       };
+      // Fix object path.
+      var fixObject = function() {
+        return {};
+      };
       // Are we going to need to re-traverse the tree when the mutator is invoked?
       var reTraverse = false;
       // Split the provided term and run the callback for each subterm.
@@ -1027,6 +1012,10 @@ module.exports = (function() {
         if (null === object || !object.hasOwnProperty(index)) {
           // ...check if we're allowed to create new branches.
           if (allowBranching) {
+            // Fix `object` if `object` is not Object.
+            if (null === object || typeof object !== 'object') {
+              object = fixObject();
+            }
             // If we are allowed to, create a new object along the path.
             object[index] = {};
           } else {
@@ -1040,6 +1029,11 @@ module.exports = (function() {
         accessor = function(value) {
           object[index] = value;
           return value;
+        };
+        // Generate a fixer for the current level.
+        fixObject = function() {
+          object[index] = {};
+          return object[index];
         };
 
         // Return a reference to the next deeper level in the locale tree.

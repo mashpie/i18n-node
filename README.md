@@ -397,7 +397,7 @@ You might now add extra forms to certain json files to support the complete set 
 {
   "%s cat": {
     "one": "%d кошка",
-    "few": "%d или",
+    "few": "%d кошки",
     "many": "%d кошек",
     "other": "%d кошка",
   }
@@ -409,7 +409,7 @@ and let `__n()` select the correct form for you:
 ```js
 __n('%s cat', 0); // --> 0 кошек
 __n('%s cat', 1); // --> 1 кошка
-__n('%s cat', 2); // --> 2 или
+__n('%s cat', 2); // --> 2 кошки
 __n('%s cat', 5); // --> 5 кошек
 __n('%s cat', 6); // --> 6 кошек
 __n('%s cat', 21); // --> 21 кошка
@@ -453,7 +453,7 @@ res.__mf('{N, plural, one{# cat} few{# cats} many{# cats} others{# cats}}', {N: 
 // en --> 2 cat
 // de --> 2 Katze
 // fr --> 2 chat
-// ru --> 2 или         ru uses "__few__" when ending on "1"
+// ru --> 2 кошки       ru uses "__few__" when ending on "1"
 
 // results for "5" in   (most use "others")
 // en --> 5 cat
@@ -946,6 +946,8 @@ i18n.configure({
 
 ## Changelog
 
+* 0.8.2:
+    * __fixed__: typos, objectNotation mutator #226, accept-language headers with fallback #228
 * 0.8.1:
     * __hotfix__: fixes `i18n.setLocale()` recursion bug on nested res-/req-objects [sails#3631](https://github.com/balderdashy/sails/pull/3631)
 * 0.8.0:
