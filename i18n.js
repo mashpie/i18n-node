@@ -682,9 +682,11 @@ module.exports = (function() {
             // Fallbacks for languages should be inserted
             // where the original, unsupported language existed.
             var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
-            if (acceptedLanguages.indexOf(fallback) < 0) {
-              acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
+            var fallbackIndex = acceptedLanguages.indexOf(fallback);
+            if(fallbackIndex > -1) {
+              acceptedLanguages.splice(fallbackIndex, 1);
             }
+            acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
           }
 
           // Check if we have a configured fallback set for the parent language of the locale.
