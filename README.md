@@ -946,6 +946,8 @@ i18n.configure({
 
 ## Changelog
 
+* 0.8.2:
+    * __fixed__: typos, objectNotation mutator #226, accept-language headers with fallback #228
 * 0.8.1:
     * __hotfix__: fixes `i18n.setLocale()` recursion bug on nested res-/req-objects [sails#3631](https://github.com/balderdashy/sails/pull/3631)
 * 0.8.0:
