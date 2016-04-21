@@ -11,7 +11,7 @@ No extra parsing needed.
 [![NPM version][npm-image]][npm-url]
 [![Dependency Status][dependency-image]][dependency-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
-
+[![Known Vulnerabilities][snyk-image]][snyk-url]
 
 ## Install
 ```sh
@@ -1014,3 +1014,6 @@ SOFTWARE.
 
 [dependency-image]: https://img.shields.io/gemnasium/mashpie/i18n-node.svg
 [dependency-url]: https://gemnasium.com/mashpie/i18n-node
+
+[snyk-image]: https://snyk.io/test/npm/i18n/badge.svg
+[snyk-url]: https://snyk.io/test/npm/i18n
