@@ -190,6 +190,9 @@ i18n.configure({
     logErrorFn: function (msg) {
         console.log('error', msg);
     },
+    
+    // custom function hook for missing translations
+    missingTranslation: function(locale, value){},
 
     // object or [obj1, obj2] to bind the i18n api and current locale to - defaults to null
     register: global,
@@ -941,6 +944,23 @@ i18n.configure({
     }
 });
 ```
+
+## Custom Missing Translation Function
+
+Sometimes, you might need to deal with a missing translation for a locale, either for a custom logging situation, or to add the translation to a 3rd party translation tool (like Zanata). You can do that through adding a missing trasnlation function which takes the locale and value that is missing a particular translation
+
+```js
+i18n.configure({
+
+    ...
+
+    // Dealing with a missing translation at a functional level
+    missingTranslation: function(locale, value){
+      console.log('%s is missing the following translation: %s', locale, value);
+    }
+});
+```
+
 
 [![NPM](https://nodei.co/npm/i18n.svg?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/i18n/)
 
