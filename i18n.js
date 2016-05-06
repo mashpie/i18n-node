@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.8.1
+ * @version     0.8.2
  */
 
 'use strict';
@@ -66,7 +66,7 @@ module.exports = (function() {
 
   i18n.locales = locales;
 
-  i18n.version = '0.8.1';
+  i18n.version = '0.8.2';
 
   i18n.configure = function i18nConfigure(opt) {
 
@@ -682,9 +682,11 @@ module.exports = (function() {
             // Fallbacks for languages should be inserted
             // where the original, unsupported language existed.
             var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
-            if (acceptedLanguages.indexOf(fallback) < 0) {
-              acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
+            var fallbackIndex = acceptedLanguages.indexOf(fallback);
+            if(fallbackIndex > -1) {
+              acceptedLanguages.splice(fallbackIndex, 1);
             }
+            acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
           }
 
           // Check if we have a configured fallback set for the parent language of the locale.

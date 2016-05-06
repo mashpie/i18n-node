@@ -12,7 +12,7 @@ describe('locals configuration', function() {
       directory: directory
     });
 
-    var expected = ['de', 'de-AT', 'de-DE', 'en', 'en-GB', 'en-US', 'fr', 'nl', 'ru'].sort();
+    var expected = ['de', 'de-AT', 'de-DE', 'en', 'en-GB', 'en-US', 'fr', 'nl', 'ru', 'tr-TR'].sort();
     should.deepEqual(i18n.getLocales(), expected);
 
     done();

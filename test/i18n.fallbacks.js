@@ -57,6 +57,40 @@ describe('Fallbacks', function() {
     });
   });
 
+  describe('Fallback to parent language with weighted Accept-Language header', function() {
+      beforeEach(function() {
+        i18n.configure({
+          locales: ['en-US', 'tr-TR'],
+          defaultLocale: 'en-US',
+          fallbacks: { 'en': 'en-US', 'tr': 'tr-TR' },
+          directory: './locales',
+          register: req
+        });
+
+        req.headers = {};
+        delete req.languages;
+        delete req.language;
+        delete req.locale;
+        delete req.region;
+        delete req.regions;
+    });
+    it ('should use "tr-TR" from fallback for "tr" instead of "en-US" parent of "en-CA"', function (){
+      req.headers['accept-language'] = 'en-CA,tr;q=0.3';
+      i18n.init(req);
+      i18n.getLocale(req).should.equal('tr-TR');
+    });
+    it ('should use "en-US" from fallback for "en" parent language with "en" in Accept-Language', function (){
+      req.headers['accept-language'] = 'en-CA,en;q=0.7,tr;q=0.3';
+      i18n.init(req);
+      i18n.getLocale(req).should.equal('en-US');
+    });
+    it ('should use "tr-TR" from fallback for "tr"', function (){
+      req.headers['accept-language'] = 'fr-FR,fr;q=0.7,tr;q=0.3';
+      i18n.init(req);
+      i18n.getLocale(req).should.equal('tr-TR');
+    });
+  });
+
   describe('Fallback to locale', function() {
     beforeEach(function() {
       // Force reloading of i18n, to reset configuration
