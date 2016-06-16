@@ -641,7 +641,7 @@ module.exports = (function() {
 
   var guessLanguage = function(request) {
     if (typeof request === 'object') {
-      var languageHeader = request.headers['accept-language'],
+      var languageHeader = request.headers? request.headers['accept-language'] : undefined,
         languages = [],
         regions = [];
 
