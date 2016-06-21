@@ -946,6 +946,8 @@ i18n.configure({
 
 ## Changelog
 
+* 0.8.3:
+    + __fixed__: #235 objectNotation, #231 Plurals support regions ("en-US", "de-DE")
 * 0.8.2:
     * __fixed__: typos, objectNotation mutator #226, accept-language headers with fallback #228
 * 0.8.1:
