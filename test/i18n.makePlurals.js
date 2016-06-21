@@ -16,9 +16,27 @@ function putJson(l, d) {
 describe('i18n supports MakePlural', function() {
 
   var TestScope = {};
-  var locales = ['en', 'de', 'fr', 'ru', 'ar'];
+  var locales = ['en', 'de', 'fr', 'ru', 'ar', 'de-DE', 'de-AT', 'de-CH'];
   var fixture = {
     de: {
+      "%s cat": {
+        one: '%d Katze',
+        other: '%d Katzen'
+      }
+    },
+    'de-DE': {
+      "%s cat": {
+        one: '%d Katze',
+        other: '%d Katzen'
+      }
+    },
+    'de-AT': {
+      "%s cat": {
+        one: '%d Katze',
+        other: '%d Katzen'
+      }
+    },
+    'de-CH': {
       "%s cat": {
         one: '%d Katze',
         other: '%d Katzen'
@@ -135,6 +153,20 @@ describe('i18n supports MakePlural', function() {
     should.deepEqual(TestScope.__n('%s book', 100), '‫١٠٠ كتاب');
     TestScope.__n('%s dog', 0);
     TestScope.__n('%s kitty', '%s kittens', 0);
+    done();
+  });
+
+  it('__n() should return correctly in german for all regions', function(done) {
+    var regions = ['de-DE', 'de-AT', 'de-CH'];
+    for(var i = 0; i < regions.length; i++) {
+      TestScope.setLocale(regions[i]);
+      should.deepEqual(TestScope.__n('%s cat', 0), '0 Katzen');
+      should.deepEqual(TestScope.__n('%s cat', 1), '1 Katze');
+      should.deepEqual(TestScope.__n('%s cat', 2), '2 Katzen');
+      should.deepEqual(TestScope.__n('%s cat', 5), '5 Katzen');
+      should.deepEqual(TestScope.__n('%s cat', 6), '6 Katzen');
+      should.deepEqual(TestScope.__n('%s cat', 21), '21 Katzen');
+    }
     done();
   });
 

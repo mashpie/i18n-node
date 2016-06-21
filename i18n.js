@@ -363,7 +363,11 @@ module.exports = (function() {
       if (PluralsForLocale[targetLocale]) {
         p = PluralsForLocale[targetLocale];
       } else {
-        p = new MakePlural(targetLocale);
+        // split locales with a region code
+        var lc = targetLocale.toLowerCase().split(/[_-\s]+/)
+          .filter(function(el){ return true && el; });
+        // take the first part of locale, fallback to full locale
+        p = new MakePlural(lc[0] || targetLocale);
         PluralsForLocale[targetLocale] = p;
       }
 
