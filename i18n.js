@@ -925,8 +925,8 @@ module.exports = (function() {
     if (!locales[locale]) return Function.prototype;
 
     // Handle object lookup notation
-    var indexOfDot = objectNotation && singular.indexOf(objectNotation);
-    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length)) {
+    var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation);
+    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length - 1)) {
       // If delayed traversal wasn't specifically forbidden, it is allowed.
       if (typeof allowDelayedTraversal === 'undefined') allowDelayedTraversal = true;
       // The accessor we're trying to find and which we want to return.
@@ -991,8 +991,8 @@ module.exports = (function() {
     if (!locales[locale]) return Function.prototype;
 
     // Handle object lookup notation
-    var indexOfDot = objectNotation && singular.indexOf(objectNotation);
-    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length)) {
+    var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation);
+    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length - 1)) {
       // If branching wasn't specifically allowed, disable it.
       if (typeof allowBranching === 'undefined') allowBranching = false;
       // This will become the function we want to return.
