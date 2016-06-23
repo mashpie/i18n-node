@@ -54,6 +54,7 @@ module.exports = (function() {
     logDebugFn,
     logErrorFn,
     logWarnFn,
+    missingTranslation,
     objectNotation,
     prefix,
     queryParameter,
@@ -146,6 +147,10 @@ module.exports = (function() {
     logDebugFn = (typeof opt.logDebugFn === 'function') ? opt.logDebugFn : debug;
     logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
     logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
+
+    // setting custom missing translation function
+
+    missingTranslation = (typeof opt.missingTranslation === 'function') ? opt.missingTranslation : function(locale, value){} 
 
     // when missing locales we try to guess that from directory
     opt.locales = opt.locales || guessLocales(directory);
@@ -846,11 +851,9 @@ module.exports = (function() {
 
     // fallback to default when missed
     if (!locales[locale]) {
-
       logWarn('WARN: Locale ' + locale +
         ' couldn\'t be read - check the context of the call to $__. Using ' +
         defaultLocale + ' (default) as current locale');
-
       locale = defaultLocale;
       read(locale);
     }
@@ -892,7 +895,6 @@ module.exports = (function() {
       mutator(defaultSingular || singular);
       write(locale);
     }
-
     return accessor();
   };
 
@@ -1057,6 +1059,7 @@ module.exports = (function() {
     } else {
       // No object notation, just return a mutator that performs array lookup and changes the value.
       return function(value) {
+        missingTranslation(locale, value);
         locales[locale][singular] = value;
         return value;
       };
