@@ -54,6 +54,7 @@ module.exports = (function() {
     logDebugFn,
     logErrorFn,
     logWarnFn,
+    preserveLegacyCase,
     objectNotation,
     prefix,
     queryParameter,
@@ -146,6 +147,8 @@ module.exports = (function() {
     logDebugFn = (typeof opt.logDebugFn === 'function') ? opt.logDebugFn : debug;
     logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
     logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
+
+    preserveLegacyCase = (typeof opt.preserveLegacyCase === 'undefined') ? true : opt.preserveLegacyCase;
 
     // when missing locales we try to guess that from directory
     opt.locales = opt.locales || guessLocales(directory);
@@ -659,7 +662,12 @@ module.exports = (function() {
         var urlObj = url.parse(request.url, true);
         if (urlObj.query[queryParameter]) {
           logDebug('Overriding locale from query: ' + urlObj.query[queryParameter]);
-          request.language = urlObj.query[queryParameter].toLowerCase();
+          request.language = urlObj.query[queryParameter];
+
+          if (preserveLegacyCase) {
+            request.language = request.language.toLowerCase();
+          }
+
           return i18n.setLocale(request, request.language);
         }
       }
