@@ -71,7 +71,8 @@ module.exports = (function() {
   i18n.configure = function i18nConfigure(opt) {
 
     // reset locales
-    i18n.locales = locales = {};
+    locales = {};
+    i18n.locales = locales;
 
     // Provide custom API method aliases if desired
     // This needs to be processed before the first call to applyAPItoObject()
