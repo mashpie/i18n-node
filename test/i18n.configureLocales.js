@@ -3,7 +3,7 @@ var i18n = require('../i18n'),
   fs = require('fs'),
   path = require('path');
 
-describe('locals configuration', function() {
+describe('locales configuration', function() {
 
   it('omitting it should read all directory contents', function(done) {
     var directory = path.resolve(__dirname + '/../locales');
@@ -89,4 +89,5 @@ describe('locals configuration', function() {
 
     done();
   });
+
 });
