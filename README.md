@@ -549,19 +549,27 @@ getLocale(req); // --> de
 req.getLocale(); // --> de
 ```
 
+### i18n.getLocales()
+
+Returns a list with all configured locales.
+
+```js
+i18n.getLocales(); // --> ['en', 'de', 'en-GB']
+```
+
 ### i18n.getCatalog()
 
 Returns a whole catalog optionally based on current scope and locale.
 
 ```js
-getCatalog(); // returns all locales
-getCatalog('de'); // returns just 'de'
+getCatalog(); // returns catalog for all locales
+getCatalog('de'); // returns just for 'de'
 
-getCatalog(req); // returns current locale of req
-getCatalog(req, 'de'); // returns just 'de'
+getCatalog(req); // returns catalog for all locales
+getCatalog(req, 'de'); // returns just for 'de'
 
-req.getCatalog(); // returns current locale of req
-req.getCatalog('de'); // returns just 'de'
+req.getCatalog(); // returns catalog for all locales
+req.getCatalog('de'); // returns just for 'de'
 ```
 
 ## Attaching helpers for template engines
