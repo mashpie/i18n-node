@@ -64,8 +64,6 @@ module.exports = (function() {
   // public exports
   var i18n = {};
 
-  i18n.locales = locales;
-
   i18n.version = '0.8.3';
 
   i18n.configure = function i18nConfigure(opt) {
