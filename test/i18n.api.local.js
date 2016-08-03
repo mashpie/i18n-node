@@ -172,6 +172,13 @@ describe('Module API', function () {
         afterEach(function() {
           i18n.setLocale('en');
         });
+
+        it('should return an empty string if the translation is an empty string', function(done) {
+          i18n.setLocale(req, 'en').should.equal('en');
+          req.__('Empty').should.equal('');
+          done();
+        });
+
         it('has to use local translation in en', function (done) {
           i18n.setLocale(req, 'en').should.equal('en');
           req.__('Hello').should.equal('Hello');
