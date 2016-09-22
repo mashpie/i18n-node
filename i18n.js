@@ -1070,18 +1070,26 @@ module.exports = (function() {
     }
   };
 
+  var fileCached = [];
   /**
    * try reading a file
    */
   var read = function(locale) {
     var localeFile = {},
       file = getStorageFilePath(locale);
+    if (fileCached[file]) {
+      locales[locale] = fileCached[file];
+      return;
+    }
     try {
       logDebug('read ' + file + ' for locale: ' + locale);
       localeFile = fs.readFileSync(file);
       try {
         // parsing filecontents to locales[locale]
-        locales[locale] = JSON.parse(localeFile);
+        var data = JSON.parse(localeFile);
+        locales[locale] = data;
+        fileCached[file] = data;
+        data = null;
       } catch (parseError) {
         logError('unable to parse locales from file (maybe ' +
           file + ' is empty or invalid json?): ', parseError);
