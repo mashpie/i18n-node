@@ -1130,10 +1130,9 @@ module.exports = (function() {
     try {
       target = getStorageFilePath(locale);
       tmp = target + '.tmp';
-      fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), {
-        encofing: 'utf8',
-        mode: directoryPermissions
-      });
+      fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), 'utf8');
+      fs.chmodSync(tmp, directoryPermissions);
+
       stats = fs.statSync(tmp);
       if (stats.isFile()) {
         fs.renameSync(tmp, target);
