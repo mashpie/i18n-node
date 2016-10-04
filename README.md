@@ -199,7 +199,12 @@ i18n.configure({
     api: {
       '__': 't',  //now req.__ becomes req.t
       '__n': 'tn' //and req.__n can be called as req.tn
-    }
+    },
+
+    // Downcase locale when passed on queryParam; e.g. lang=en-US becomes
+    // en-us.  When set to false, the queryParam value will be used as passed;
+    // e.g. lang=en-US remains en-US.
+    preserveLegacyCase: true
 });
 ```
 
