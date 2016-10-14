@@ -8,7 +8,11 @@ var i18n = require('../../i18n');
 var funkyObject = {};
 
 i18n.configure({
-  locales: ['en', 'de', 'ar'],
+  locales: ['en', 'kr'],
+  fallbacks: {
+    'en-US': 'en',
+    'ko-KR': 'kr'
+  },
   register: funkyObject,
   directory: __dirname + '/locales'
 });
@@ -16,9 +20,9 @@ i18n.configure({
 var app = express();
 app.use(i18n.init);
 
-// uses locale as guessed by accept-headers
+// uses locale as guessed by accept-language
 // req: Hallo res: Hallo res.locals: Hallo funkyObject: Hallo
-app.get('/default/:lang', function(req, res) {
+app.get('/default/', function(req, res) {
   render(req, res);
 });
 
