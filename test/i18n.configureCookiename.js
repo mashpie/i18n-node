@@ -2,7 +2,7 @@ var i18n = require('../i18n'),
   should = require("should"),
   path = require("path");
 
-describe('Locale switching should work queryParameter', function() {
+describe('Locale switching should work when set via cookie', function() {
 
   var req;
   var res;

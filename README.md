@@ -202,7 +202,12 @@ i18n.configure({
     api: {
       '__': 't',  //now req.__ becomes req.t
       '__n': 'tn' //and req.__n can be called as req.tn
-    }
+    },
+
+    // Downcase locale when passed on queryParam; e.g. lang=en-US becomes
+    // en-us.  When set to false, the queryParam value will be used as passed;
+    // e.g. lang=en-US remains en-US.
+    preserveLegacyCase: true
 });
 ```
 
@@ -552,19 +557,27 @@ getLocale(req); // --> de
 req.getLocale(); // --> de
 ```
 
+### i18n.getLocales()
+
+Returns a list with all configured locales.
+
+```js
+i18n.getLocales(); // --> ['en', 'de', 'en-GB']
+```
+
 ### i18n.getCatalog()
 
 Returns a whole catalog optionally based on current scope and locale.
 
 ```js
-getCatalog(); // returns all locales
-getCatalog('de'); // returns just 'de'
+getCatalog(); // returns catalog for all locales
+getCatalog('de'); // returns just for 'de'
 
-getCatalog(req); // returns current locale of req
-getCatalog(req, 'de'); // returns just 'de'
+getCatalog(req); // returns catalog for all locales
+getCatalog(req, 'de'); // returns just for 'de'
 
-req.getCatalog(); // returns current locale of req
-req.getCatalog('de'); // returns just 'de'
+req.getCatalog(); // returns catalog for all locales
+req.getCatalog('de'); // returns just for 'de'
 ```
 
 ## Attaching helpers for template engines
@@ -966,6 +979,8 @@ i18n.configure({
 
 ## Changelog
 
+* 0.8.3:
+    + __fixed__: #235 objectNotation, #231 Plurals support regions ("en-US", "de-DE")
 * 0.8.2:
     * __fixed__: typos, objectNotation mutator #226, accept-language headers with fallback #228
 * 0.8.1:

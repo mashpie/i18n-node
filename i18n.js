@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.8.2
+ * @version     0.8.3
  */
 
 'use strict';
@@ -55,6 +55,7 @@ module.exports = (function() {
     logErrorFn,
     logWarnFn,
     missingTranslation,
+    preserveLegacyCase,
     objectNotation,
     prefix,
     queryParameter,
@@ -65,9 +66,7 @@ module.exports = (function() {
   // public exports
   var i18n = {};
 
-  i18n.locales = locales;
-
-  i18n.version = '0.8.2';
+  i18n.version = '0.8.3';
 
   i18n.configure = function i18nConfigure(opt) {
 
@@ -154,6 +153,9 @@ module.exports = (function() {
     }else{
       missingTranslation = function(){};
     }
+    preserveLegacyCase = (typeof opt.preserveLegacyCase === 'undefined') ?
+      true : opt.preserveLegacyCase;
+
     // when missing locales we try to guess that from directory
     opt.locales = opt.locales || guessLocales(directory);
 
@@ -370,7 +372,11 @@ module.exports = (function() {
       if (PluralsForLocale[targetLocale]) {
         p = PluralsForLocale[targetLocale];
       } else {
-        p = new MakePlural(targetLocale);
+        // split locales with a region code
+        var lc = targetLocale.toLowerCase().split(/[_-\s]+/)
+          .filter(function(el){ return true && el; });
+        // take the first part of locale, fallback to full locale
+        p = new MakePlural(lc[0] || targetLocale);
         PluralsForLocale[targetLocale] = p;
       }
 
@@ -648,7 +654,7 @@ module.exports = (function() {
 
   var guessLanguage = function(request) {
     if (typeof request === 'object') {
-      var languageHeader = request.headers['accept-language'],
+      var languageHeader = request.headers? request.headers['accept-language'] : undefined,
         languages = [],
         regions = [];
 
@@ -662,7 +668,12 @@ module.exports = (function() {
         var urlObj = url.parse(request.url, true);
         if (urlObj.query[queryParameter]) {
           logDebug('Overriding locale from query: ' + urlObj.query[queryParameter]);
-          request.language = urlObj.query[queryParameter].toLowerCase();
+          request.language = urlObj.query[queryParameter];
+
+          if (preserveLegacyCase) {
+            request.language = request.language.toLowerCase();
+          }
+
           return i18n.setLocale(request, request.language);
         }
       }
@@ -924,8 +935,8 @@ module.exports = (function() {
     if (!locales[locale]) return Function.prototype;
 
     // Handle object lookup notation
-    var indexOfDot = objectNotation && singular.indexOf(objectNotation);
-    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length)) {
+    var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation);
+    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length - 1)) {
       // If delayed traversal wasn't specifically forbidden, it is allowed.
       if (typeof allowDelayedTraversal === 'undefined') allowDelayedTraversal = true;
       // The accessor we're trying to find and which we want to return.
@@ -990,8 +1001,8 @@ module.exports = (function() {
     if (!locales[locale]) return Function.prototype;
 
     // Handle object lookup notation
-    var indexOfDot = objectNotation && singular.indexOf(objectNotation);
-    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length)) {
+    var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation);
+    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length - 1)) {
       // If branching wasn't specifically allowed, disable it.
       if (typeof allowBranching === 'undefined') allowBranching = false;
       // This will become the function we want to return.

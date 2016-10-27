@@ -56,6 +56,16 @@ describe('i18n.init()', function() {
     done();
   });
 
+  it('should be possible to bind to non-request objects', function(done) {
+    var plain = new Object();
+    should.equal(i18n.init(plain), undefined);
+    should.equal(plain.locale, 'en');
+    should.equal(plain.__('Hello'), 'Hello');
+    should.equal(plain.setLocale('de'), 'de');
+    should.equal(plain.__('Hello'), 'Hallo');
+    done();
+  });
+
   it('should be possible to bind public methods to foreign objects', function(done){
     UnboundTestScope.translate = i18n.__;
     should.equal(UnboundTestScope.translate('Hello'), 'Hallo');
