@@ -149,9 +149,11 @@ module.exports = (function() {
     logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
 
     // setting custom missing translation function
-
-    missingTranslation = (typeof opt.missingTranslation === 'function') ? opt.missingTranslation : function(locale, value){} 
-
+    if(typeof opt.missingTranslation === 'function'){
+      missingTranslation = opt.missingTranslation;
+    }else{
+      missingTranslation = function(){};
+    }
     // when missing locales we try to guess that from directory
     opt.locales = opt.locales || guessLocales(directory);
 
@@ -824,7 +826,6 @@ module.exports = (function() {
    * read locale file, translate a msg and write to fs if new
    */
   var translate = function(locale, singular, plural, skipSyncToAllFiles) {
-
     // add same key to all translations
     if (!skipSyncToAllFiles && syncFiles) {
       syncToAllFiles(singular, plural);

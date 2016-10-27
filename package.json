@@ -29,6 +29,7 @@
     "async": "*",
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
+    "faker": "^3.1.0",
     "jshint": "*",
     "mocha": "*",
     "should": "*",
