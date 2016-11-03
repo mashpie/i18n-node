@@ -29,7 +29,7 @@
     "async": "*",
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
-    "istanbul": "^0.4.5",
+    "istanbul": "0.4.*",
     "jshint": "2.9.*",
     "mocha": "*",
     "should": "*",
