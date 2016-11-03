@@ -28,9 +28,9 @@
   "devDependencies": {
     "async": "*",
     "cookie-parser": "^1.4.1",
+    "eslint": "3.9.*",
     "express": "^4.13.4",
     "istanbul": "0.4.*",
-    "jshint": "2.9.*",
     "mocha": "*",
     "should": "*",
     "sinon": "*",
@@ -41,7 +41,6 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "jshint": "jshint --verbose .",
     "test": "npm run jshint && make test",
     "test-ci": "npm run jshint && istanbul cover ./node_modules/mocha/bin/_mocha"
   },
