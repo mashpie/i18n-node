@@ -41,8 +41,9 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "npm run jshint && make test",
-    "test-ci": "npm run jshint && istanbul cover ./node_modules/mocha/bin/_mocha"
+    "lint": "eslint .",
+    "test": "npm run lint && make test",
+    "test-ci": "npm run lint && istanbul cover ./node_modules/mocha/bin/_mocha"
   },
   "license": "MIT"
 }
