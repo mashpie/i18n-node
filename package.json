@@ -28,8 +28,9 @@
   "devDependencies": {
     "async": "*",
     "cookie-parser": "^1.4.1",
+    "eslint": "^2.13.*",
     "express": "^4.13.4",
-    "jshint": "*",
+    "istanbul": "0.4.*",
     "mocha": "*",
     "should": "*",
     "sinon": "*",
@@ -40,9 +41,9 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "jshint": "jshint --verbose .",
-    "test": "npm run jshint && make test",
-    "test-ci": "npm run jshint && istanbul cover ./node_modules/mocha/bin/_mocha"
+    "lint": "eslint .",
+    "test": "npm run lint && make test",
+    "test-ci": "npm run lint && istanbul cover ./node_modules/mocha/bin/_mocha"
   },
   "license": "MIT"
 }
