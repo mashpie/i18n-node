@@ -527,8 +527,8 @@ req.setLocale('de');
 Use setLocale to change any initial locale that was set in `i18n.init()`. You get more control on how when and which objects get setup with a given locale. Locale values are inherited within the given schema like in `i18n.init()` Let's see some examples:
 
 ```js
-i18n.setLocale(req, 'ar'); // --> req: مرحبا res: مرحبا res.locals: مرحبا
-i18n.setLocale(res, 'ar'); // --> req: Hallo res: مرحبا res.locals: مرحبا
+i18n.setLocale(req, 'ar'); // --> req: مرحبا res: Hallo res.locals: Hallo
+i18n.setLocale(res, 'ar'); // --> req: Hallo res: مرحبا res.locals: Hallo
 i18n.setLocale(res.locals, 'ar'); // --> req: Hallo res: Hallo res.locals: مرحبا
 ```
 
