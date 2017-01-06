@@ -107,6 +107,47 @@ app.use(express.static(__dirname + '/www'));
 app.use('/en', express.static(__dirname + '/www'));
 app.use('/de', express.static(__dirname + '/www'));
 ```
+##Multiple Directories support
+
+i18n-node support a multiple directory usage. This option let you register different directories to provide translations. Just add "multiDirectories : true" in your configuration then use the configure method to provide new directory and a name for it. Finally call translations methods with directory name as last argument.
+Please note that in case you do not use the updateFiles you may ommit directory name and juste call translations method as usual.
+
+###Exemple
+####In core/index.js
+Configure i18n as usual, just add multiDirectories :
+
+	i18n.configure({
+	    directory: __dirname + '/locales',
+	    multiDirectories: true
+	});
+####In myAwesomeModule/index.js
+Specify a new directory and a name :
+
+	i18n.extendLocales({
+        directory: __dirname + '/locales',
+        dirName: 'myAwesomeModule'
+    });
+
+Then translate anything as usual if translation come from default directory, or just pass the directory name if translation come from another directory
+
+    __('core sentence to translate');
+    //Same as __('core sentence to translate', 'default');
+
+	__('myAwesomeModule sentence', 'myAwesomeModule');
+
+###Details
+When you set multiDirectories at true in the configure method, a "directories" object is initialized. Then every time you register a new source directory with configure method you extend this object with a new directory path and a name for this path. Finally you can call translations methods and provide as last argument the name of the directory path you set earlier.
+
+Note that when you activate the multiDirectories option you cannot reset every option for every directory. It means you must have the same directory configuration (eg : indentation, object notation, prefixes ...).
+
+The available option are :
+
+ - directory : path to sources
+ - dirName : directory name / module name
+ - locales
+ - fallbacks
+
+__If you want to reset your i18n configuration__, call configure() with multiDirectories at false and every option will be reseted
 
 ## API
 
