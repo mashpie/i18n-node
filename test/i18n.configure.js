@@ -18,8 +18,10 @@ describe('configure with multiDirectories set to true', function() {
     });
 
     afterEach(function() {
-        var stats = fs.lstatSync('./customlocales');
-        should.exist(stats);
+        try {
+            var stats = fs.lstatSync('./customlocales');
+            should.exist(stats);
+        }catch(e) {}
         if (stats) {
             try {
                 fs.unlinkSync('./customlocales/en.json');
@@ -56,6 +58,14 @@ describe('configure with multiDirectories set to true', function() {
             directory: './customlocales'
         });
         should.deepEqual(['en', 'fr', 'ru'], i18n.getLocales());
+    });
+    it('should return false when directory path is not a string', function() {
+       var wrongConfig = {
+           locales: ['en'],
+           dirName: 'dirName',
+           directory: ['not', 'a', 'string']
+       };
+       should.deepEqual(false, i18n.configure(wrongConfig));
     });
 
 });

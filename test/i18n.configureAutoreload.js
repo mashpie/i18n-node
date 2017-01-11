@@ -12,6 +12,63 @@ function reconfigure(config) {
   i18n = require(i18nFilename);
   i18n.configure(config);
 }
+describe('autoreload configuration with multiDirectories enabled', function() {
+
+    var testScope = {};
+    var directory = path.resolve(__dirname + '/../testlocalesauto');
+    var directory2 = path.resolve(__dirname + '/../testlocalesauto2');
+
+    it('will start with empty catalogs', function(done) {
+        try{
+            fs.mkdirSync(directory);
+            fs.mkdirSync(directory2);
+        }catch(e) {}
+        fs.writeFileSync(directory + '/de.json', '{}');
+        fs.writeFileSync(directory + '/en.json', '{}');
+        fs.writeFileSync(directory2 + '/fr.json', '{}');
+        reconfigure({
+            directory: directory,
+            register: testScope,
+            autoReload: true,
+            updateFiles: false,
+            multiDirectories: true
+        });
+        i18n.configure({
+            directory: directory2,
+            register: testScope,
+            autoReload: true,
+            dirName: 'test'
+        });
+        should.deepEqual(i18n.getCatalog(), { de: {}, en: {}, fr: {} });
+        setTimeout(done, timeout);
+    });
+
+    it('reloads when a catalog is altered', function(done) {
+        fs.writeFileSync(directory2 + '/fr.json', '{"Hello":"Bonjour"}');
+        setTimeout(done, timeout);
+    });
+
+    it('has added new string to catalog and translates correctly', function(done) {
+        i18n.setLocale(testScope, 'fr');
+        should.equal('Bonjour', testScope.__('Hello'));
+        should.deepEqual(i18n.getCatalog(), { de: {}, en: {}, fr: { Hello: 'Bonjour' } });
+        done();
+    });
+
+    it('will add new string to catalog and files from __()', function(done) {
+        should.equal('Bonjour', testScope.__('Hello'));
+        should.deepEqual(i18n.getCatalog(), { de: {}, en: {}, fr: { Hello: 'Bonjour' } });
+        done();
+    });
+
+    it('will remove testlocalesauto after tests', function() {
+        fs.unlinkSync(directory + '/de.json');
+        fs.unlinkSync(directory + '/en.json');
+        fs.rmdirSync(directory);
+        fs.unlinkSync(directory2 + '/fr.json');
+        fs.rmdirSync(directory2);
+    });
+});
 
 describe('autoreload configuration', function() {
 
@@ -19,7 +76,9 @@ describe('autoreload configuration', function() {
   var directory = path.resolve(__dirname + '/../testlocalesauto');
 
   it('will start with empty catalogs', function(done) {
-    fs.mkdirSync(directory);
+    try {
+        fs.mkdirSync(directory);
+    }catch(e) {}
     fs.writeFileSync(directory + '/de.json', '{}');
     fs.writeFileSync(directory + '/en.json', '{}');
     reconfigure({
