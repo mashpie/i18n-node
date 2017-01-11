@@ -194,14 +194,14 @@ module.exports = (function() {
           });
         }
       }
-    }else if (multiDirectories){
+    }else {
       //Add new directory to registry
       if (!opt.dirName || typeof opt.dirName !== 'string'){
         logWarn('Arg dirName missing or non string, set as default');
         opt.dirName = 'default';
       }else if(typeof opt.directory !== 'string') {
-        logWarn('Cannot register non string path, using default');
-        opt.directory = directories['default'];
+        logError('Can not register non string path');
+        return false;
       }
       directories[opt.dirName] = opt.directory;
 
@@ -239,8 +239,6 @@ module.exports = (function() {
           });
         }
       }
-    }else {
-      return;
     }
   };
 
