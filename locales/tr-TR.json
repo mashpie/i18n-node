@@ -1,1 +1,41 @@
-{}
+{
+	"Hello": "Merhaba",
+	"Hello %s, how are you today?": "Merhaba %s, bugün nasılsın?",
+	"weekend": "hafta sonu",
+	"Hello %s, how are you today? How was your %s.": "Merhaba %s, bugün nasılsın? %s nasıldı.",
+	"Hi": "Selam",
+	"Howdy": "Naber",
+	"%s kedi": {
+		"one": "%s kedi",
+		"other": "%s kedi"
+	},
+  "kedi": {
+    "one": "%s kedi",
+    "other": "%s kedi"
+  },
+	"%%s de bir maymun var": {
+		"one": "%%s de bir maymun var",
+		"other": "%%s de %d maymun var"
+	},
+	"tree": "ağaç",
+	"%s de bir maymun var": {
+		"one": "%s de bir maymun var",
+		"other": "%%s de %d maymun var"
+	},
+	"Hello %s": "Merhaba %s",
+	"Hello {{name}}": "Merhaba {{name}}",
+	"Hello {{name}}, how was your %s?": "Merhaba {{name}}, %s nasıldı?",
+	"format": {
+		"date": "DD.MM.YYYY",
+		"time": "h:mm:ss"
+	},
+	"greeting": {
+		"formal": "Merhaba",
+		"informal": "Selam",
+		"placeholder": {
+			"formal": "Merhaba %s",
+			"informal": "Selam %s",
+			"loud": "greeting.placeholder.loud"
+		}
+	}
+}
