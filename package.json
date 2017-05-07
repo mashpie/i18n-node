@@ -18,12 +18,14 @@
     "lib": "."
   },
   "dependencies": {
+    "chokidar": "^1.6.1",
     "debug": "*",
-    "make-plural": "^3.0.3",
+    "make-plural": "^4",
     "math-interval-parser": "^1.1.0",
-    "messageformat": "^0.3.1",
+    "messageformat": "^0",
     "mustache": "*",
-    "sprintf-js": ">=1.0.3"
+    "sprintf-js": ">=1.0.3",
+    "upath": "^1.0.0"
   },
   "devDependencies": {
     "async": "*",

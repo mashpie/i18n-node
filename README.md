@@ -307,6 +307,10 @@ and add it's extra attributes and methods, like so:
 
 Now each _local_ object (ie. res.locals) is setup with _it's own "private"_ locale and methods to get the appropriate translation from the _global_ catalog.
 
+### i18n.disableReload()
+
+Stopps watching for outside changes on the locale files if ```autoReload: true```.
+
 ### i18n.__()
 
 Translates a single phrase and adds it to locales if unknown. Returns translated parsed and substituted string.
