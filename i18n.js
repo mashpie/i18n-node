@@ -60,7 +60,8 @@ module.exports = (function() {
     queryParameter,
     register,
     updateFiles,
-    syncFiles;
+    syncFiles,
+    nullifyNewStrings;
 
   // public exports
   var i18n = {};
