@@ -1,7 +1,24 @@
 language: node_js
 node_js:
   - 0.10
+  - 0.11
+  - 0.12
+  - 4
+  - 5
+  - iojs
 branches:
   only:
     - master
     - stable
+before_install:
+  - "npm install -g istanbul"
+script:
+  - "npm run test-ci"
+after_script:
+  - "npm install -g coveralls"
+  - "cat ./coverage/lcov.info | coveralls"
+  - "npm install -g codeclimate-test-reporter"
+  - "cat ./coverage/lcov.info | CODECLIMATE_REPO_TOKEN=8f4183adc84cb07c9609004de2f43c60e2a54a09c89d99f055919267f5246409 codeclimate-test-reporter"
+addons:
+  code_climate:
+    repo_token: 8f4183adc84cb07c9609004de2f43c60e2a54a09c89d99f055919267f5246409

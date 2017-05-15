@@ -1,0 +1,5 @@
+node_modules/
+examples/
+coverage/
+test/
+i18n-cov.js

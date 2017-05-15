@@ -1,25 +1,23 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
+var i18n = require('../i18n'),
+  should = require("should"),
+  fs = require('fs');
 
-var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n'),
-    should = require("should"),
-    fs = require('fs');
-
-describe('Module Config', function () {
+describe('Module Config', function() {
 
   var testScope = {};
 
-  beforeEach(function () {
+  beforeEach(function() {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
       directory: './customlocales',
       extension: '.customextension',
-      prefix:'customprefix-'
+      prefix: 'customprefix-'
     });
     testScope.__('Hello');
   });
 
-  afterEach(function () {
+  afterEach(function() {
     var stats = fs.lstatSync('./customlocales');
     should.exist(stats);
     if (stats) {
@@ -32,14 +30,14 @@ describe('Module Config', function () {
 
   });
 
-  it('should be possible to setup a custom directory', function () {
+  it('should be possible to setup a custom directory', function() {
     var stats = fs.lstatSync('./customlocales');
     should.exist(stats);
   });
 
-  it('should be possible to read custom files with custom prefixes and extensions', function () {
+  it('should be possible to read custom files with custom prefixes and extensions', function() {
     var statsde = fs.lstatSync('./customlocales/customprefix-de.customextension'),
-        statsen = fs.lstatSync('./customlocales/customprefix-en.customextension');
+      statsen = fs.lstatSync('./customlocales/customprefix-en.customextension');
     should.exist(statsde);
     should.exist(statsen);
   });

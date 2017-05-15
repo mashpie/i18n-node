@@ -1,19 +1,17 @@
-REPORTER = spec
-
 test:
-	mocha --reporter $(REPORTER)
+	mocha
 
-coverage: lib-cov
-	@EXPRESS_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
+cover:
+	istanbul cover ./node_modules/mocha/bin/_mocha
 
-lib-cov:
-	@jscoverage i18n.js i18n-cov.js
+hint:
+	jshint --verbose .
 
 examples:
 	for example in examples/*/test.js ; do \
-    	mocha --reporter $(REPORTER) $$example; \
+		mocha $$example; \
 	done
 
-all: test examples
+all: test examples hint
 
 .PHONY: test examples

@@ -1,4 +1,4 @@
-require('./node-http');
+require('./index');
 
 var Browser = require('zombie'),
     visitLinks = require('../testlib/visitlinks'),

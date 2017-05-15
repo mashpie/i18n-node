@@ -1,14 +1,12 @@
-/*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
+var i18n = require('../i18n'),
+  should = require("should"),
+  fs = require('fs');
 
-var i18n = process.env.EXPRESS_COV ? require('../i18n-cov') : require('../i18n'),
-    should = require("should"),
-    fs = require('fs');
-
-describe('Module Defaults', function () {
+describe('Module Defaults', function() {
 
   var testScope = {};
 
-  beforeEach(function () {
+  beforeEach(function() {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
@@ -17,7 +15,7 @@ describe('Module Defaults', function () {
     testScope.__('Hello');
   });
 
-  afterEach(function () {
+  afterEach(function() {
     var stats = fs.lstatSync('./defaultlocales');
     should.exist(stats);
     if (stats) {
@@ -30,14 +28,14 @@ describe('Module Defaults', function () {
 
   });
 
-  it('should be possible to setup a custom directory', function () {
+  it('should be possible to setup a custom directory', function() {
     var stats = fs.lstatSync('./defaultlocales');
     should.exist(stats);
   });
 
-  it('should be possible to read custom files with default a extension of .json (issue #16)', function () {
+  it('should be possible to read custom files with default a extension of .json (issue #16)', function() {
     var statsde = fs.lstatSync('./defaultlocales/de.json'),
-        statsen = fs.lstatSync('./defaultlocales/en.json');
+      statsen = fs.lstatSync('./defaultlocales/en.json');
     should.exist(statsde);
     should.exist(statsen);
   });

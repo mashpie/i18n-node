@@ -3,5 +3,8 @@
 testlocales/
 test/
 locales/
+localestowrite/
+localesmakeplural/
 i18n-cov.js
 coverage.html
+examples/
