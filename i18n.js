@@ -60,7 +60,8 @@ module.exports = (function() {
     queryParameter,
     register,
     updateFiles,
-    syncFiles;
+    syncFiles,
+    nullifyNewStrings;
 
   // public exports
   var i18n = {};
@@ -130,6 +131,9 @@ module.exports = (function() {
 
     // setting defaultLocale
     defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+
+    // when a new string is found, save it as null
+    nullifyNewStrings = (typeof opt.nullifyNewStrings === 'boolean') ? opt.nullifyNewStrings : false;
 
     // auto reload locale files when changed
     autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
@@ -900,7 +904,7 @@ module.exports = (function() {
       write(locale);
     }
 
-    return accessor();
+    return accessor() || singular;
   };
 
   /**
@@ -956,6 +960,7 @@ module.exports = (function() {
           // Return null to avoid deeper iterations.
           return null;
         }
+
         // We can traverse deeper, so we generate an accessor for this current level.
         accessor = function() {
           return object[index];
@@ -1064,7 +1069,7 @@ module.exports = (function() {
     } else {
       // No object notation, just return a mutator that performs array lookup and changes the value.
       return function(value) {
-        locales[locale][singular] = value;
+        locales[locale][singular] = nullifyNewStrings ? null : value;
         return value;
       };
     }
