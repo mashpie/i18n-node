@@ -610,7 +610,7 @@ module.exports = (function() {
   };
 
   /**
-   * registers all public API methods to a given response object when not already declared
+   * Register all public API methods to a given response object when not already declared.
    */
   var applyAPItoObject = function(object) {
 
@@ -651,7 +651,7 @@ module.exports = (function() {
   };
 
   /**
-   * tries to guess locales by scanning the given directory
+   * Guess locales by scanning the given directory.
    */
   var guessLocales = function(directory) {
     var localesFound = [];
@@ -671,7 +671,7 @@ module.exports = (function() {
   };
 
   /**
-   * tries to guess locales from a given filename
+   * Guess locales from a given filename.
    */
   var guessLocaleFromFile = function(filename) {
     var extensionRegex = new RegExp(extension + '$', 'g');
@@ -683,19 +683,16 @@ module.exports = (function() {
   };
 
   /**
-   * guess language setting based on http headers
+   * Guess language setting based on http headers.
    */
-
   var guessLanguage = function(request) {
     if (typeof request === 'object') {
-      var languageHeader = request.headers? request.headers['accept-language'] : undefined,
-        languages = [],
-        regions = [];
-
-      request.languages = [defaultLocale];
-      request.regions = [defaultLocale];
+      var languageHeader = request.headers ? request.headers['accept-language'] : undefined;
+      // default language
       request.language = defaultLocale;
       request.region = defaultLocale;
+      request.languages = [defaultLocale];
+      request.regions = [defaultLocale];
 
       // a query parameter overwrites all
       if (queryParameter && request.url) {
@@ -720,57 +717,12 @@ module.exports = (function() {
 
       // 'accept-language' is the most common source
       if (languageHeader) {
-        var acceptedLanguages = getAcceptedLanguagesFromHeader(languageHeader),
-          match, fallbackMatch, fallback;
-        for (var i = 0; i < acceptedLanguages.length; i++) {
-          var lang = acceptedLanguages[i],
-            lr = lang.split('-', 2),
-            parentLang = lr[0],
-            region = lr[1];
+        var acceptedLanguages = getAcceptedLanguagesFromHeader(languageHeader);
 
-          // Check if we have a configured fallback set for this language.
-          if (fallbacks && fallbacks[lang]) {
-            fallback = fallbacks[lang];
-            // Fallbacks for languages should be inserted
-            // where the original, unsupported language existed.
-            var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
-            var fallbackIndex = acceptedLanguages.indexOf(fallback);
-            if (fallbackIndex > -1) {
-              acceptedLanguages.splice(fallbackIndex, 1);
-            }
-            acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
-          }
+        var bestMatchLanguage = getBestMatchLanguage(acceptedLanguages);
 
-          // Check if we have a configured fallback set for the parent language of the locale.
-          if (fallbacks && fallbacks[parentLang]) {
-            fallback = fallbacks[parentLang];
-            // Fallbacks for a parent language should be inserted
-            // to the end of the list, so they're only picked
-            // if there is no better match.
-            if (acceptedLanguages.indexOf(fallback) < 0) {
-              acceptedLanguages.push(fallback);
-            }
-          }
-
-          if (languages.indexOf(parentLang) < 0) {
-            languages.push(parentLang.toLowerCase());
-          }
-          if (region) {
-            regions.push(region.toLowerCase());
-          }
-
-          if (!match && locales[lang]) {
-            match = lang;
-            break;
-          }
-
-          if (!fallbackMatch && locales[parentLang]) {
-            fallbackMatch = parentLang;
-          }
-        }
-
-        request.language = match || fallbackMatch || request.language;
-        request.region = regions[0] || request.region;
+        request.language = bestMatchLanguage.language || request.language;
+        request.region = bestMatchLanguage.region || request.region;
         return i18n.setLocale(request, request.language);
       }
     }
@@ -780,7 +732,7 @@ module.exports = (function() {
   };
 
   /**
-   * Get a sorted list of accepted languages from the HTTP Accept-Language header
+   * Get a sorted list of accepted languages from the HTTP Accept-Language header.
    */
   var getAcceptedLanguagesFromHeader = function(header) {
     var languages = header.split(','),
@@ -804,9 +756,108 @@ module.exports = (function() {
   };
 
   /**
-   * searches for locale in given object
+   * Get the best match language for an array of accepted languages.
+   * @param  {Array} browserLanguages  accepted languages from browser request
+   * @return {Object}                  best match language
    */
+  var getBestMatchLanguage = function(browserLanguages) {
+    var acceptedLanguages = browserLanguages.slice(),
+      bestMatch = {},
+      match,
+      fallbackMatch,
+      regions = [],
+      wildCardChecked = {};
 
+    for (var i = 0; i < acceptedLanguages.length; i++) {
+      var language = acceptedLanguages[i],
+        lr = language.split('-', 2),
+        parentLanguage = lr[0],
+        region = lr[1];
+
+      var fallback = getLanguageFallbacks(language, parentLanguage, wildCardChecked);
+      if (fallback) {
+        if (!fallback.forParent) {
+          var acceptedLanguageIndex = acceptedLanguages.indexOf(language);
+          var fallbackIndex = acceptedLanguages.indexOf(fallback.language);
+          if (fallbackIndex > -1) {
+            acceptedLanguages.splice(fallbackIndex, 1);
+          }
+          acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback.language);
+          // just check wildcards fallback once for each parrent language
+          if (fallback.wildcards)
+            wildCardChecked[parentLanguage] = true;
+        } else {
+          // Fallbacks for a parent language should be inserted
+          // to the end of the list, so they're only picked
+          // if there is no better match.
+          if (acceptedLanguages.indexOf(fallback.language) < 0) {
+            acceptedLanguages.push(fallback.language);
+          }
+        }
+      }
+
+      if (region) {
+        regions.push(region.toLowerCase());
+      }
+
+      if (!match && locales[language]) {
+        match = language;
+        break;
+      }
+
+      if (!fallbackMatch && locales[parentLanguage]) {
+        fallbackMatch = parentLanguage;
+      }
+    }
+
+    bestMatch.language = match || fallbackMatch;
+    bestMatch.region = regions[0];
+
+    return bestMatch;
+  };
+
+  /**
+   * Get fallbacks for a given language.
+   * @param {String} language          given language
+   * @param {String} parentLanguage    current parent language
+   * @param {Object} wildCardChecked   flags check if fallback for current language has been set up
+   * @return {Object}                  fallback language object.
+   *                                   E.g. {language: 'fr', wildcards: true}
+   *                                   It has "wildcards" property as "true" if fallback
+   *                                   by wildcards.
+   *                                   It has "forParent" property as "true" if fallback
+   *                                   for parent language.
+   */
+  var getLanguageFallbacks = function(language, parentLanguage, wildCardChecked) {
+    var fallback;
+
+    if (fallbacks) {
+      // Check if we have a configured fallback set for this language
+      if (fallbacks[language]) {
+        fallback = {};
+        fallback.language = fallbacks[language];
+      }
+      // Check if we have a configured fallback
+      // for other territory variation of this parent language by using wildcards
+      else if (!wildCardChecked[parentLanguage] && fallbacks[parentLanguage + '-*']) {
+        fallback = {};
+        fallback.language = fallbacks[parentLanguage + '-*'];
+        fallback.wildcards = true;
+      }
+      // Check if we have a configured fallback set for the parent language of the locale.
+      else if (fallbacks[parentLanguage]) {
+        fallback = {};
+        fallback.language = fallbacks[parentLanguage];
+        fallback.forParent = true;
+      }
+    }
+
+    return fallback;
+  };
+
+  /**
+   * Search for locale in given object.
+   */
   var getLocaleFromObject = function(obj) {
     var locale;
     if (obj && obj.scope) {
@@ -819,7 +870,7 @@ module.exports = (function() {
   };
 
   /**
-   * splits and parses a phrase for mathematical interval expressions
+   * Split and parse a phrase for mathematical interval expressions.
    */
   var parsePluralInterval = function(phrase, count) {
     var returnPhrase = phrase;
@@ -844,7 +895,7 @@ module.exports = (function() {
   };
 
   /**
-   * test a number to match mathematical interval expressions
+   * Test a number to match mathematical interval expressions
    * [0,2] - 0 to 2 (including, matches: 0, 1, 2)
    * ]0,3[ - 0 to 3 (excluding, matches: 1, 2)
    * [1]   - 1 (matches: 1)
@@ -868,7 +919,7 @@ module.exports = (function() {
   };
 
   /**
-   * read locale file, translate a msg and write to fs if new
+   * Read locale file, translate a msg and write to fs if new.
    */
   var translate = function(locale, singular, plural, skipSyncToAllFiles) {
 
@@ -1192,7 +1243,7 @@ module.exports = (function() {
   };
 
   /**
-   * basic normalization of filepath
+   * Basic normalization of filepath.
    */
   var getStorageFilePath = function(locale) {
     // changed API to use .json as default, #16
@@ -1213,7 +1264,7 @@ module.exports = (function() {
   };
 
   /**
-   * Set current working directory to last passed arguments or default
+   * Set current working directory to last passed arguments or default.
    */
   var setDirectory = function(args) {
     var currentDir;
@@ -1232,7 +1283,7 @@ module.exports = (function() {
   };
 
   /**
-   * Logging proxies
+   * Logging proxies.
    */
   function logDebug(msg) {
     logDebugFn(msg);

@@ -173,7 +173,8 @@ i18n.configure({
     locales: ['en', 'de'],
 
     // fall back from Dutch to German
-    fallbacks: {'nl': 'de'},
+    // use wildcards to cover every local variation for a given language
+    fallbacks:{'nl': 'de', 'en-*': 'en'},
 
     // you may alter a site wide default locale
     defaultLocale: 'de',

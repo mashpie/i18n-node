@@ -39,6 +39,14 @@ describe('configure with multiDirectories set to true', function() {
 
   });
 
+  it('should set dirName to "default" if not provided', function() {
+    i18n.configure({
+      locales: ['ru']
+    });
+
+    should.equal(testScope.__('Hello'), testScope.__('Hello', 'default'));
+  });
+
   it('should be possible to setup a custom directory', function() {
     i18n.configure({
       locales: ['ru'],
@@ -59,14 +67,15 @@ describe('configure with multiDirectories set to true', function() {
     });
     should.deepEqual(['en', 'fr', 'ru'], i18n.getLocales());
   });
+
   it('should return false when directory path is not a string', function() {
     var wrongConfig = {
       locales: ['en'],
       dirName: 'dirName',
       directory: ['not', 'a', 'string']
     };
-   should.deepEqual(false, i18n.configure(wrongConfig));
- });
+    should.deepEqual(false, i18n.configure(wrongConfig));
+  });
 
 });
 
