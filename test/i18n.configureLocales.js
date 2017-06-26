@@ -18,6 +18,15 @@ describe('locales configuration', function() {
     done();
   });
 
+  it('should return blank locales if configured locales is not array', function() {
+    i18n.configure({
+      locales: 'not an array'
+    });
+
+    var returnedLocales = i18n.getLocales();
+    returnedLocales.length.should.equal(0);
+  });
+
   it('should work when using together with prefix', function(done) {
     var directory = path.resolve(__dirname + '/../testlocales');
 
