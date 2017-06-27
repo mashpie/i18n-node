@@ -211,6 +211,4 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.getLocale().should.equal('en');
     i18n.__('Hello').should.equal('Hello');
   });
-
-
 });

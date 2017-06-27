@@ -1,5 +1,6 @@
 test:
-	mocha
+	mocha test/i18n.*
+	mocha test/multiDirectories.js
 
 cover:
 	istanbul cover ./node_modules/mocha/bin/_mocha
@@ -12,6 +13,9 @@ examples:
 		mocha $$example; \
 	done
 
-all: test examples hint
+clean:
+	rm -rf locales/custom* testlocales customlocales secondlocalestowrite testlocalesauto testlocalesautocustomextension testlocalesautoprefixed testlocalesautoprefixedext locales_temp
 
-.PHONY: test examples
+all: clean test examples hint clean
+
+.PHONY: clean test examples clean

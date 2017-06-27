@@ -46,10 +46,10 @@ describe('Module API', function() {
         catalogs.should.have.property('de');
         catalogs.de.should.have.property('Hello', 'Hallo');
       });
-      it('should return just the DE catalog when invoked with "de" as parameter', function() {
+      it('should return just the EN catalog when invoked with "en" as parameter', function() {
         i18n.getCatalog('en').should.have.property('Hello', 'Hello');
       });
-      it('should return just the EN catalog when invoked with "en" as parameter', function() {
+      it('should return just the DE catalog when invoked with "de" as parameter', function() {
         i18n.getCatalog('de').should.have.property('Hello', 'Hallo');
       });
       it('should return just the DE catalog when invoked with a (fallback) "nl" as parameter', function() {

@@ -1,11 +1,11 @@
 var i18n = require('../i18n'),
-    should = require("should");
+  should = require('should');
 
 i18n.configure({
-	locales: ['en', 'de'],
-	fallbacks: {'nl': 'de'},
-	directory: './locales',
-	register: global
+  locales: ['en', 'de'],
+  fallbacks: {'nl': 'de'},
+  directory: './locales',
+  register: global
 });
 
 describe('Module Setup', function () {
