@@ -1,10 +1,10 @@
 var i18n = require('../i18n'),
-  should = require("should"),
-  path = require("path");
+  should = require('should'),
+  path = require('path');
 
 describe('Fallbacks', function() {
   var req = {
-    request: "GET /test",
+    request: 'GET /test',
     __: i18n.__,
     __n: i18n.__n,
     locale: {},
@@ -15,9 +15,9 @@ describe('Fallbacks', function() {
     beforeEach(function() {
 
       i18n.configure({
-        locales: ['en', 'de'],
+        locales: ['en', 'de', 'fr'],
         defaultLocale: 'en',
-        fallbacks: { 'foo': 'de', 'de-AT': 'de' },
+        fallbacks: { 'foo': 'de', 'de-AT': 'de', 'fr-CA': 'en', 'fr-*': 'fr' },
         directory: './locales',
         register: req
       });
@@ -49,6 +49,16 @@ describe('Fallbacks', function() {
       req.headers['accept-language'] = 'de-DK,de-AT';
       i18n.init(req);
       i18n.getLocale(req).should.equal('de');
+    });
+    it('should fall back to "fr" for locale "fr-BAR" by using wildcards', function() {
+      req.headers['accept-language'] = 'fr-BAR';
+      i18n.init(req);
+      i18n.getLocale(req).should.equal('fr');
+    });
+    it('should keep specific fallback for one language instead of using fallback with wildcards', function() {
+      req.headers['accept-language'] = 'fr-CA';
+      i18n.init(req);
+      i18n.getLocale(req).should.equal('en');
     });
     it('should use default "en" for valid locale request (ignoring fallbacks)', function() {
       req.headers['accept-language'] = 'en-US,en,de-DK,de-AT';

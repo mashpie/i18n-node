@@ -21,7 +21,8 @@ var vsprintf = require('sprintf-js').vsprintf,
   MakePlural = require('make-plural/make-plural').load(
     require('make-plural/data/plurals.json')
   ),
-  parseInterval = require('math-interval-parser').default;
+  parseInterval = require('math-interval-parser').default,
+  extend = require('extend');
 
 // exports an instance
 module.exports = (function() {
@@ -46,7 +47,9 @@ module.exports = (function() {
     autoReload,
     cookiename,
     defaultLocale,
+    multiDirectories,
     directory,
+    directories,
     directoryPermissions,
     extension,
     fallbacks,
@@ -69,89 +72,119 @@ module.exports = (function() {
 
   i18n.configure = function i18nConfigure(opt) {
 
-    // reset locales
-    locales = {};
+    if (!multiDirectories || opt.multiDirectories === false) {
+      // reset locales
+      locales = {};
 
-    // Provide custom API method aliases if desired
-    // This needs to be processed before the first call to applyAPItoObject()
-    if (opt.api && typeof opt.api === 'object') {
-      for (var method in opt.api) {
-        if (opt.api.hasOwnProperty(method)) {
-          var alias = opt.api[method];
+      // Provide custom API method aliases if desired
+      // This needs to be processed before the first call to applyAPItoObject()
+      if (opt.api && typeof opt.api === 'object') {
+        Object.keys(opt.api).forEach(function(method) {
           if (typeof api[method] !== 'undefined') {
-            api[method] = alias;
+            api[method] = opt.api[method];
           }
+        });
+      }
+
+      // you may register i18n in global scope, up to you
+      if (typeof opt.register === 'object') {
+        register = opt.register;
+        // or give an array objects to register to
+        if (Array.isArray(opt.register)) {
+          register = opt.register;
+          register.forEach(function(r) {
+            applyAPItoObject(r);
+          });
+        } else {
+          applyAPItoObject(opt.register);
         }
       }
-    }
 
-    // you may register i18n in global scope, up to you
-    if (typeof opt.register === 'object') {
-      register = opt.register;
-      // or give an array objects to register to
-      if (Array.isArray(opt.register)) {
-        register = opt.register;
-        register.forEach(function(r) {
-          applyAPItoObject(r);
-        });
+      // sets a custom cookie name to parse locale settings from
+      cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
+
+      // query-string parameter to be watched - @todo: add test & doc
+      queryParameter = (typeof opt.queryParameter === 'string') ? opt.queryParameter : null;
+
+      // where to store json files
+      if (opt.multiDirectories === true) {
+        multiDirectories = true;
+        directories = {};
+        //set first directory as 'default' if name is not provided
+        if (!opt.dirName) {
+          opt.dirName = 'default';
+        }
+        directories[opt.dirName] = (typeof opt.directory === 'string') ?
+            opt.directory : path.join(__dirname, 'locales');
+        // When using multiple directories, directory is used to keep current working directory
+        // Directory will be redefined when a directory manipulation is needed
+        directory = directories[opt.dirName];
       } else {
-        applyAPItoObject(opt.register);
+        multiDirectories = false;
+        directories = {};
+        directory = (typeof opt.directory === 'string') ?
+            opt.directory : path.join(__dirname, 'locales');
       }
+
+      // permissions when creating new directories
+      directoryPermissions = (typeof opt.directoryPermissions === 'string') ?
+        parseInt(opt.directoryPermissions, 8) : null;
+
+      // write new locale information to disk
+      updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
+
+      // sync locale information accros all files
+      syncFiles = (typeof opt.syncFiles === 'boolean') ? opt.syncFiles : false;
+
+      // what to use as the indentation unit (ex: "\t", "  ")
+      indent = (typeof opt.indent === 'string') ? opt.indent : '\t';
+
+      // json files prefix
+      prefix = (typeof opt.prefix === 'string') ? opt.prefix : '';
+
+      // where to store json files
+      extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
+
+      // setting defaultLocale
+      defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+
+      // auto reload locale files when changed
+      autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
+
+      // enable object notation?
+      objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
+      if (objectNotation === true) objectNotation = '.';
+
+      // read language fallback map
+      fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : {};
+
+      // setting custom logger functions
+      logDebugFn = (typeof opt.logDebugFn === 'function') ? opt.logDebugFn : debug;
+      logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
+      logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
+
+      preserveLegacyCase = (typeof opt.preserveLegacyCase === 'undefined') ?
+        true : opt.preserveLegacyCase;
+    } else {
+      // Add new directory to registry
+      if (!opt.dirName || typeof opt.dirName !== 'string') {
+        logWarn('Missing "dirName" configuration or non string, set as "default"');
+        opt.dirName = 'default';
+      } else if (typeof opt.directory !== 'string') {
+        logError('Can not register non string path');
+        return false;
+      }
+      directories[opt.dirName] = opt.directory;
+
+      directory = directories[opt.dirName];
+
+      // read language fallback map
+      fallbacks = (typeof opt.fallbacks === 'object') ?
+          extend(fallbacks, opt.fallbacks) : fallbacks;
     }
-
-    // sets a custom cookie name to parse locale settings from
-    cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
-
-    // query-string parameter to be watched - @todo: add test & doc
-    queryParameter = (typeof opt.queryParameter === 'string') ? opt.queryParameter : null;
-
-    // where to store json files
-    directory = (typeof opt.directory === 'string') ?
-      opt.directory : path.join(__dirname, 'locales');
-
-    // permissions when creating new directories
-    directoryPermissions = (typeof opt.directoryPermissions === 'string') ?
-      parseInt(opt.directoryPermissions, 8) : null;
-
-    // write new locale information to disk
-    updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
-
-    // sync locale information accros all files
-    syncFiles = (typeof opt.syncFiles === 'boolean') ? opt.syncFiles : false;
-
-    // what to use as the indentation unit (ex: "\t", "  ")
-    indent = (typeof opt.indent === 'string') ? opt.indent : '\t';
-
-    // json files prefix
-    prefix = (typeof opt.prefix === 'string') ? opt.prefix : '';
-
-    // where to store json files
-    extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
-
-    // setting defaultLocale
-    defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
-
-    // auto reload locale files when changed
-    autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
-
-    // enable object notation?
-    objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
-    if (objectNotation === true) objectNotation = '.';
-
-    // read language fallback map
-    fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : {};
-
-    // setting custom logger functions
-    logDebugFn = (typeof opt.logDebugFn === 'function') ? opt.logDebugFn : debug;
-    logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
-    logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
-
-    preserveLegacyCase = (typeof opt.preserveLegacyCase === 'undefined') ?
-      true : opt.preserveLegacyCase;
 
     // when missing locales we try to guess that from directory
     opt.locales = opt.locales || guessLocales(directory);
-
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {
 
@@ -170,7 +203,6 @@ module.exports = (function() {
             logDebug('Auto reloading locale file "' + filename + '".');
             read(localeFromFile);
           }
-
         });
       }
     }
@@ -205,6 +237,7 @@ module.exports = (function() {
   };
 
   i18n.__ = function i18nTranslate(phrase) {
+    this.arguments = multiDirectories ? setDirectory(arguments) : arguments;
     var msg;
     var argv = parseArgv(arguments);
     var namedValues = argv[0];
@@ -237,6 +270,7 @@ module.exports = (function() {
   };
 
   i18n.__mf = function i18nMessageformat(phrase) {
+    this.arguments = multiDirectories ? setDirectory(arguments) : arguments;
     var msg, mf, f;
     var targetLocale = defaultLocale;
     var argv = parseArgv(arguments);
@@ -281,25 +315,26 @@ module.exports = (function() {
     return postProcess(f(namedValues), namedValues, args);
   };
 
-  i18n.__l = function i18nTranslationList(phrase) {
+  i18n.__l = function i18nTranslationList(phrase, currentDir) {
     var translations = [];
     Object.keys(locales).sort().forEach(function(l) {
-      translations.push(i18n.__({ phrase: phrase, locale: l }));
+      translations.push(i18n.__({ phrase: phrase, locale: l }, currentDir));
     });
     return translations;
   };
 
-  i18n.__h = function i18nTranslationHash(phrase) {
+  i18n.__h = function i18nTranslationHash(phrase, currentDir) {
     var translations = [];
     Object.keys(locales).sort().forEach(function(l) {
       var hash = {};
-      hash[l] = i18n.__({ phrase: phrase, locale: l });
+      hash[l] = i18n.__({ phrase: phrase, locale: l }, currentDir);
       translations.push(hash);
     });
     return translations;
   };
 
   i18n.__n = function i18nTranslatePlural(singular, plural, count) {
+    this.arguments = multiDirectories ? setDirectory(arguments) : arguments;
     var msg, namedValues, targetLocale, args = [];
 
     // Accept an object with named values as the last parameter
@@ -367,7 +402,9 @@ module.exports = (function() {
       } else {
         // split locales with a region code
         var lc = targetLocale.toLowerCase().split(/[_-\s]+/)
-          .filter(function(el){ return true && el; });
+          .filter(function(el) {
+            return !!el;
+          });
         // take the first part of locale, fallback to full locale
         p = new MakePlural(lc[0] || targetLocale);
         PluralsForLocale[targetLocale] = p;
@@ -573,7 +610,7 @@ module.exports = (function() {
   };
 
   /**
-   * registers all public API methods to a given response object when not already declared
+   * Register all public API methods to a given response object when not already declared.
    */
   var applyAPItoObject = function(object) {
 
@@ -614,23 +651,27 @@ module.exports = (function() {
   };
 
   /**
-   * tries to guess locales by scanning the given directory
+   * Guess locales by scanning the given directory.
    */
   var guessLocales = function(directory) {
-    var entries = fs.readdirSync(directory);
     var localesFound = [];
+    try {
+      var entries = fs.readdirSync(directory);
 
-    for (var i = entries.length - 1; i >= 0; i--) {
-      if (entries[i].match(/^\./)) continue;
-      var localeFromFile = guessLocaleFromFile(entries[i]);
-      if (localeFromFile) localesFound.push(localeFromFile);
+      for (var i = entries.length - 1; i >= 0; i--) {
+        if (entries[i].match(/^\./)) continue;
+        var localeFromFile = guessLocaleFromFile(entries[i]);
+        if (localeFromFile) localesFound.push(localeFromFile);
+      }
+    } catch (e) {
+      logDebug('Can not read directory: ' + directory);
     }
 
     return localesFound.sort();
   };
 
   /**
-   * tries to guess locales from a given filename
+   * Guess locales from a given filename.
    */
   var guessLocaleFromFile = function(filename) {
     var extensionRegex = new RegExp(extension + '$', 'g');
@@ -642,19 +683,16 @@ module.exports = (function() {
   };
 
   /**
-   * guess language setting based on http headers
+   * Guess language setting based on http headers.
    */
-
   var guessLanguage = function(request) {
     if (typeof request === 'object') {
-      var languageHeader = request.headers? request.headers['accept-language'] : undefined,
-        languages = [],
-        regions = [];
-
-      request.languages = [defaultLocale];
-      request.regions = [defaultLocale];
+      var languageHeader = request.headers ? request.headers['accept-language'] : undefined;
+      // default language
       request.language = defaultLocale;
       request.region = defaultLocale;
+      request.languages = [defaultLocale];
+      request.regions = [defaultLocale];
 
       // a query parameter overwrites all
       if (queryParameter && request.url) {
@@ -679,57 +717,12 @@ module.exports = (function() {
 
       // 'accept-language' is the most common source
       if (languageHeader) {
-        var acceptedLanguages = getAcceptedLanguagesFromHeader(languageHeader),
-          match, fallbackMatch, fallback;
-        for (var i = 0; i < acceptedLanguages.length; i++) {
-          var lang = acceptedLanguages[i],
-            lr = lang.split('-', 2),
-            parentLang = lr[0],
-            region = lr[1];
+        var acceptedLanguages = getAcceptedLanguagesFromHeader(languageHeader);
 
-          // Check if we have a configured fallback set for this language.
-          if (fallbacks && fallbacks[lang]) {
-            fallback = fallbacks[lang];
-            // Fallbacks for languages should be inserted
-            // where the original, unsupported language existed.
-            var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
-            var fallbackIndex = acceptedLanguages.indexOf(fallback);
-            if(fallbackIndex > -1) {
-              acceptedLanguages.splice(fallbackIndex, 1);
-            }
-            acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
-          }
+        var bestMatchLanguage = getBestMatchLanguage(acceptedLanguages);
 
-          // Check if we have a configured fallback set for the parent language of the locale.
-          if (fallbacks && fallbacks[parentLang]) {
-            fallback = fallbacks[parentLang];
-            // Fallbacks for a parent language should be inserted
-            // to the end of the list, so they're only picked
-            // if there is no better match.
-            if (acceptedLanguages.indexOf(fallback) < 0) {
-              acceptedLanguages.push(fallback);
-            }
-          }
-
-          if (languages.indexOf(parentLang) < 0) {
-            languages.push(parentLang.toLowerCase());
-          }
-          if (region) {
-            regions.push(region.toLowerCase());
-          }
-
-          if (!match && locales[lang]) {
-            match = lang;
-            break;
-          }
-
-          if (!fallbackMatch && locales[parentLang]) {
-            fallbackMatch = parentLang;
-          }
-        }
-
-        request.language = match || fallbackMatch || request.language;
-        request.region = regions[0] || request.region;
+        request.language = bestMatchLanguage.language || request.language;
+        request.region = bestMatchLanguage.region || request.region;
         return i18n.setLocale(request, request.language);
       }
     }
@@ -739,7 +732,7 @@ module.exports = (function() {
   };
 
   /**
-   * Get a sorted list of accepted languages from the HTTP Accept-Language header
+   * Get a sorted list of accepted languages from the HTTP Accept-Language header.
    */
   var getAcceptedLanguagesFromHeader = function(header) {
     var languages = header.split(','),
@@ -763,9 +756,108 @@ module.exports = (function() {
   };
 
   /**
-   * searches for locale in given object
+   * Get the best match language for an array of accepted languages.
+   * @param  {Array} browserLanguages  accepted languages from browser request
+   * @return {Object}                  best match language
    */
+  var getBestMatchLanguage = function(browserLanguages) {
+    var acceptedLanguages = browserLanguages.slice(),
+      bestMatch = {},
+      match,
+      fallbackMatch,
+      regions = [],
+      wildCardChecked = {};
 
+    for (var i = 0; i < acceptedLanguages.length; i++) {
+      var language = acceptedLanguages[i],
+        lr = language.split('-', 2),
+        parentLanguage = lr[0],
+        region = lr[1];
+
+      var fallback = getLanguageFallbacks(language, parentLanguage, wildCardChecked);
+      if (fallback) {
+        if (!fallback.forParent) {
+          var acceptedLanguageIndex = acceptedLanguages.indexOf(language);
+          var fallbackIndex = acceptedLanguages.indexOf(fallback.language);
+          if (fallbackIndex > -1) {
+            acceptedLanguages.splice(fallbackIndex, 1);
+          }
+          acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback.language);
+          // just check wildcards fallback once for each parrent language
+          if (fallback.wildcards)
+            wildCardChecked[parentLanguage] = true;
+        } else {
+          // Fallbacks for a parent language should be inserted
+          // to the end of the list, so they're only picked
+          // if there is no better match.
+          if (acceptedLanguages.indexOf(fallback.language) < 0) {
+            acceptedLanguages.push(fallback.language);
+          }
+        }
+      }
+
+      if (region) {
+        regions.push(region.toLowerCase());
+      }
+
+      if (!match && locales[language]) {
+        match = language;
+        break;
+      }
+
+      if (!fallbackMatch && locales[parentLanguage]) {
+        fallbackMatch = parentLanguage;
+      }
+    }
+
+    bestMatch.language = match || fallbackMatch;
+    bestMatch.region = regions[0];
+
+    return bestMatch;
+  };
+
+  /**
+   * Get fallbacks for a given language.
+   * @param {String} language          given language
+   * @param {String} parentLanguage    current parent language
+   * @param {Object} wildCardChecked   flags check if fallback for current language has been set up
+   * @return {Object}                  fallback language object.
+   *                                   E.g. {language: 'fr', wildcards: true}
+   *                                   It has "wildcards" property as "true" if fallback
+   *                                   by wildcards.
+   *                                   It has "forParent" property as "true" if fallback
+   *                                   for parent language.
+   */
+  var getLanguageFallbacks = function(language, parentLanguage, wildCardChecked) {
+    var fallback;
+
+    if (fallbacks) {
+      // Check if we have a configured fallback set for this language
+      if (fallbacks[language]) {
+        fallback = {};
+        fallback.language = fallbacks[language];
+      }
+      // Check if we have a configured fallback
+      // for other territory variation of this parent language by using wildcards
+      else if (!wildCardChecked[parentLanguage] && fallbacks[parentLanguage + '-*']) {
+        fallback = {};
+        fallback.language = fallbacks[parentLanguage + '-*'];
+        fallback.wildcards = true;
+      }
+      // Check if we have a configured fallback set for the parent language of the locale.
+      else if (fallbacks[parentLanguage]) {
+        fallback = {};
+        fallback.language = fallbacks[parentLanguage];
+        fallback.forParent = true;
+      }
+    }
+
+    return fallback;
+  };
+
+  /**
+   * Search for locale in given object.
+   */
   var getLocaleFromObject = function(obj) {
     var locale;
     if (obj && obj.scope) {
@@ -778,7 +870,7 @@ module.exports = (function() {
   };
 
   /**
-   * splits and parses a phrase for mathematical interval expressions
+   * Split and parse a phrase for mathematical interval expressions.
    */
   var parsePluralInterval = function(phrase, count) {
     var returnPhrase = phrase;
@@ -803,7 +895,7 @@ module.exports = (function() {
   };
 
   /**
-   * test a number to match mathematical interval expressions
+   * Test a number to match mathematical interval expressions
    * [0,2] - 0 to 2 (including, matches: 0, 1, 2)
    * ]0,3[ - 0 to 3 (excluding, matches: 1, 2)
    * [1]   - 1 (matches: 1)
@@ -827,7 +919,7 @@ module.exports = (function() {
   };
 
   /**
-   * read locale file, translate a msg and write to fs if new
+   * Read locale file, translate a msg and write to fs if new.
    */
   var translate = function(locale, singular, plural, skipSyncToAllFiles) {
 
@@ -904,8 +996,8 @@ module.exports = (function() {
   };
 
   /**
-   * initialize the same key in all locales
-   * when not already existing, checked via translate
+   * Initialize the same key in all locales
+   * when not already existing, checked via translate.
    */
   var syncToAllFiles = function(singular, plural) {
     // iterate over locales and translate again
@@ -1071,7 +1163,7 @@ module.exports = (function() {
   };
 
   /**
-   * try reading a file
+   * Read file.
    */
   var read = function(locale) {
     var localeFile = {},
@@ -1080,8 +1172,10 @@ module.exports = (function() {
       logDebug('read ' + file + ' for locale: ' + locale);
       localeFile = fs.readFileSync(file);
       try {
-        // parsing filecontents to locales[locale]
-        locales[locale] = JSON.parse(localeFile);
+        // parsing file contents to locales[locale]
+        if (!locales[locale])
+          locales[locale] = {};
+        extend(locales[locale], JSON.parse(localeFile));
       } catch (parseError) {
         logError('unable to parse locales from file (maybe ' +
           file + ' is empty or invalid json?): ', parseError);
@@ -1103,7 +1197,7 @@ module.exports = (function() {
   };
 
   /**
-   * try writing a file in a created directory
+   * Write a file in a created directory.
    */
   var write = function(locale) {
     var stats, target, tmp;
@@ -1118,7 +1212,11 @@ module.exports = (function() {
       stats = fs.lstatSync(directory);
     } catch (e) {
       logDebug('creating locales dir in: ' + directory);
-      fs.mkdirSync(directory, directoryPermissions);
+      try {
+        fs.mkdirSync(directory, directoryPermissions);
+      } catch (mkdirEr) {
+        logDebug('Can not create directory: ' + directory);
+      }
     }
 
     // first time init has an empty file
@@ -1145,7 +1243,7 @@ module.exports = (function() {
   };
 
   /**
-   * basic normalization of filepath
+   * Basic normalization of filepath.
    */
   var getStorageFilePath = function(locale) {
     // changed API to use .json as default, #16
@@ -1166,7 +1264,26 @@ module.exports = (function() {
   };
 
   /**
-   * Logging proxies
+   * Set current working directory to last passed arguments or default.
+   */
+  var setDirectory = function(args) {
+    var currentDir;
+    //Check if last arguments is a string and contained in the directories object
+    if (typeof args[args.length - 1] === 'string' &&
+        directories.hasOwnProperty(args[args.length - 1])) {
+      currentDir = args[args.length - 1];
+      delete args[--args.length];
+    } else {
+      currentDir = 'default';
+      logWarn('No specific directory passed, using default directory');
+    }
+
+    directory = directories[currentDir];
+    return args;
+  };
+
+  /**
+   * Logging proxies.
    */
   function logDebug(msg) {
     logDebugFn(msg);

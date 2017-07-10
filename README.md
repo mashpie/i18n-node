@@ -27,7 +27,7 @@ npm test
 ```js
 // load modules
 var express = require('express'),
-    i18n = require("i18n");
+    i18n = require('i18n');
 ```
 
 ## Configure
@@ -36,7 +36,7 @@ Minimal example, just setup two locales and a project specific directory
 
 ```js
 i18n.configure({
-    locales:['en', 'de'],
+    locales: ['en', 'de'],
     directory: __dirname + '/locales'
 });
 ```
@@ -55,7 +55,7 @@ var greeting = i18n.__('Hello');
 
 ## Example usage in express.js
 
-In an express app, you might use i18n.init to gather language settings of your visitors and also bind your helpers to response object honoring request objects locale, ie:
+In an express app, you might use `i18n.init` to gather language settings of your visitors and also bind your helpers to response object honoring request objects locale:
 
 ```js
 // Configuration
@@ -73,13 +73,13 @@ app.configure(function() {
 in your apps methods:
 
 ```js
-app.get('/de', function(req, res){
+app.get('/de', function(req, res) {
   var greeting = res.__('Hello');
 });
 ```
 
 
-in your templates (depending on your template engine)
+in your templates (depending on your template engine):
 
 ```ejs
 <%= __('Hello') %>
@@ -108,17 +108,52 @@ app.use('/en', express.static(__dirname + '/www'));
 app.use('/de', express.static(__dirname + '/www'));
 ```
 
+## Multiple directories support
+
+`i18n-node` supports multiple directories usage. This option lets you register different directories to provide translations. Just add `multiDirectories : true` in your configuration, then call `configure()` method to provide new `directory` and `dirName` (_alias_ of `directory`). Finally, call translation methods with _alias_ of directory as last argument.
+Please note that, in case you do not use the `updateFiles` you may ignore _alias_ of directory and just call translation methods as usual.
+
+### Example
+
+Configure i18n as usual. Add `multiDirectories` as `true`, specify new directory path and an _alias_ (if need).
+
+```js
+i18n.configure({
+  locales: ['en', 'de'],
+  multiDirectories: true,
+  directory: __dirname + '/locales',
+  dirName: 'newDirectory' // alias of directory
+});
+```
+
+Then translate anything as usual if translation come from default directory, or just pass the _alias_ of `directory` if translation come from another directory:
+
+```js
+  __('sentence to translate');
+    //Same as __('sentence to translate', 'default');
+
+  __('sentence to translate', 'newDirectory');
+```
+
+### Details
+
+When you set `multiDirectories` as `true` in the `configure` method, a `directories` object is initialized. Then every time you register a new source directory with `configure` method you extend this object with a new directory path and a name for this path. Finally, you can call translation methods and provide as last argument the name of the directory path.
+
+Note that when you activate the `multiDirectories`, you can call `configure()` to reset only these options: `directory`, `dirName`, `locales` and `fallbacks`.
+
+If you want to reset all options, call `configure()` with `multiDirectories` as `false`.
+
 ## API
 
 The api is subject of incremental development. That means, it should not change nor remove any aspect of the current api but new features and options will get added that don't break compatibility backwards within a major version.
 
 ### i18n.configure()
 
-You should configure your application once to bootstrap all aspects of `i18n`. You should not configure i18n in each loop when used in an http based scenario. During configuration, `i18n` reads all known locales into memory and prepares to keep that superfast object in sync with your files in filesystem  as configured
+You should configure your application once to bootstrap all aspects of `i18n`. You should not configure `i18n` in each loop when used in an http based scenario. During configuration, `i18n` reads all known locales into memory and prepares to keep that superfast object in sync with your files in file system  as configured.
 
 ```js
 i18n.configure({
-    locales:['en', 'de'],
+    locales: ['en', 'de'],
     directory: __dirname + '/locales'
 });
 ```
@@ -135,10 +170,11 @@ i18n.configure({
 ```js
 i18n.configure({
     // setup some locales - other locales default to en silently
-    locales:['en', 'de'],
+    locales: ['en', 'de'],
 
     // fall back from Dutch to German
-    fallbacks:{'nl': 'de'},
+    // use wildcards to cover every local variation for a given language
+    fallbacks:{'nl': 'de', 'en-*': 'en'},
 
     // you may alter a site wide default locale
     defaultLocale: 'de',
@@ -152,6 +188,12 @@ i18n.configure({
     // where to store json files - defaults to './locales' relative to modules directory
     directory: './mylocales',
 
+    // support multi directory
+    multiDirectories: true,
+
+    // alias of directory
+    dirName: 'newDirectory',
+
     // controll mode on directory creation - defaults to NULL which defaults to umask of process user. Setting has no effect on win.
     directoryPermissions: '755',
 
@@ -164,8 +206,8 @@ i18n.configure({
     // sync locale information accros all files - defaults to false
     syncFiles: false,
 
-    // what to use as the indentation unit - defaults to "\t"
-    indent: "\t",
+    // what to use as the indentation unit - defaults to '\t'
+    indent: '\t',
 
     // setting extension of json files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
     extension: '.js',
@@ -345,7 +387,7 @@ __n('%s cat', 3) // --> 3 Katzen
 
 // long syntax works fine in combination with `updateFiles`
 // --> writes '%s cat' to `one` and '%s cats' to `other` plurals
-// "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly. 
+// "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly.
 __n("%s cat", "%s cats", 1); // 1 Katze
 __n("%s cat", "%s cats", 3); // 3 Katzen
 

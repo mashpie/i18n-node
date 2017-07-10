@@ -18,23 +18,24 @@
     "lib": "."
   },
   "dependencies": {
-    "debug": "*",
-    "make-plural": "^3.0.3",
-    "math-interval-parser": "^1.1.0",
-    "messageformat": "^0.3.1",
-    "mustache": "*",
-    "sprintf-js": ">=1.0.3"
+    "debug": "2.6.8",
+    "extend": "3.0.1",
+    "make-plural": "4.0.1",
+    "math-interval-parser": "2.0.0",
+    "messageformat": "0.3.1",
+    "mustache": "2.3.0",
+    "sprintf-js": "1.1.1"
   },
   "devDependencies": {
-    "async": "*",
-    "cookie-parser": "^1.4.1",
-    "express": "^4.13.4",
-    "jshint": "*",
-    "mocha": "*",
-    "should": "*",
-    "sinon": "*",
-    "url": "^0.11.0",
-    "zombie": "*"
+    "async": "2.4.1",
+    "cookie-parser": "1.4.3",
+    "express": "4.13.4",
+    "jshint": "2.9.5",
+    "mocha": "3.4.2",
+    "should": "11.2.1",
+    "sinon": "2.3.5",
+    "url": "0.11.0",
+    "zombie": "5.0.5"
   },
   "engines": {
     "node": ">=0.10.0"
