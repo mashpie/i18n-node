@@ -1,4 +1,4 @@
-var i18n = require('../i18n'),
+var i18n = require('../index'),
   should = require("should"),
   path = require("path");
 
@@ -94,7 +94,7 @@ describe('Fallbacks', function() {
   describe('Fallback to locale', function() {
     beforeEach(function() {
       // Force reloading of i18n, to reset configuration
-      var i18nPath = 'i18n';
+      var i18nPath = 'index';
       var i18nFilename = path.resolve(i18nPath + '.js');
       delete require.cache[i18nFilename];
       i18n = require(i18nFilename);
@@ -129,7 +129,7 @@ describe('Fallbacks', function() {
   describe('Keep valid locale', function() {
     beforeEach(function() {
       // Force reloading of i18n, to reset configuration
-      var i18nPath = 'i18n';
+      var i18nPath = 'index';
       var i18nFilename = path.resolve(i18nPath + '.js');
       delete require.cache[i18nFilename];
       i18n = require(i18nFilename);
