@@ -191,3 +191,12 @@ describe('autoreload configuration with customextension', function() {
   });
 
 });
+
+describe('creating a new i18n object from i18n.js', function() {
+  var i18nAlternate = require('../i18n')();
+
+  it('should give me a different obejct', function() {
+    i18nAlternate.should.not.equal(i18n);
+  });
+
+});
