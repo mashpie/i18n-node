@@ -40,15 +40,12 @@ describe('parsing Messageformat phrases', function() {
 
   it('should work with plurals', function() {
     var msg = 'In {lang} there {NUM, plural,';
-    msg += 'zero{are zero for #}';
+    msg += '=0{are zero for #}';
     msg += 'one{is one for #}';
-    msg += 'two{is two for #}';
-    msg += 'few{are a few for #}';
-    msg += 'many{are many for #}';
     msg += 'other{others for #}}';
 
     mfTest.setLocale('en');
-    should.equal('In english there others for 0', mfTest.__mf(msg, { NUM: 0, lang: 'english' }));
+    should.equal('In english there are zero for 0', mfTest.__mf(msg, { NUM: 0, lang: 'english' }));
     should.equal('In english there is one for 1', mfTest.__mf(msg, { NUM: 1, lang: 'english' }));
     should.equal('In english there others for 2', mfTest.__mf(msg, { NUM: 2, lang: 'english' }));
     should.equal('In english there others for 3', mfTest.__mf(msg, { NUM: 3, lang: 'english' }));
@@ -57,7 +54,7 @@ describe('parsing Messageformat phrases', function() {
     should.equal('In english there others for 6', mfTest.__mf(msg, { NUM: 6, lang: 'english' }));
 
     mfTest.setLocale('de');
-    should.equal('In german there others for 0', mfTest.__mf(msg, { NUM: 0, lang: 'german' }));
+    should.equal('In german there are zero for 0', mfTest.__mf(msg, { NUM: 0, lang: 'german' }));
     should.equal('In german there is one for 1', mfTest.__mf(msg, { NUM: 1, lang: 'german' }));
     should.equal('In german there others for 2', mfTest.__mf(msg, { NUM: 2, lang: 'german' }));
     should.equal('In german there others for 3', mfTest.__mf(msg, { NUM: 3, lang: 'german' }));
@@ -66,7 +63,7 @@ describe('parsing Messageformat phrases', function() {
     should.equal('In german there others for 6', mfTest.__mf(msg, { NUM: 6, lang: 'german' }));
 
     mfTest.setLocale('fr');
-    should.equal('In french there is one for 0', mfTest.__mf(msg, { NUM: 0, lang: 'french' }));
+    should.equal('In french there are zero for 0', mfTest.__mf(msg, { NUM: 0, lang: 'french' }));
     should.equal('In french there is one for 1', mfTest.__mf(msg, { NUM: 1, lang: 'french' }));
     should.equal('In french there others for 2', mfTest.__mf(msg, { NUM: 2, lang: 'french' }));
     should.equal('In french there others for 3', mfTest.__mf(msg, { NUM: 3, lang: 'french' }));
@@ -75,7 +72,7 @@ describe('parsing Messageformat phrases', function() {
     should.equal('In french there others for 6', mfTest.__mf(msg, { NUM: 6, lang: 'french' }));
 
     mfTest.setLocale('ru');
-    should.equal('In russian there are many for 0', mfTest.__mf(msg, { NUM: 0, lang: 'russian' }));
+    should.equal('In russian there are zero for 0', mfTest.__mf(msg, { NUM: 0, lang: 'russian' }));
     should.equal('In russian there is one for 1', mfTest.__mf(msg, { NUM: 1, lang: 'russian' }));
     should.equal('In russian there are a few for 2', mfTest.__mf(msg, { NUM: 2, lang: 'russian' }));
     should.equal('In russian there are a few for 3', mfTest.__mf(msg, { NUM: 3, lang: 'russian' }));

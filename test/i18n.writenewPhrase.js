@@ -119,11 +119,8 @@ describe('when i18n gets a new phrase', function() {
 
   it('should add translations with messageformat by use of __mf()', function(done) {
     var msg = 'In {language} there {N, plural,';
-    msg += 'zero{are zero for # }';
+    msg += '=0{are zero for # }';
     msg += 'one{is one for # }';
-    msg += 'two{is two for # }';
-    msg += 'few{are a few for # }';
-    msg += 'many{are many for # }';
     msg += 'other{others for # }';
     msg += '}';
 
