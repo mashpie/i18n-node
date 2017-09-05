@@ -74,11 +74,11 @@ describe('parsing Messageformat phrases', function() {
     mfTest.setLocale('ru');
     should.equal('In russian there are zero for 0', mfTest.__mf(msg, { NUM: 0, lang: 'russian' }));
     should.equal('In russian there is one for 1', mfTest.__mf(msg, { NUM: 1, lang: 'russian' }));
-    should.equal('In russian there are a few for 2', mfTest.__mf(msg, { NUM: 2, lang: 'russian' }));
-    should.equal('In russian there are a few for 3', mfTest.__mf(msg, { NUM: 3, lang: 'russian' }));
-    should.equal('In russian there are a few for 4', mfTest.__mf(msg, { NUM: 4, lang: 'russian' }));
-    should.equal('In russian there are many for 5', mfTest.__mf(msg, { NUM: 5, lang: 'russian' }));
-    should.equal('In russian there are many for 6', mfTest.__mf(msg, { NUM: 6, lang: 'russian' }));
+    should.equal('In russian there others for 2', mfTest.__mf(msg, { NUM: 2, lang: 'russian' }));
+    should.equal('In russian there others for 3', mfTest.__mf(msg, { NUM: 3, lang: 'russian' }));
+    should.equal('In russian there others for 4', mfTest.__mf(msg, { NUM: 4, lang: 'russian' }));
+    should.equal('In russian there others for 5', mfTest.__mf(msg, { NUM: 5, lang: 'russian' }));
+    should.equal('In russian there others for 6', mfTest.__mf(msg, { NUM: 6, lang: 'russian' }));
     should.equal('In russian there is one for 21', mfTest.__mf(msg, { NUM: 21, lang: 'russian' }));
   });
 });
