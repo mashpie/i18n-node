@@ -161,7 +161,7 @@ i18n.configure({
     // whether to write new locale information to disk - defaults to true
     updateFiles: false,
 
-    // sync locale information accros all files - defaults to false
+    // sync locale information across all files - defaults to false
     syncFiles: false,
 
     // what to use as the indentation unit - defaults to "\t"
