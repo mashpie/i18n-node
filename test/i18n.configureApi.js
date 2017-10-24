@@ -1,24 +1,18 @@
 /*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
 
-var i18n = require('../i18n'),
-    should = require("should"),
+var reconfigure = require('./helpers/reconfig'),
+    should = require('should'),
     fs = require('fs'),
-    path = require('path');
-
-var i18nPath = 'i18n';
-var i18nFilename = path.resolve(i18nPath + '.js');
-
-function reconfigure(config) {
-    delete require.cache[i18nFilename];
-    i18n = require(i18nFilename);
-    i18n.configure(config);
-}
+    path = require('path'),
+    i18nFilename = path.resolve('i18n.js'),
+    i18n
+;
 
 describe('configure api', function() {
 
     it('should set an alias method on the object', function() {
         var customObject = {};
-        reconfigure({
+        i18n = reconfigure(i18nFilename, {
             locales: ['en', 'de'],
             register: customObject,
             api: {
@@ -33,7 +27,7 @@ describe('configure api', function() {
 
     it('should work for any existing API method', function() {
         var customObject = {};
-        reconfigure({
+        i18n = reconfigure(i18nFilename, {
             locales: ['en', 'de'],
             register: customObject,
             api: {
@@ -47,7 +41,7 @@ describe('configure api', function() {
 
     it('should ignore non existing API methods', function() {
         var customObject = {};
-        reconfigure({
+        i18n = reconfigure(i18nFilename, {
             locales: ['en', 'de'],
             register: customObject,
             api: {
@@ -59,7 +53,7 @@ describe('configure api', function() {
 
     it('should not expose the actual API methods', function() {
         var customObject = {};
-        reconfigure({
+        i18n = reconfigure(i18nFilename, {
             locales: ['en', 'de'],
             register: customObject,
             api: {
@@ -72,7 +66,7 @@ describe('configure api', function() {
     it('should escape res -> locals -> res recursion', function() {
         var customObject = {};
         customObject.locals = { res: customObject };
-        reconfigure({
+        i18n = reconfigure(i18nFilename, {
             locales: ['en', 'de'],
             register: customObject,
             api: {

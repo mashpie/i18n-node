@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.8.3
+ * @version     0.8.4
  */
 
 'use strict';
@@ -72,8 +72,8 @@ module.exports = (function () {
   i18n.version = pkg.version;
 
   i18n.disableReload = function disableReload() {
-    if (fsWatcher && fsWatcher.closed === false) {
-      fsWatcher.close();
+    if (fsWatcher) {
+      return fsWatcher.close();
     }
   };
 
@@ -182,8 +182,7 @@ module.exports = (function () {
         fsWatcher.on('all', function (event, filePath) {
           var fileName = upath.basename(filePath),
             localeFromFile = guessLocaleFromFile(fileName);
-          //console.log('      fsWatcher.on', event, fileName);
-          if (event === 'change' && localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
+          if (event === 'change' && localeFromFile && ~opt.locales.indexOf(localeFromFile)) {
             logDebug('Auto reloading locale file "' + fileName + '".');
             read(localeFromFile);
           }
@@ -1194,7 +1193,7 @@ module.exports = (function () {
         return filepathJS;
       }
     } catch (e) {
-      logDebug('will use ' + filepath);
+      //logDebug('will use ' + filepath);
     }
     return filepath;
   };

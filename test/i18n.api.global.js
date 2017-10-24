@@ -1,8 +1,9 @@
 var i18n = require('../i18n'),
-  should = require("should");
+  should = require('should');
 
 describe('Module API', function() {
-
+  'use strict';
+  /*global __, __n*/
   beforeEach(function() {
 
     i18n.configure({
@@ -103,21 +104,21 @@ describe('Module API', function() {
 
       it('should test the ordering in sprintf', function() {
         i18n.setLocale('en');
-        should.equal(__('ordered arguments', "First", "Second"), 'Second then First');
+        should.equal(__('ordered arguments', 'First', 'Second'), 'Second then First');
         i18n.setLocale('de');
-        should.equal(__('ordered arguments', "First", "Second"), 'First then Second');
+        should.equal(__('ordered arguments', 'First', 'Second'), 'First then Second');
       });
 
       it('should test more complex sprintf examples', function() {
         i18n.setLocale('en');
-        should.equal(__('ordered arguments with numbers', "First", 2, 123.456), '2 then First then 123.46');
+        should.equal(__('ordered arguments with numbers', 'First', 2, 123.456), '2 then First then 123.46');
         i18n.setLocale('de');
-        should.equal(__('ordered arguments with numbers', "First", 2, 123.456), 'First then 2 then 123.46');
+        should.equal(__('ordered arguments with numbers', 'First', 2, 123.456), 'First then 2 then 123.46');
       });
 
       it('should allow for repeated references to the same argument.', function() {
         i18n.setLocale('en');
-        should.equal(__('repeated argument', "repeated"), 'repeated, repeated, repeated');
+        should.equal(__('repeated argument', 'repeated'), 'repeated, repeated, repeated');
       });
 
       it('should also return translations when iterating thru variables values', function() {
@@ -138,20 +139,20 @@ describe('Module API', function() {
 
       it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function() {
         should.equal(__({
-          phrase: "Hello",
-          locale: "en"
+          phrase: 'Hello',
+          locale: 'en'
         }), 'Hello');
         should.equal(__({
-          phrase: "Hello",
-          locale: "de"
+          phrase: 'Hello',
+          locale: 'de'
         }), 'Hallo');
         should.equal(__({
-          locale: "en",
-          phrase: "Hello"
+          locale: 'en',
+          phrase: 'Hello'
         }), 'Hello');
         should.equal(__({
-          locale: "de",
-          phrase: "Hello"
+          locale: 'de',
+          phrase: 'Hello'
         }), 'Hallo');
 
         // passing specific locale
@@ -227,57 +228,57 @@ describe('Module API', function() {
         var singular, plural;
 
         i18n.setLocale('en');
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "nl" }, 1);
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "nl" }, 3);
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'nl' }, 1);
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'nl' }, 3);
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "en" }, 1);
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "en" }, 3);
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'en' }, 1);
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'en' }, 3);
         should.equal(singular, '1 cat');
         should.equal(plural, '3 cats');
 
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "de" }, 1);
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "de" }, 3);
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'de' }, 1);
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'de' }, 3);
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
         i18n.setLocale('en');
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "nl", count: 1 });
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "nl", count: 3 });
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'nl', count: 1 });
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'nl', count: 3 });
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "en", count: 1 });
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "en", count: 3 });
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'en', count: 1 });
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'en', count: 3 });
         should.equal(singular, '1 cat');
         should.equal(plural, '3 cats');
 
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "de", count: 1 });
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "de", count: 3 });
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'de', count: 1 });
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'de', count: 3 });
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
         i18n.setLocale('en');
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "nl", count: "1" });
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "nl", count: "3" });
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'nl', count: '1' });
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'nl', count: '3' });
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
 
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "en", count: "1" });
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "en", count: "3" });
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'en', count: '1' });
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'en', count: '3' });
         should.equal(singular, '1 cat');
         should.equal(plural, '3 cats');
 
-        singular = __n({ singular: "%s cat", plural: "%s cats", locale: "de", count: "1" });
-        plural = __n({ singular: "%s cat", plural: "%s cats", locale: "de", count: "3" });
+        singular = __n({ singular: '%s cat', plural: '%s cats', locale: 'de', count: '1' });
+        plural = __n({ singular: '%s cat', plural: '%s cats', locale: 'de', count: '3' });
         should.equal(singular, '1 Katze');
         should.equal(plural, '3 Katzen');
       });
 
       it('should allow two arguments', function() {
-        var singular = __n("cat", 1);
-        var plural = __n("cat", 3);
+        var singular = __n('cat', 1);
+        var plural = __n('cat', 3);
         should.equal(singular, '1 cat');
         should.equal(plural, '3 cats');
       });

@@ -1,10 +1,11 @@
 var i18n = require('../i18n'),
-  should = require("should"),
+  should = require('should')/* ,
   fs = require('fs'),
-  path = require('path');
+  path = require('path') */
+;
 
 describe('parsing Messageformat phrases', function() {
-
+  'use strict';
   var mfTest = {};
 
   beforeEach(function() {
