@@ -2,21 +2,34 @@
 var reconfigure = require('./helpers/reconfig'),
   i18n = require('../i18n'),
   should = require('should'),
-  //fs = require('fs'),
-  fs = require('fs-promise'),
+  fs = require('fs'),
   path = require('path'),
   i18nFilename = path.resolve('i18n.js'),
   timeout = 50
 ;
 
-
+function clear(dir) {
+  if (i18n && i18n.disableReload) {
+    i18n.disableReload();
+  }
+  if (fs.existsSync(dir)) {
+    var s = fs.statSync(dir);
+    if (s.isDirectory()) {
+      (fs.readdirSync(dir)||[]).forEach(function(f) {
+        fs.unlinkSync(path.join(dir, f));
+      }, this);
+      fs.rmdirSync(dir);
+    }
+  }
+}
 
 describe('autoreload configuration', function() {
 
   var testScope = {};
-  var directory = path.resolve(__dirname + '/../sandbox/testlocalesauto');
+  var directory = path.resolve(__dirname + '/../testlocalesauto');
 
   before('start with empty catalogs, then change "de"', function(done) {
+    clear(directory);
     fs.mkdirSync(directory);
     fs.writeFileSync(directory + '/de.json', '{}');
     fs.writeFileSync(directory + '/en.json', '{}');
@@ -52,17 +65,17 @@ describe('autoreload configuration', function() {
   });
 
   after('will remove testlocalesauto after tests', function() {
-    return fs.emptyDir(path.resolve(__dirname + '/../sandbox'));
+    clear(directory);
   });
 });
 
 describe('autoreload configuration with prefix', function() {
 
   var testScope = {};
-  var directory = path.resolve(__dirname + '/../sandbox/testlocalesautoprefixed');
+  var directory = path.resolve(__dirname + '/../testlocalesautoprefixed');
 
   before('will start with empty catalogs', function(done) {
-    if (fs.existsSync(directory)) {fs.unlinkSync(directory);}
+    clear(directory);
     fs.mkdirSync(directory);
     fs.writeFileSync(directory + '/customprefix-de.json', '{}');
     fs.writeFileSync(directory + '/customprefix-en.json', '{}');
@@ -95,7 +108,7 @@ describe('autoreload configuration with prefix', function() {
   });
 
   after('will remove testlocalesautoprefixed after tests', function() {
-    return fs.emptyDir(path.resolve(__dirname + '/../sandbox'));
+    clear(directory);
   });
 
 });
@@ -103,9 +116,10 @@ describe('autoreload configuration with prefix', function() {
 describe('autoreload configuration with prefix and customextension', function() {
 
   var testScope = {};
-  var directory = path.resolve(__dirname + '/../sandbox/testlocalesautoprefixedext');
+  var directory = path.resolve(__dirname + '/../testlocalesautoprefixedext');
 
   before('will start with empty catalogs', function(done) {
+    clear(directory);
     fs.mkdirSync(directory);
     fs.writeFileSync(directory + '/customprefix-de.customextension', '{}');
     fs.writeFileSync(directory + '/customprefix-en.customextension', '{}');
@@ -139,7 +153,7 @@ describe('autoreload configuration with prefix and customextension', function() 
   });
 
   after('will remove testlocalesautoprefixed after tests', function() {
-    return fs.emptyDir(path.resolve(__dirname + '/../sandbox'));
+    clear(directory);
   });
 
 });
@@ -147,9 +161,10 @@ describe('autoreload configuration with prefix and customextension', function() 
 describe('autoreload configuration with customextension', function() {
 
   var testScope = {};
-  var directory = path.resolve(__dirname + '/../sandbox/testlocalesautocustomextension');
+  var directory = path.resolve(__dirname + '/../testlocalesautocustomextension');
 
   before('will start with empty catalogs', function(done) {
+    clear(directory);
     fs.mkdirSync(directory);
     fs.writeFileSync(directory + '/de.customextension', '{}');
     fs.writeFileSync(directory + '/en.customextension', '{}');
@@ -182,14 +197,14 @@ describe('autoreload configuration with customextension', function() {
   });
 
   after('will remove testlocalesautoprefixed after tests', function() {
-    return fs.emptyDir(path.resolve(__dirname + '/../sandbox'));
+    clear(directory);
   });
 
 });
 
 describe('autoreload disabling', function() {
   var testScope = {},
-      directory = path.resolve(__dirname + '/../sandbox/testlocalesautodisable')
+      directory = path.resolve(__dirname + '/../testlocalesautodisable')
   ;
   function clearFS() {
     fs.unlinkSync(directory + '/de.json');
@@ -257,7 +272,7 @@ describe('autoreload disabling', function() {
   });
 
   after(function () {
-    return fs.emptyDir(path.resolve(__dirname + '/../sandbox'));
+    clear(directory);
   });
 
 });
