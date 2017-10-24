@@ -430,8 +430,18 @@ module.exports = (function () {
       targetLocale = fallbacks[targetLocale];
     }
 
+    //disallow alien locales
+    if (!locales[targetLocale]) {
+      targetLocale = defaultLocale;
+    }
+
+    if (!targetLocale || !targetObject) {
+      error(`setLocale should be supplied with a valid locale (currently: ${typeof targetLocale}) and applied to a valid type of object (currently: ${typeof targetObject})`);
+      return false;
+    }
+
     // now set locale on object
-    targetObject.locale = locales[targetLocale] ? targetLocale : defaultLocale;
+    targetObject.locale = targetLocale;
 
     // consider any extra registered objects
     if (typeof register === 'object') {

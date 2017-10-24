@@ -1,5 +1,8 @@
+'use strict';
 var i18n = require('../i18n'),
-    should = require("should");
+    pkg = require('../package.json'),
+    should = require("should")
+  ;
 
 i18n.configure({
 	locales: ['en', 'de'],
@@ -10,7 +13,7 @@ i18n.configure({
 
 describe('Module Setup', function () {
   it('should export a valid version', function () {
-    should.equal(i18n.version, '0.8.3');
+    should.equal(i18n.version, pkg.version);
   });
 
   it('should export configure as i18nConfigure', function () {
