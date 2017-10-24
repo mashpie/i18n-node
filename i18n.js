@@ -436,7 +436,7 @@ module.exports = (function () {
     }
 
     if (!targetLocale || !targetObject) {
-      error(`setLocale should be supplied with a valid locale (currently: ${typeof targetLocale}) and applied to a valid type of object (currently: ${typeof targetObject})`);
+      error('setLocale should be supplied with a valid locale (currently: '+typeof targetLocale+') and applied to a valid type of object (currently: '+typeof targetObject+')');
       return false;
     }
 
