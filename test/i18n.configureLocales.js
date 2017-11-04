@@ -65,6 +65,29 @@ describe('locales configuration', function() {
     done();
   });
 
+  it('should work when using together with prefix and yml extension', function(done) {
+    var directory = path.resolve(__dirname + '/../testlocales');
+
+    fs.mkdirSync(directory);
+    fs.writeFileSync(directory + '/app-de.yml', '{}');
+    fs.writeFileSync(directory + '/app-en.yml', '{}');
+
+    i18n.configure({
+      directory: directory,
+      prefix: 'app-',
+      extension: '.yml'
+    });
+
+    var expected = ['de', 'en'].sort();
+    should.deepEqual(i18n.getLocales(), expected);
+
+    fs.unlinkSync(directory + '/app-de.yml');
+    fs.unlinkSync(directory + '/app-en.yml');
+    fs.rmdirSync(directory);
+
+    done();
+  });
+
   it('should ignore unmatching files when using together with prefix and extension', function(done) {
     var directory = path.resolve(__dirname + '/../testlocales');
 

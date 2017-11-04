@@ -1,0 +1,32 @@
+---
+Hello: Hallo
+Hello %s, how are you today?: Hallo %s, wie geht es dir heute?
+weekend: Wochenende
+Hello %s, how are you today? How was your %s.: Hallo %s, wie geht es dir heute? Wie
+  war dein %s.
+Hi: Hi
+Howdy: Hallöchen
+"%s cat":
+  one: "%s Katze"
+  other: "%s Katzen"
+cat:
+  one: "%s Katze"
+  other: "%s Katzen"
+There is one monkey in the %%s:
+  one: Im %%s sitzt ein Affe
+  other: Im Baum sitzen %d Affen
+tree: Baum
+There is one monkey in the %s:
+  one: There is one monkey in the %s
+  other: There are %d monkeys in the %s
+Hello %s: Hallo %s
+Hello {{name}}: Hallo {{name}}
+Hello {name}: Hallo {name}
+Hello {{name}}, how was your %s?: Hallo {{name}}, wie war dein %s?
+Hello {name}, how was your %s?: Hallo {name}, wie war dein %s?
+format:
+  date: DD.MM.YYYY
+  time: hh:mm:ss
+ordered arguments: "%1$s then %2$s"
+ordered arguments with numbers: "%1$s then %2$d then %3$.2f"
+Hallo Marcus, wie war dein %s?: Hallo Marcus, wie war dein %s?

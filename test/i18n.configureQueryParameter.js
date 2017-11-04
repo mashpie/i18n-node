@@ -1,50 +1,55 @@
 var i18n = require('../i18n'),
   should = require("should"),
-  path = require("path");
+  path = require("path"),
+  extensions = require('./extensions');
 
-describe('Locale switching should work queryParameter', function() {
+extensions.forEach(function(extension) {
 
-  var req;
-  var res;
+  describe('Locale switching should work queryParameter use '+extension, function() {
 
-  beforeEach(function() {
+    var req;
+    var res;
 
-    i18n.configure({
-      locales: ['en', 'de', 'fr'],
-      defaultLocale: 'en',
-      queryParameter: 'lang',
-      cookiename: 'languageCookie',
-      directory: './locales'
+    beforeEach(function() {
+
+      i18n.configure({
+        locales: ['en', 'de', 'fr'],
+        defaultLocale: 'en',
+        queryParameter: 'lang',
+        cookiename: 'languageCookie',
+        directory: './locales',
+        extension: extension
+      });
+
+      req = {
+        request: "GET /test?lang=fr",
+        url: "/test?lang=fr",
+        headers: {
+          'accept-language': 'de'
+        },
+        cookies:{
+          'languageCookie':'de'
+        }
+      };
+
+      res = {
+        locals: {}
+      };
     });
 
-    req = {
-      request: "GET /test?lang=fr",
-      url: "/test?lang=fr",
-      headers: {
-        'accept-language': 'de'
-      },
-      cookies:{
-        'languageCookie':'de'
-      }
-    };
+    it('getLocale should return same locale for req and res based on ?lang=fr', function() {
+      i18n.init(req, res);
 
-    res = {
-      locals: {}
-    };
-  });
+      i18n.getLocale(req).should.equal('fr');
+      i18n.getLocale(res).should.equal('fr');
 
-  it('getLocale should return same locale for req and res based on ?lang=fr', function() {
-    i18n.init(req, res);
+      req.getLocale().should.equal('fr');
+      res.getLocale().should.equal('fr');
+      res.locals.getLocale().should.equal('fr');
 
-    i18n.getLocale(req).should.equal('fr');
-    i18n.getLocale(res).should.equal('fr');
-
-    req.getLocale().should.equal('fr');
-    res.getLocale().should.equal('fr');
-    res.locals.getLocale().should.equal('fr');
-
-    req.__('Hello').should.equal('Bonjour');
-    res.__('Hello').should.equal('Bonjour');
-    res.locals.__('Hello').should.equal('Bonjour');
+      req.__('Hello').should.equal('Bonjour');
+      res.__('Hello').should.equal('Bonjour');
+      res.locals.__('Hello').should.equal('Bonjour');
+    });
   });
 });

@@ -191,3 +191,48 @@ describe('autoreload configuration with customextension', function() {
   });
 
 });
+
+describe('autoreload configuration with .yaml', function() {
+
+  var testScope = {};
+  var directory = path.resolve(__dirname + '/../testlocalesautoyaml');
+
+  it('will start with empty catalogs', function(done) {
+    fs.mkdirSync(directory);
+    fs.writeFileSync(directory + '/de.yml', '{}');
+    fs.writeFileSync(directory + '/en.yml', '{}');
+    reconfigure({
+      directory: directory,
+      register: testScope,
+      extension: '.yml',
+      autoReload: true
+    });
+    should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
+    setTimeout(done, timeout);
+  });
+
+  it('reloads when a catalog is altered', function(done) {
+    fs.writeFileSync(directory + '/de.yml', '{"Hello":"Hallo"}');
+    setTimeout(done, timeout);
+  });
+
+  it('has added new string to catalog and translates correctly', function(done) {
+    i18n.setLocale(testScope, 'de');
+    should.equal('Hallo', testScope.__('Hello'));
+    should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} });
+    done();
+  });
+
+  it('will add new string to catalog and files from __()', function(done) {
+    should.equal('Hallo', testScope.__('Hello'));
+    should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} });
+    done();
+  });
+
+  it('will remove testlocalesautoprefixed after tests', function() {
+    fs.unlinkSync(directory + '/de.yml');
+    fs.unlinkSync(directory + '/en.yml');
+    fs.rmdirSync(directory);
+  });
+
+});
