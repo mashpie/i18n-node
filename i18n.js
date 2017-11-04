@@ -1141,7 +1141,7 @@ module.exports = (function() {
       var fileContents = '';
       switch(extension) {
         case '.yml':
-          fileContents = yaml.safeDump(locales[locale]);
+          fileContents = yaml.safeDump(locales[locale], {'indent': indent});
           break;
         default:
           fileContents = JSON.stringify(locales[locale], null, indent);
