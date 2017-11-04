@@ -21,6 +21,7 @@ var vsprintf = require('sprintf-js').vsprintf,
   MakePlural = require('make-plural/make-plural').load(
     require('make-plural/data/plurals.json')
   ),
+  yaml = require('js-yaml'),
   parseInterval = require('math-interval-parser').default;
 
 // exports an instance
@@ -125,8 +126,9 @@ module.exports = (function() {
     // json files prefix
     prefix = (typeof opt.prefix === 'string') ? opt.prefix : '';
 
-    // where to store json files
+    // where to store files
     extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
+    if(extension === '.yaml') extension = '.yml';
 
     // setting defaultLocale
     defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
@@ -1081,10 +1083,16 @@ module.exports = (function() {
       localeFile = fs.readFileSync(file);
       try {
         // parsing filecontents to locales[locale]
-        locales[locale] = JSON.parse(localeFile);
+        switch(extension) {
+          case '.yml':
+            locales[locale] = yaml.safeLoad(localeFile);
+            break;
+          default:
+            locales[locale] = JSON.parse(localeFile);
+        }
       } catch (parseError) {
         logError('unable to parse locales from file (maybe ' +
-          file + ' is empty or invalid json?): ', parseError);
+          file + ' is empty or invalid '+extension+'?): ', parseError);
       }
     } catch (readError) {
       // unable to read, so intialize that file
@@ -1130,7 +1138,15 @@ module.exports = (function() {
     try {
       target = getStorageFilePath(locale);
       tmp = target + '.tmp';
-      fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), 'utf8');
+      var fileContents = '';
+      switch(extension) {
+        case '.yml':
+          fileContents = yaml.safeDump(locales[locale]);
+          break;
+        default:
+          fileContents = JSON.stringify(locales[locale], null, indent);
+      }
+      fs.writeFileSync(tmp, fileContents, 'utf8');
       stats = fs.statSync(tmp);
       if (stats.isFile()) {
         fs.renameSync(tmp, target);
