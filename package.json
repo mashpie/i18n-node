@@ -33,7 +33,7 @@
     "jshint": "*",
     "mocha": "^3.5.3",
     "should": "*",
-    "sinon": "*",
+    "sinon": "^3.3.0",
     "url": "^0.11.0",
     "zombie": "*"
   },
