@@ -12,6 +12,7 @@ No extra parsing needed.
 [![Dependency Status][dependency-image]][dependency-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node?ref=badge_shield)
 
 ## Install
 ```sh
@@ -1032,3 +1033,6 @@ SOFTWARE.
 
 [snyk-image]: https://snyk.io/test/npm/i18n/badge.svg
 [snyk-url]: https://snyk.io/test/npm/i18n
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node?ref=badge_large)
