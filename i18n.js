@@ -522,6 +522,7 @@ module.exports = (function() {
     delete locales[locale];
   };
 
+  i18n.willUpdateFiles = function(){ return updateFiles; };
   // ===================
   // = private methods =
   // ===================
