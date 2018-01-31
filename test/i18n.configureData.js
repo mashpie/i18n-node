@@ -14,10 +14,16 @@ function reconfigure(config) {
 describe('data api', function() {
   it('any data set in the data option becomes the in-memory source of all translations', function() {
     reconfigure({
-      data: { 'en': {}, 'it': {}, 'de': {} }
+      data: {
+        'en': {'wazzup': 'What\'s up'},
+        'it': {wazzup: 'Che cosa succede'},
+        'de': {wazzup: 'Wie geht\'s'} }
     });
 
-    should.equal(i18n.getLocales().sort(), ['de', 'en', 'it']);
+    should.equal(i18n.getLocales().sort().join(','), ['de', 'en', 'it'].join(','));
     should.equal(i18n.willUpdateFiles(), false);
+    should.equal(i18n.__('wazzup'), 'What\'s up');
+    i18n.setLocale('it');
+    should.equal(i18n.__('wazzup'), 'Che cosa succede');
   });
 });

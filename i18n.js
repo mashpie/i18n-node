@@ -60,7 +60,8 @@ module.exports = (function() {
     queryParameter,
     register,
     updateFiles,
-    syncFiles;
+    syncFiles,
+    memorySource;
 
   // public exports
   var i18n = {};
@@ -99,6 +100,12 @@ module.exports = (function() {
       }
     }
 
+    memorySource = undefined;
+
+    if (typeof opt.data === 'object') {
+      memorySource = opt.data;
+    }
+
     // sets a custom cookie name to parse locale settings from
     cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
 
@@ -114,7 +121,8 @@ module.exports = (function() {
       parseInt(opt.directoryPermissions, 8) : null;
 
     // write new locale information to disk
-    updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
+    updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles
+      : (memorySource === undefined);
 
     // sync locale information accros all files
     syncFiles = (typeof opt.syncFiles === 'boolean') ? opt.syncFiles : false;
@@ -150,7 +158,7 @@ module.exports = (function() {
       true : opt.preserveLegacyCase;
 
     // when missing locales we try to guess that from directory
-    opt.locales = opt.locales || guessLocales(directory);
+    opt.locales = opt.locales || guessLocales();
 
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {
@@ -523,6 +531,7 @@ module.exports = (function() {
   };
 
   i18n.willUpdateFiles = function(){ return updateFiles; };
+
   // ===================
   // = private methods =
   // ===================
@@ -617,7 +626,11 @@ module.exports = (function() {
   /**
    * tries to guess locales by scanning the given directory
    */
-  var guessLocales = function(directory) {
+  var guessLocales = function() {
+    if (typeof memorySource === 'object') {
+      return Object.keys(memorySource);
+    }
+
     var entries = fs.readdirSync(directory);
     var localesFound = [];
 
@@ -1075,6 +1088,11 @@ module.exports = (function() {
    * try reading a file
    */
   var read = function(locale) {
+    if (typeof memorySource === 'object' ) {
+      locales[locale] = memorySource[locale]; // TODO; create clone?
+      return ;
+    }
+
     var localeFile = {},
       file = getStorageFilePath(locale);
     try {
