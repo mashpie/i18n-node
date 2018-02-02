@@ -100,11 +100,7 @@ module.exports = (function() {
       }
     }
 
-    memorySource = undefined;
-
-    if (typeof opt.data === 'object') {
-      memorySource = opt.data;
-    }
+    memorySource = (['object', 'function'].indexOf(typeof opt.data) !== -1) ? opt.data : undefined;
 
     // sets a custom cookie name to parse locale settings from
     cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
@@ -631,6 +627,10 @@ module.exports = (function() {
       return Object.keys(memorySource);
     }
 
+    if (typeof memorySource === 'function') {
+      return Object.keys(memorySource());
+    }
+
     var entries = fs.readdirSync(directory);
     var localesFound = [];
 
@@ -1090,6 +1090,11 @@ module.exports = (function() {
   var read = function(locale) {
     if (typeof memorySource === 'object' ) {
       locales[locale] = memorySource[locale]; // TODO; create clone?
+      return ;
+    }
+
+    if (typeof memorySource === 'function' ) {
+      locales[locale] = memorySource()[locale]; // TODO; create clone?
       return ;
     }
 
