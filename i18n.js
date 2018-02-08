@@ -24,7 +24,7 @@ var vsprintf = require('sprintf-js').vsprintf,
   parseInterval = require('math-interval-parser').default;
 
 // exports an instance
-module.exports = (function() {
+var builder = function() {
 
   var MessageformatInstanceForLocale = {},
     PluralsForLocale = {},
@@ -1182,4 +1182,7 @@ module.exports = (function() {
 
   return i18n;
 
-}());
+};
+
+module.exports = builder();
+module.exports.Builder = builder;
