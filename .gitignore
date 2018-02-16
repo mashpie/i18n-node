@@ -9,3 +9,5 @@ defaultlocales
 localestowrite
 localesmakeplural
 .vscode
+
+**/*.log
