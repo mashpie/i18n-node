@@ -5,7 +5,7 @@ var reconfigure = require('./helpers/reconfig'),
   fs = require('fs'),
   path = require('path'),
   i18nFilename = path.resolve('i18n.js'),
-  timeout = 50
+  timeout = 100
 ;
 
 function clear(dir) {
