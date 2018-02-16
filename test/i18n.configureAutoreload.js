@@ -39,16 +39,15 @@ describe('autoreload configuration', function() {
       autoReload: true
     });
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
-    setTimeout(function() {
+    setTimeout(function () {
       fs.writeFile(directory + '/de.json', '{"Hello":"Hallo"}', function (err) {
         if (err) {
-          done(err);
+          setTimeout(function() {done(err);}, timeout);
         } else {
-          done();
+          setTimeout(function() {done();}, timeout);
         }
-      });      
+      });
     }, timeout);
-
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
