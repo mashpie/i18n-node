@@ -39,15 +39,12 @@ describe('autoreload configuration', function() {
       autoReload: true
     });
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} });
-    setTimeout(function () {
-      fs.writeFile(directory + '/de.json', '{"Hello":"Hallo"}', function (err) {
-        if (err) {
-          setTimeout(function() {done(err);}, timeout);
-        } else {
-          setTimeout(function() {done();}, timeout);
-        }
-      });
-    }, timeout);
+    setTimeout(done, timeout);
+  });
+
+  it('reloads when a catalog is altered', function(done) {
+    fs.writeFileSync(directory + '/de.json', '{"Hello":"Hallo"}');
+    setTimeout(done, timeout);
   });
 
   it('has added new string to catalog and translates correctly', function(done) {
