@@ -847,7 +847,7 @@ module.exports = (function() {
     }
 
     // attempt to read when defined as valid locale
-    if (!locales[locale]) {
+    if (locales[locale]) {
       read(locale);
     }
 
