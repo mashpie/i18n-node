@@ -907,6 +907,28 @@ that file can be edited or just uploaded to [webtranslateit](http://docs.webtran
 }
 ```
 
+### Using a custom file format
+
+By default, `JSON.parse()` will be used to read files and `JSON.stringify()` will be used to write new strings to language files.
+
+It is, however, possible to specify your own parser, by setting `parser` and `reverseParser` keys in the `.configure` method. It's useful if you want to use other file formats, such as Ini files or YAML, instead of JSON, to write your language files. For example:
+
+```javascript
+i18n.configure({
+  extension: '.lang', // you'll probably not want to use .json
+  parser: function(fileContents) {
+    
+  },
+  reverseParser: function(obj) {
+
+  }
+});
+```
+
+As these functions are meant to replace `JSON.parse()` and `JSON.stringify()` respectively, their workflow must be the very same: `parser` receives a Buffer (which can be converted to string by using `fileContents.toString()`) and shall return a object (exactly like `JSON.parse()` would do). At the same way, `reverseParser` receives an object and must return a string, encoded in the format that your parser is able to read.
+
+When using a custom file format, you must specify both `parser` and `reverseParser`.
+
 ## Logging & Debugging
 
 Logging any kind of output is moved to [debug](https://github.com/visionmedia/debug) module. To let i18n output anything run your app with `DEBUG` env set like so:

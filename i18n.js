@@ -60,7 +60,9 @@ module.exports = (function() {
     queryParameter,
     register,
     updateFiles,
-    syncFiles;
+    syncFiles,
+    parser,
+    reverseParser;
 
   // public exports
   var i18n = {};
@@ -174,6 +176,10 @@ module.exports = (function() {
         });
       }
     }
+
+    // allow other parsing method than JSON.parse
+    parser = (typeof opt.parser === 'function') ? opt.parser : JSON.parse;
+    reverseParser = (typeof opt.reverseParser === 'function') ? opt.reverseParser : JSON.stringify;
   };
 
   i18n.init = function i18nInit(request, response, next) {
@@ -1081,7 +1087,7 @@ module.exports = (function() {
       localeFile = fs.readFileSync(file);
       try {
         // parsing filecontents to locales[locale]
-        locales[locale] = JSON.parse(localeFile);
+        locales[locale] = parser(localeFile);
       } catch (parseError) {
         logError('unable to parse locales from file (maybe ' +
           file + ' is empty or invalid json?): ', parseError);
@@ -1130,7 +1136,7 @@ module.exports = (function() {
     try {
       target = getStorageFilePath(locale);
       tmp = target + '.tmp';
-      fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), 'utf8');
+      fs.writeFileSync(tmp, reverseParser(locales[locale], null, indent), 'utf8');
       stats = fs.statSync(tmp);
       if (stats.isFile()) {
         fs.renameSync(tmp, target);
