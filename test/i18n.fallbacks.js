@@ -15,9 +15,9 @@ describe('Fallbacks', function() {
     beforeEach(function() {
 
       i18n.configure({
-        locales: ['en', 'de'],
+        locales: ['en', 'de', 'fr'],
         defaultLocale: 'en',
-        fallbacks: { 'foo': 'de', 'de-AT': 'de' },
+        fallbacks: { 'foo': 'de', 'de-AT': 'de', 'fr-*': 'fr' },
         directory: './locales',
         register: req
       });
@@ -45,10 +45,20 @@ describe('Fallbacks', function() {
       i18n.init(req);
       i18n.getLocale(req).should.equal('de');
     });
+    it('should fall back to "fr" for locale "fr-CA"', function() {
+      req.headers['accept-language'] = 'fr-CA';
+      i18n.init(req);
+      i18n.getLocale(req).should.equal('fr');
+    });
     it('should fall back to "de" for second-order locale "de-AT"', function() {
       req.headers['accept-language'] = 'de-DK,de-AT';
       i18n.init(req);
       i18n.getLocale(req).should.equal('de');
+    });
+    it('should fall back to "fr" for second-order locale "fr-CA"', function() {
+      req.headers['accept-language'] = 'de-DK,fr-CA,de-AT';
+      i18n.init(req);
+      i18n.getLocale(req).should.equal('fr');
     });
     it('should use default "en" for valid locale request (ignoring fallbacks)', function() {
       req.headers['accept-language'] = 'en-US,en,de-DK,de-AT';
@@ -100,9 +110,9 @@ describe('Fallbacks', function() {
       i18n = require(i18nFilename);
 
       i18n.configure({
-        locales: ['en-US', 'de-DE'],
+        locales: ['en-US', 'de-DE', 'fr-CA'],
         defaultLocale: 'en-US',
-        fallbacks: { 'de': 'de-DE' },
+        fallbacks: { 'de': 'de-DE', 'fr*': 'fr-CA' },
         directory: './locales',
         register: req
       });
@@ -123,6 +133,11 @@ describe('Fallbacks', function() {
       req.headers['accept-language'] = 'de';
       i18n.init(req);
       i18n.getLocale(req).should.equal('de-DE');
+    });
+    it('should fall back to "fr-CA" for language "fr"', function() {
+      req.headers['accept-language'] = 'fr';
+      i18n.init(req);
+      i18n.getLocale(req).should.equal('fr-CA');
     });
   });
 

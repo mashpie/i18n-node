@@ -2,7 +2,7 @@ test:
 	mocha
 
 cover:
-	istanbul cover ./node_modules/mocha/bin/_mocha
+	istanbul cover _mocha -- --recursive
 
 hint:
 	jshint --verbose .

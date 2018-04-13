@@ -19,9 +19,10 @@
   },
   "dependencies": {
     "debug": "*",
-    "make-plural": "^3.0.3",
+    "js-yaml": "^3.10.0",
+    "make-plural": "^4",
     "math-interval-parser": "^1.1.0",
-    "messageformat": "^0.3.1",
+    "messageformat": "^0",
     "mustache": "*",
     "sprintf-js": ">=1.0.3"
   },
@@ -30,9 +31,9 @@
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
     "jshint": "*",
-    "mocha": "*",
+    "mocha": "^3.5.3",
     "should": "*",
-    "sinon": "*",
+    "sinon": "^3.3.0",
     "url": "^0.11.0",
     "zombie": "*"
   },
