@@ -13,6 +13,15 @@ describe('Object Notation', function() {
     });
   });
 
+  describe('Special characters', function() {
+    it('should replace a variable with special characters', async () => {
+		i18n.setLocale('en');
+		should.equal(__('Hello {{name}}', {
+		  name: '<>"\''
+        }), 'Hello <>"\'');
+    });
+  });
+
   describe('Date/Time patterns', function() {
     it('should return en formatting as expected', function() {
       i18n.setLocale('en');
