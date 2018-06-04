@@ -140,6 +140,10 @@ module.exports = (function() {
     objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
     if (objectNotation === true) objectNotation = '.';
 
+    // allow other parsing method than JSON.parse
+    parser = (typeof opt.parser === 'function') ? opt.parser : JSON.parse;
+    reverseParser = (typeof opt.reverseParser === 'function') ? opt.reverseParser : JSON.stringify;
+
     // read language fallback map
     fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : {};
 
@@ -176,10 +180,6 @@ module.exports = (function() {
         });
       }
     }
-
-    // allow other parsing method than JSON.parse
-    parser = (typeof opt.parser === 'function') ? opt.parser : JSON.parse;
-    reverseParser = (typeof opt.reverseParser === 'function') ? opt.reverseParser : JSON.stringify;
   };
 
   i18n.init = function i18nInit(request, response, next) {
@@ -373,7 +373,7 @@ module.exports = (function() {
       } else {
         // split locales with a region code
         var lc = targetLocale.toLowerCase().split(/[_-\s]+/)
-          .filter(function(el){ return true && el; });
+          .filter(function(el) { return true && el; });
         // take the first part of locale, fallback to full locale
         p = new MakePlural(lc[0] || targetLocale);
         PluralsForLocale[targetLocale] = p;
@@ -653,7 +653,7 @@ module.exports = (function() {
 
   var guessLanguage = function(request) {
     if (typeof request === 'object') {
-      var languageHeader = request.headers? request.headers['accept-language'] : undefined,
+      var languageHeader = request.headers ? request.headers['accept-language'] : undefined,
         languages = [],
         regions = [];
 
@@ -700,7 +700,7 @@ module.exports = (function() {
             // where the original, unsupported language existed.
             var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
             var fallbackIndex = acceptedLanguages.indexOf(fallback);
-            if(fallbackIndex > -1) {
+            if (fallbackIndex > -1) {
               acceptedLanguages.splice(fallbackIndex, 1);
             }
             acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
@@ -1089,6 +1089,7 @@ module.exports = (function() {
         // parsing filecontents to locales[locale]
         locales[locale] = parser(localeFile);
       } catch (parseError) {
+        console.log(parseError)
         logError('unable to parse locales from file (maybe ' +
           file + ' is empty or invalid json?): ', parseError);
       }
