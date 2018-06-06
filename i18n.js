@@ -1089,7 +1089,6 @@ module.exports = (function() {
         // parsing filecontents to locales[locale]
         locales[locale] = parser(localeFile);
       } catch (parseError) {
-        console.log(parseError)
         logError('unable to parse locales from file (maybe ' +
           file + ' is empty or invalid json?): ', parseError);
       }
