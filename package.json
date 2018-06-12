@@ -18,6 +18,7 @@
     "lib": "."
   },
   "dependencies": {
+    "culture-info": "0.0.4",
     "debug": "*",
     "make-plural": "^3.0.3",
     "math-interval-parser": "^1.1.0",

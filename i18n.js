@@ -21,7 +21,8 @@ var vsprintf = require('sprintf-js').vsprintf,
   MakePlural = require('make-plural/make-plural').load(
     require('make-plural/data/plurals.json')
   ),
-  parseInterval = require('math-interval-parser').default;
+  parseInterval = require('math-interval-parser').default,
+  CultureInfo = require("culture-info").default;
 
 // exports an instance
 module.exports = (function() {
@@ -404,6 +405,19 @@ module.exports = (function() {
     // consider a fallback
     if (!locales[targetLocale] && fallbacks[targetLocale]) {
       targetLocale = fallbacks[targetLocale];
+    }
+
+    {
+      // Consider a parent locale
+      let culture = new CultureInfo(targetLocale);
+
+      while (!locales[culture.Name] && (culture !== CultureInfo.InvariantCulture)) {
+        culture = culture.Parent;
+      }
+
+      if (culture !== CultureInfo.InvariantCulture) {
+        targetLocale = culture.Name;
+      }
     }
 
     // now set locale on object
@@ -936,6 +950,11 @@ module.exports = (function() {
     // Handle object lookup notation
     var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation);
     if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length - 1)) {
+      {
+        let key = singular.slice(0, indexOfDot);
+        locale = getPhraseLocale(key, locale);
+      }
+
       // If delayed traversal wasn't specifically forbidden, it is allowed.
       if (typeof allowDelayedTraversal === 'undefined') allowDelayedTraversal = true;
       // The accessor we're trying to find and which we want to return.
@@ -977,6 +996,7 @@ module.exports = (function() {
     } else {
       // No object notation, just return an accessor that performs array lookup.
       return function() {
+        locale = getPhraseLocale(singular, locale);
         return locales[locale][singular];
       };
     }
@@ -1066,9 +1086,35 @@ module.exports = (function() {
     } else {
       // No object notation, just return a mutator that performs array lookup and changes the value.
       return function(value) {
+        locale = getPhraseLocale(singular, locale);
         locales[locale][singular] = value;
         return value;
       };
+    }
+  };
+
+  /**
+   * Gets the best matching locale for a phrase.
+   * 
+   * @param {string} phrase 
+   * The phrase to find the best matching locale for.
+   * 
+   * @param {string} locale
+   * The preferred locale.
+   */
+  var getPhraseLocale = function(phrase, locale) {
+    // Consider a parent locale
+    let culture = new CultureInfo(locale);
+
+    while ((!locales[culture.Name] || !locales[culture.Name][phrase]) && (culture !== CultureInfo.InvariantCulture)) {
+      culture = culture.Parent;
+    }
+
+    if (culture !== CultureInfo.InvariantCulture) {
+      return culture.Name;
+    }
+    else {
+      return locale;
     }
   };
 
