@@ -912,7 +912,9 @@ module.exports = (function() {
     // this will implicitly write/sync missing keys
     // to the rest of locales
     for (var l in locales) {
-      translate(l, singular, plural, true);
+      if (locales.hasOwnProperty(l)) {
+        translate(l, singular, plural, true);
+      }
     }
   };
 
