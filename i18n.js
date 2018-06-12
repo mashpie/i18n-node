@@ -944,17 +944,13 @@ module.exports = (function() {
    * in the object at the requested location.
    */
   var localeAccessor = function(locale, singular, allowDelayedTraversal) {
+    locale = getPhraseLocale(singular, locale);
     // Bail out on non-existent locales to defend against internal errors.
     if (!locales[locale]) return Function.prototype;
 
     // Handle object lookup notation
     var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation);
     if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length - 1)) {
-      {
-        let key = singular.slice(0, indexOfDot);
-        locale = getPhraseLocale(key, locale);
-      }
-
       // If delayed traversal wasn't specifically forbidden, it is allowed.
       if (typeof allowDelayedTraversal === 'undefined') allowDelayedTraversal = true;
       // The accessor we're trying to find and which we want to return.
@@ -996,7 +992,6 @@ module.exports = (function() {
     } else {
       // No object notation, just return an accessor that performs array lookup.
       return function() {
-        locale = getPhraseLocale(singular, locale);
         return locales[locale][singular];
       };
     }
@@ -1103,10 +1098,33 @@ module.exports = (function() {
    * The preferred locale.
    */
   var getPhraseLocale = function(phrase, locale) {
+    let phrasePath = [ phrase ];
+
+    if (objectNotation) {
+      phrasePath = phrase.split(objectNotation);
+    }
+
+    let contains = (culture, phrasePath) => {
+      let localeStore = locales[culture.Name];
+
+      for (let i = 0; i < phrasePath.length; i++) {
+        let phrasePart = phrasePath[i];
+
+        if (localeStore[phrasePart]) {
+          localeStore = localeStore[phrasePart];
+        }
+        else {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
     // Consider a parent locale
     let culture = new CultureInfo(locale);
 
-    while ((!locales[culture.Name] || !locales[culture.Name][phrase]) && (culture !== CultureInfo.InvariantCulture)) {
+    while (!contains(culture, phrasePath) && (culture !== CultureInfo.InvariantCulture)) {
       culture = culture.Parent;
     }
 
