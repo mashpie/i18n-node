@@ -1105,20 +1105,27 @@ module.exports = (function() {
     }
 
     let contains = (culture, phrasePath) => {
-      let localeStore = locales[culture.Name];
+      if (locales[culture.Name])
+      {
+        let localeStore = locales[culture.Name];
 
-      for (let i = 0; i < phrasePath.length; i++) {
-        let phrasePart = phrasePath[i];
+        for (let i = 0; i < phrasePath.length; i++) {
+          let phrasePart = phrasePath[i];
 
-        if (localeStore[phrasePart]) {
-          localeStore = localeStore[phrasePart];
+          if (localeStore.hasOwnProperty(phrasePart)) {
+            localeStore = localeStore[phrasePart];
+          }
+          else {
+            return false;
+          }
         }
-        else {
-          return false;
-        }
+
+        return true;
       }
-
-      return true;
+      else
+      {
+        return false;
+      }
     };
 
     // Consider a parent locale
