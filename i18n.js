@@ -22,7 +22,7 @@ var vsprintf = require('sprintf-js').vsprintf,
     require('make-plural/data/plurals.json')
   ),
   parseInterval = require('math-interval-parser').default,
-  CultureInfo = require("culture-info").default;
+  CultureInfo = require('culture-info').default;
 
 // exports an instance
 module.exports = (function() {
