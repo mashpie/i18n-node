@@ -12,6 +12,16 @@ describe('Object Notation', function() {
       objectNotation: true
     });
   });
+  afterEach(function() {
+    i18n.configure({
+      locales: ['en', 'de'],
+      directory: './locales',
+      register: global,
+      updateFiles: true,
+      objectNotation: true
+    });
+    i18n.setLocale('en');
+  });
 
   describe('Date/Time patterns', function() {
     it('should return en formatting as expected', function() {
@@ -80,6 +90,6 @@ describe('Object Notation', function() {
     it('should translate the nested phrase to the best matching parent of the desired locale if the phrase in the desired locale doesn\'t exist', function() {
       i18n.setLocale('de-CH');
       should.equal(__('ostrich.other', 2), '2 Sträuße');
-    })
+    });
   });
 });
