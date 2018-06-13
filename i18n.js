@@ -409,17 +409,15 @@ module.exports = (function() {
       targetLocale = fallbacks[targetLocale];
     }
 
-    {
-      // Consider a parent locale
-      let culture = new CultureInfo(targetLocale);
+    // Consider a parent locale
+    var culture = new CultureInfo(targetLocale);
 
-      while (!locales[culture.Name] && (culture !== CultureInfo.InvariantCulture)) {
-        culture = culture.Parent;
-      }
+    while (!locales[culture.Name] && (culture !== CultureInfo.InvariantCulture)) {
+      culture = culture.Parent;
+    }
 
-      if (culture !== CultureInfo.InvariantCulture) {
-        targetLocale = culture.Name;
-      }
+    if (culture !== CultureInfo.InvariantCulture) {
+      targetLocale = culture.Name;
     }
 
     // now set locale on object
@@ -1100,19 +1098,19 @@ module.exports = (function() {
    * The preferred locale.
    */
   var getPhraseLocale = function(phrase, locale) {
-    let phrasePath = [ phrase ];
+    var phrasePath = [ phrase ];
 
     if (objectNotation) {
       phrasePath = phrase.split(objectNotation);
     }
 
-    let contains = (culture, phrasePath) => {
+    var contains = (culture, phrasePath) => {
       if (locales[culture.Name])
       {
-        let localeStore = locales[culture.Name];
+        var localeStore = locales[culture.Name];
 
-        for (let i = 0; i < phrasePath.length; i++) {
-          let phrasePart = phrasePath[i];
+        for (var i = 0; i < phrasePath.length; i++) {
+          var phrasePart = phrasePath[i];
 
           if (localeStore.hasOwnProperty(phrasePart)) {
             localeStore = localeStore[phrasePart];
@@ -1131,7 +1129,7 @@ module.exports = (function() {
     };
 
     // Consider a parent locale
-    let culture = new CultureInfo(locale);
+    var culture = new CultureInfo(locale);
 
     while (!contains(culture, phrasePath) && (culture !== CultureInfo.InvariantCulture)) {
       culture = culture.Parent;
