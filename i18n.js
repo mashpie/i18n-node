@@ -1104,7 +1104,7 @@ module.exports = (function() {
       phrasePath = phrase.split(objectNotation);
     }
 
-    var contains = (culture, phrasePath) => {
+    var contains = function(culture, phrasePath) {
       if (locales[culture.Name])
       {
         var localeStore = locales[culture.Name];
