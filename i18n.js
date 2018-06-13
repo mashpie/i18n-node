@@ -165,13 +165,15 @@ module.exports = (function() {
 
         // watch changes of locale files (it's called twice because fs.watch is still unstable)
         fs.watch(directory, function(event, filename) {
-          var localeFromFile = guessLocaleFromFile(filename);
-
-          if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
-            logDebug('Auto reloading locale file "' + filename + '".');
-            read(localeFromFile);
+          if (event !== 'rename' || fs.existsSync(path.join(directory, filename)))
+          {
+            var localeFromFile = guessLocaleFromFile(filename);
+  
+            if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
+              logDebug('Auto reloading locale file "' + filename + '".');
+              read(localeFromFile);
+            }
           }
-
         });
       }
     }
