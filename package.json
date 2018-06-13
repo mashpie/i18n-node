@@ -31,7 +31,7 @@
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
     "jshint": "*",
-    "mocha": "*",
+    "mocha": "^3.5.3",
     "should": "*",
     "sinon": "*",
     "url": "^0.11.0",
