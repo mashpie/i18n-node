@@ -359,11 +359,11 @@ res.__n("%s cat", 3); // 3 Katzen
 
 // passing specific locale
 __n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 1); // 1 chat
-__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 3); // 3 chat
+__n({singular: "%s cat", plural: "%s cats", locale: "fr"}, 3); // 3 chats
 
 // the all in one object signature
 __n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 1}); // 1 chat
-__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chat
+__n({singular: "%s cat", plural: "%s cats", locale: "fr", count: 3}); // 3 chats
 ```
 
 When used in short form like `__n(phrase, count)` the following will get added to your json files:
