@@ -35,7 +35,9 @@ describe('Module API', function() {
         i18n.setLocale('en');
         i18n.setLocale('nl').should.equal('de');
       });
-
+      it('setLocale should automatically set a parent locale if the desired locale isn\'t available', function() {
+        i18n.setLocale('de-CH').should.equal('de');
+      });
     });
 
     describe('i18nGetCatalog', function() {
@@ -177,7 +179,22 @@ describe('Module API', function() {
         i18n.setLocale('nl');
         should.equal(__('Hello'), 'Hallo');
       });
-
+      it('should translate the phrase to the desired locale if the phrase in the desired locale exists', function() {
+        i18n.configure({
+          locales: ['en', 'de', 'de-CH'],
+          directory: './locales'
+        });
+        i18n.setLocale('de-CH').should.equal('de-CH');
+        i18n.__('street').should.equal('Strasse');
+      });
+      it('should automatically translate the phrase to a parent-locale of the desired locale if the phrase in the desired locale doesn\'t exist', function() {
+        i18n.configure({
+          locales: ['en', 'de', 'de-CH'],
+          directory: './locales'
+        });
+        i18n.setLocale('de-CH').should.equal('de-CH');
+        i18n.__('ruler').should.equal('Maßstab');
+      });
     });
 
     describe('i18nTranslatePlural', function() {

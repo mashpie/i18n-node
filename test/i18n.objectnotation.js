@@ -5,12 +5,22 @@ describe('Object Notation', function() {
 
   beforeEach(function() {
     i18n.configure({
+      locales: ['en', 'de', 'de-CH'],
+      directory: './locales',
+      register: global,
+      updateFiles: true,
+      objectNotation: true
+    });
+  });
+  afterEach(function() {
+    i18n.configure({
       locales: ['en', 'de'],
       directory: './locales',
       register: global,
       updateFiles: true,
       objectNotation: true
     });
+    i18n.setLocale('en');
   });
 
   describe('Date/Time patterns', function() {
@@ -71,6 +81,15 @@ describe('Object Notation', function() {
       should.deepEqual(__("nested.path"), {
         sub: "nested.path.sub"
       });
+    });
+
+    it('should translate the nested phrase to the desired locale if the phrase in the desired locale exists', function() {
+      i18n.setLocale('de-CH');
+      should.equal(__('ostrich.one', 1), '1 Strauss');
+    });
+    it('should translate the nested phrase to the best matching parent of the desired locale if the phrase in the desired locale doesn\'t exist', function() {
+      i18n.setLocale('de-CH');
+      should.equal(__('ostrich.other', 2), '2 Sträuße');
     });
   });
 });

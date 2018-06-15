@@ -21,7 +21,8 @@ var vsprintf = require('sprintf-js').vsprintf,
   MakePlural = require('make-plural/make-plural').load(
     require('make-plural/data/plurals.json')
   ),
-  parseInterval = require('math-interval-parser').default;
+  parseInterval = require('math-interval-parser').default,
+  CultureInfo = require('culture-info').default;
 
 // exports an instance
 module.exports = (function() {
@@ -164,13 +165,15 @@ module.exports = (function() {
 
         // watch changes of locale files (it's called twice because fs.watch is still unstable)
         fs.watch(directory, function(event, filename) {
-          var localeFromFile = guessLocaleFromFile(filename);
-
-          if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
-            logDebug('Auto reloading locale file "' + filename + '".');
-            read(localeFromFile);
+          if (event !== 'rename' || fs.existsSync(path.join(directory, filename)))
+          {
+            var localeFromFile = guessLocaleFromFile(filename);
+  
+            if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
+              logDebug('Auto reloading locale file "' + filename + '".');
+              read(localeFromFile);
+            }
           }
-
         });
       }
     }
@@ -404,6 +407,17 @@ module.exports = (function() {
     // consider a fallback
     if (!locales[targetLocale] && fallbacks[targetLocale]) {
       targetLocale = fallbacks[targetLocale];
+    }
+
+    // Consider a parent locale
+    var culture = new CultureInfo(targetLocale);
+
+    while (!locales[culture.Name] && (culture !== CultureInfo.InvariantCulture)) {
+      culture = culture.Parent;
+    }
+
+    if (culture !== CultureInfo.InvariantCulture) {
+      targetLocale = culture.Name;
     }
 
     // now set locale on object
@@ -912,7 +926,9 @@ module.exports = (function() {
     // this will implicitly write/sync missing keys
     // to the rest of locales
     for (var l in locales) {
-      translate(l, singular, plural, true);
+      if (locales.hasOwnProperty(l)) {
+        translate(l, singular, plural, true);
+      }
     }
   };
 
@@ -928,6 +944,7 @@ module.exports = (function() {
    * in the object at the requested location.
    */
   var localeAccessor = function(locale, singular, allowDelayedTraversal) {
+    locale = getPhraseLocale(singular, locale);
     // Bail out on non-existent locales to defend against internal errors.
     if (!locales[locale]) return Function.prototype;
 
@@ -1064,9 +1081,65 @@ module.exports = (function() {
     } else {
       // No object notation, just return a mutator that performs array lookup and changes the value.
       return function(value) {
+        locale = getPhraseLocale(singular, locale);
         locales[locale][singular] = value;
         return value;
       };
+    }
+  };
+
+  /**
+   * Gets the best matching locale for a phrase.
+   * 
+   * @param {string} phrase 
+   * The phrase to find the best matching locale for.
+   * 
+   * @param {string} locale
+   * The preferred locale.
+   */
+  var getPhraseLocale = function(phrase, locale) {
+    var phrasePath = [ phrase ];
+
+    if (objectNotation) {
+      phrasePath = phrase.split(objectNotation);
+    }
+
+    var contains = function(culture, phrasePath) {
+      if (locales[culture.Name])
+      {
+        var localeStore = locales[culture.Name];
+
+        for (var i = 0; i < phrasePath.length; i++) {
+          var phrasePart = phrasePath[i];
+
+          if (localeStore.hasOwnProperty(phrasePart)) {
+            localeStore = localeStore[phrasePart];
+          }
+          else {
+            return false;
+          }
+        }
+
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    };
+
+    // Consider a parent locale
+    var culture = new CultureInfo(locale);
+
+    while (!contains(culture, phrasePath) && (culture !== CultureInfo.InvariantCulture)) {
+      culture = culture.Parent;
+    }
+
+    if (culture !== CultureInfo.InvariantCulture) {
+      return culture.Name;
+    }
+    else {
+      return locale;
     }
   };
 

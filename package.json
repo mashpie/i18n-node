@@ -18,6 +18,7 @@
     "lib": "."
   },
   "dependencies": {
+    "culture-info": "0.0.4",
     "debug": "*",
     "make-plural": "^3.0.3",
     "math-interval-parser": "^1.1.0",
@@ -30,7 +31,7 @@
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
     "jshint": "*",
-    "mocha": "*",
+    "mocha": "^3.5.3",
     "should": "*",
     "sinon": "*",
     "url": "^0.11.0",
