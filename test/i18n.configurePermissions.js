@@ -1,4 +1,4 @@
-var i18n = require('../i18n'),
+var i18n = require('../index'),
   should = require("should"),
   path = require("path"),
   fs = require('fs');
