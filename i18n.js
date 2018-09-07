@@ -3,7 +3,7 @@
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
  *
- * @version     0.8.4
+ * @version     0.9.1
  */
 
 'use strict';
@@ -24,8 +24,9 @@ var pkg = require('./package.json'),
   MakePlural = require('make-plural/make-plural').load(
     require('make-plural/data/plurals.json')
   ),
-  parseInterval = require('math-interval-parser').default;
-
+  parseInterval = require('math-interval-parser').default
+;
+debug.log = warn.log = console.log.bind(console);
 // exports an instance
 module.exports = (function () {
 
