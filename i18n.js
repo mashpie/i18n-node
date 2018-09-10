@@ -659,14 +659,10 @@ module.exports = (function() {
       // a query parameter overwrites all
       if (queryParameter && request.url) {
         var urlObj = url.parse(request.url, true);
-        if (urlObj.query[queryParameter]) {
-          logDebug('Overriding locale from query: ' + urlObj.query[queryParameter]);
-          request.language = urlObj.query[queryParameter];
-
-          if (preserveLegacyCase) {
-            request.language = request.language.toLowerCase();
-          }
-
+        var queryVal = (Array.isArray(urlObj.query[queryParameter]) && urlObj.query[queryParameter][0]) || urlObj.query[queryParameter];
+        if (queryVal) {
+          logDebug('Overriding locale from query: ' + queryVal);
+          request.language = preserveLegacyCase ? queryVal.toLowerCase() : queryVal;
           return i18n.setLocale(request, request.language);
         }
       }
