@@ -40,7 +40,7 @@
     "zombie": "^6.1.4"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   },
   "scripts": {
     "build": "yarn install --force && npm i --package-lock-only && yarn snyk-protect",
