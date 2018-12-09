@@ -22,7 +22,7 @@
     "debug": "^3.1.0",
     "make-plural": "^4.3.0",
     "math-interval-parser": "^2.0.0",
-    "messageformat": "^2.0.4",
+    "messageformat": "^0",
     "mustache": "^3.0.1",
     "sprintf-js": "^1.1.2",
     "upath": "^1.1.0"
