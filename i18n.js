@@ -945,8 +945,10 @@ module.exports = (function () {
     // iterate over locales and translate again
     // this will implicitly write/sync missing keys
     // to the rest of locales
-    for (var l in locales) {
-      translate(l, singular, plural, true);
+    for (const l in locales) {
+      if (locales.hasOwnProperty(l)) {
+        translate(l, singular, plural, true);
+      }
     }
   };
 
