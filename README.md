@@ -746,7 +746,7 @@ __n('dogs', 20) // --> too many dogs
 __n('dogs', 199) // --> too many dogs
 
 // no interval returned, but found a catchall
-__('dogs') // --> too many dogs
+__n('dogs') // --> too many dogs
 ```
 
 See [en.json example](https://github.com/mashpie/i18n-node/blob/master/locales/en.json) inside `/locales` for some inspiration on use cases. Each phrase might get decorated further with mustache and sprintf expressions:
