@@ -60,7 +60,8 @@ module.exports = (function() {
     queryParameter,
     register,
     updateFiles,
-    syncFiles;
+    syncFiles,
+    mustache;
 
   // public exports
   var i18n = {};
@@ -151,6 +152,9 @@ module.exports = (function() {
 
     // when missing locales we try to guess that from directory
     opt.locales = opt.locales || guessLocales(directory);
+
+    mustache = (typeof opt.mustache === 'undefined') ?
+      true : opt.mustache;
 
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {
@@ -539,7 +543,7 @@ module.exports = (function() {
     }
 
     // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
-    if ((/{{.*}}/).test(msg)) {
+    if (mustache && (/{{.*}}/).test(msg)) {
       msg = Mustache.render(msg, namedValues);
     }
 
