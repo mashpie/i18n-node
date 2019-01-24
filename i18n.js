@@ -659,8 +659,8 @@ module.exports = (function() {
       // a query parameter overwrites all
       if (queryParameter && request.url) {
         var urlObj = url.parse(request.url, true);
-        var queryVal = (Array.isArray(urlObj.query[queryParameter]) && urlObj.query[queryParameter][0])
-          || urlObj.query[queryParameter];
+        var query = urlObj.query[queryParameter];
+        var queryVal = (Array.isArray(query) && query[0]) || query;
         if (queryVal) {
           logDebug('Overriding locale from query: ' + queryVal);
           request.language = preserveLegacyCase ? queryVal.toLowerCase() : queryVal;
