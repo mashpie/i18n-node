@@ -1,5 +1,5 @@
 test:
-	mocha
+	mocha --exit
 
 cover:
 	istanbul cover ./node_modules/mocha/bin/_mocha
