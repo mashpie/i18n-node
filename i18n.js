@@ -486,7 +486,7 @@ module.exports = (function() {
       locale === undefined &&
       typeof this.locale === 'string'
     ) {
-      if (register && register.GLOBAL) {
+      if (register && register.global) {
         targetLocale = '';
       } else {
         targetLocale = this.locale;
