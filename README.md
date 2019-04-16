@@ -6,11 +6,9 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-[![Linux/OSX Build][travis-image]][travis-url]
-[![Windows Build][appveyor-image]][appveyor-url]
-[![NPM version][npm-image]][npm-url]
-[![Dependency Status][dependency-image]][dependency-url]
+[![Travis][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
+[![NPM version][npm-image]][npm-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 
 ## Install
@@ -993,42 +991,14 @@ i18n.configure({
 * 0.1.0: added tests
 * 0.0.1: start
 
-## Licensed under MIT
-
-Copyright (c) 2011-2016 Marcus Spiegel <marcus.spiegel@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 [npm-image]: https://badge.fury.io/js/i18n.svg
 [npm-url]: https://www.npmjs.com/package/i18n
 
 [travis-image]: https://travis-ci.org/mashpie/i18n-node.svg?branch=master
 [travis-url]: https://travis-ci.org/mashpie/i18n-node
 
-[appveyor-image]: https://ci.appveyor.com/api/projects/status/677snewuop7u5xtl?svg=true
-[appveyor-url]: https://ci.appveyor.com/project/mashpie/i18n-node
-
 [coveralls-image]: https://coveralls.io/repos/github/mashpie/i18n-node/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/mashpie/i18n-node?branch=master
-
-[dependency-image]: https://img.shields.io/gemnasium/mashpie/i18n-node.svg
-[dependency-url]: https://gemnasium.com/mashpie/i18n-node
 
 [snyk-image]: https://snyk.io/test/npm/i18n/badge.svg
 [snyk-url]: https://snyk.io/test/npm/i18n
