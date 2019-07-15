@@ -1,7 +1,7 @@
 {
   "name": "i18n",
   "description": "lightweight translation module with dynamic json storage",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "homepage": "http://github.com/mashpie/i18n-node",
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
     "express": "^4.16.4",
     "jshint": "^2.9.7",
     "mocha": "^5.2.0",
+    "nyc": "14.1.1",
     "should": "^13.2.3",
     "sinon": "^7.1.1",
     "snyk": "^1.116.2",
@@ -43,10 +44,10 @@
     "node": ">=8"
   },
   "scripts": {
-    "build": "yarn install --force && npm i --package-lock-only && yarn snyk-protect",
+    "build": "yarn install --force && yarn upgrade && yarn snyk-protect",
     "jshint": "jshint --verbose .",
     "test": "yarn run jshint && mocha",
-    "test-ci": "yarn run jshint && istanbul cover ./node_modules/mocha/bin/_mocha",
+    "test-ci": "nyc mocha test/*.js && nyc report --reporter=lcov",
     "snyk-protect": "snyk protect"
   },
   "license": "MIT",

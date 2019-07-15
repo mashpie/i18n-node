@@ -9,5 +9,5 @@ defaultlocales
 localestowrite
 localesmakeplural
 .vscode
-
+.nyc_output
 **/*.log

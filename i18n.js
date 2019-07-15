@@ -28,7 +28,7 @@ var pkg = require('./package.json'),
 ;
 debug.log = warn.log = console.log.bind(console);
 // exports an instance
-module.exports = (function () {
+function I18n() {
 
   var MessageformatInstanceForLocale = {},
     PluralsForLocale = {},
@@ -39,6 +39,7 @@ module.exports = (function () {
       '__l': '__l',
       '__h': '__h',
       '__mf': '__mf',
+      '__e': '__e',
       'getLocale': 'getLocale',
       'setLocale': 'setLocale',
       'getCatalog': 'getCatalog',
@@ -71,6 +72,8 @@ module.exports = (function () {
   var i18n = {};
 
   i18n.version = pkg.version;
+
+  i18n.Constructor = I18n;
 
   i18n.disableReload = function disableReload() {
     if (fsWatcher) {
@@ -403,6 +406,10 @@ module.exports = (function () {
 
     // head over to postProcessing
     return postProcess(msg, namedValues, args, count);
+  };
+
+  i18n.__e = function i18nIsKeyPresent(key, locale) {
+    return Boolean(localeAccessor(locale || this.locale || defaultLocale, key)())
   };
 
   i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
@@ -1218,4 +1225,5 @@ module.exports = (function () {
 
   return i18n;
 
-}());
+}
+module.exports = new I18n();
