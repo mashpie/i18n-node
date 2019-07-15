@@ -7,10 +7,8 @@ branches:
   only:
     - master
     - stable
-before_install:
-  - "npm install -g istanbul"
 script:
-  - "npm run test-ci"
+  - "yarn test-ci"
 after_script:
   - "npm install -g coveralls"
   - "cat ./coverage/lcov.info | coveralls"
