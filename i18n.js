@@ -33,6 +33,7 @@ function I18n() {
   var MessageformatInstanceForLocale = {},
     PluralsForLocale = {},
     locales = {},
+
     api = {
       '__': '__',
       '__n': '__n',
@@ -51,7 +52,7 @@ function I18n() {
     autoReload,
     fsWatcher,
     cookiename,
-    defaultLocale,
+    defaultLocale = 'en',
     directory,
     directoryPermissions,
     extension,
@@ -142,8 +143,21 @@ function I18n() {
     // where to store json files
     extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
 
+    // when missing locales we try to guess that from directory
+    opt.locales = opt.locales || guessLocales(directory);
+
     // setting defaultLocale
-    defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+    if (Array.isArray(opt.locales) && opt.locales.length) {
+      if (~opt.locales.indexOf(opt.defaultLocale)) {
+        //present in locales
+        defaultLocale = opt.defaultLocale;
+      } else {
+        // not present in locales -> take the first one
+        defaultLocale = opt.locales[0];
+      }
+    } else {
+      defaultLocale = undefined;
+    }
 
     // auto reload locale files when changed
     autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
@@ -162,9 +176,6 @@ function I18n() {
 
     preserveLegacyCase = (typeof opt.preserveLegacyCase === 'undefined') ?
       true : opt.preserveLegacyCase;
-
-    // when missing locales we try to guess that from directory
-    opt.locales = opt.locales || guessLocales(directory);
 
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {

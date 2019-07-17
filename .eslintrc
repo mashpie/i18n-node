@@ -49,7 +49,7 @@
     "block-scoped-var": 0,
     "complexity": [
       2,
-      30
+      50
     ],
     "consistent-return": 0,
     "curly": 0,

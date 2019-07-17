@@ -19,22 +19,26 @@ describe('Module API', function() {
 
     describe('i18nSetLocale and i18nGetLocale', function() {
 
-      it('getLocale should return default setting', function() {
+      it('getLocale should return default setting', function(d) {
         i18n.getLocale().should.equal('en');
+        d();
       });
 
-      it('setLocale should return the new setting', function() {
+      it('setLocale should return the new setting', function(d) {
         i18n.setLocale('de').should.equal('de');
+        d();
       });
 
-      it('getLocale should return the new setting', function() {
+      it('getLocale should return the new setting', function(d) {
         i18n.setLocale('de');
         i18n.getLocale().should.equal('de');
+        d();
       });
 
-      it('setLocale should return a fallback value', function() {
+      it('setLocale should return a fallback value', function(d) {
         i18n.setLocale('en');
         i18n.setLocale('nl').should.equal('de');
+        d();
       });
 
     });
