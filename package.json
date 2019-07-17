@@ -18,33 +18,34 @@
     "lib": "."
   },
   "dependencies": {
-    "chokidar": "^2.0.4",
-    "debug": "^3.1.0",
-    "make-plural": "^4.3.0",
-    "math-interval-parser": "^2.0.0",
+    "chokidar": "^3.0.2",
+    "debug": "^4.1.1",
+    "make-plural": "^4",
+    "math-interval-parser": "^2.0.1",
     "messageformat": "^0",
     "mustache": "^3.0.1",
     "sprintf-js": "^1.1.2",
-    "upath": "^1.1.0"
+    "upath": "^1.1.2"
   },
   "devDependencies": {
-    "async": "^2.6.1",
-    "cookie-parser": "^1.4.3",
-    "express": "^4.16.4",
-    "jshint": "^2.9.7",
-    "mocha": "^5.2.0",
+    "async": "^2.6.3",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "jshint": "^2.10.2",
+    "mocha": "^6.1.4",
     "nyc": "14.1.1",
     "should": "^13.2.3",
-    "sinon": "^7.1.1",
-    "snyk": "^1.116.2",
+    "sinon": "^7.3.2",
+    "snyk": "^1.193.2",
     "url": "^0.11.0",
     "zombie": "^6.1.4"
   },
   "engines": {
-    "node": ">=8"
+    "node": "8.* || >= 10.*"
   },
   "scripts": {
-    "build": "yarn install --force && yarn upgrade && yarn snyk-protect",
+    "build": "yarn install --force --ignore-engines && yarn snyk-protect",
+    "rebuild": "yarn install --force --ignore-engines && yarn upgrade && yarn snyk-protect",
     "jshint": "jshint --verbose .",
     "test": "yarn run jshint && mocha",
     "test-ci": "nyc mocha test/*.js && nyc report --reporter=lcov",

@@ -52,7 +52,7 @@ function I18n() {
     autoReload,
     fsWatcher,
     cookiename,
-    defaultLocale = 'en',
+    defaultLocale,
     directory,
     directoryPermissions,
     extension,
@@ -83,7 +83,7 @@ function I18n() {
   };
 
   i18n.configure = function i18nConfigure(opt) {
-
+    const _defaultLocale = 'en';
     // reset locales
     locales = {};
 
@@ -151,12 +151,13 @@ function I18n() {
       if (~opt.locales.indexOf(opt.defaultLocale)) {
         //present in locales
         defaultLocale = opt.defaultLocale;
+      } else if (~opt.locales.indexOf(_defaultLocale)){
+        // not present in locales, but 'en' is -> take 'en'
+        defaultLocale = _defaultLocale;
       } else {
         // not present in locales -> take the first one
         defaultLocale = opt.locales[0];
       }
-    } else {
-      defaultLocale = undefined;
     }
 
     // auto reload locale files when changed

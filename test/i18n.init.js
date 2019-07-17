@@ -34,7 +34,7 @@ describe('i18n.init()', function() {
     TestResponse = {};
     next = sinon.spy();
     i18n.configure({
-      locales: ['de', 'en'],
+      locales: ['en', 'de'],
       directory: './locales',
       register: TestScope,
       updateFiles: false,
