@@ -15,8 +15,7 @@ describe('i18n.Constructor()', function() {
       locales: ['de', 'en'],
       directory: './locales',
       register: TestScope,
-      updateFiles: false,
-      syncFiles: false
+      updateFiles: false
     });
   });
 
@@ -29,6 +28,7 @@ describe('i18n.Constructor()', function() {
       updateFiles: false,
       syncFiles: false
     });
+    should.equal(i18n2.__('Bye'), 'Bye')
     i18n2.setLocale('de')
     should.equal(i18n2.__('Bye'), 'Tschuss')
     i18n.setLocale('de')

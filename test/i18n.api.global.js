@@ -4,7 +4,7 @@ var i18n = require('../i18n'),
 describe('Module API', function() {
   'use strict';
   /*global __, __n*/
-  beforeEach(function() {
+  beforeEach(function(d) {
 
     i18n.configure({
       locales: ['en', 'de'],
@@ -12,6 +12,7 @@ describe('Module API', function() {
       directory: './locales',
       register: global
     });
+    d();
 
   });
 

@@ -15,7 +15,6 @@ var pkg = require('./package.json'),
   vsprintf = require('sprintf-js').vsprintf,
   fs = require('fs'),
   url = require('url'),
-  path = require('path'),
   debug = require('debug')('i18n:debug'),
   warn = require('debug')('i18n:warn'),
   error = require('debug')('i18n:error'),
@@ -48,7 +47,7 @@ function I18n() {
       'addLocale': 'addLocale',
       'removeLocale': 'removeLocale'
     },
-    pathsep = path.sep, // ---> means win support will be available in node 0.8.x and above
+    pathsep = upath.sep, // ---> means win support will be available in node 0.8.x and above
     autoReload,
     fsWatcher,
     cookiename,
@@ -84,8 +83,10 @@ function I18n() {
 
   i18n.configure = function i18nConfigure(opt) {
     const _defaultLocale = 'en';
-    // reset locales
+    // reset
     locales = {};
+    defaultLocale = _defaultLocale;
+    i18n.disableReload();
 
     // Provide custom API method aliases if desired
     // This needs to be processed before the first call to applyAPItoObject()
@@ -122,7 +123,7 @@ function I18n() {
 
     // where to store json files
     directory = (typeof opt.directory === 'string') ?
-      opt.directory : path.join(__dirname, 'locales');
+      opt.directory : upath.join(__dirname, 'locales');
 
     // permissions when creating new directories
     directoryPermissions = (typeof opt.directoryPermissions === 'string') ?
@@ -186,7 +187,6 @@ function I18n() {
       });
 
       // auto reload locale files when changed
-      i18n.disableReload();
       if (autoReload) {
 
         // watch changes of locale files (it's called twice because fs.watch is still unstable)
@@ -1205,8 +1205,8 @@ function I18n() {
   var getStorageFilePath = function (locale) {
     // changed API to use .json as default, #16
     var ext = extension || '.json',
-      filepath = path.normalize(directory + pathsep + prefix + locale + ext),
-      filepathJS = path.normalize(directory + pathsep + prefix + locale + '.js');
+      filepath = upath.normalize(directory + pathsep + prefix + locale + ext),
+      filepathJS = upath.normalize(directory + pathsep + prefix + locale + '.js');
     // use .js as fallback if already existing
     try {
       if (fs.statSync(filepathJS)) {

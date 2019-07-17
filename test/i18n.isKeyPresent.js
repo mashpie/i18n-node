@@ -1,7 +1,7 @@
 var i18n = require('../i18n'),
   should = require("should")
 
-describe('i18n.Constructor()', function() {
+describe('i18n.__e()', function() {
 
   var TestScope;
 
