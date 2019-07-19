@@ -6,8 +6,8 @@ branches:
   only:
     - master
     - stable
-before_script: 
-  - "yarn global add nyc eslint"
+before_install: 
+  - "yarn global add nyc"
 script:
   - "travis_wait 5 yarn test-ci"
 after_script:
