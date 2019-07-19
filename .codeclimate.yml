@@ -18,3 +18,15 @@ exclude_paths:
 - coverage/
 - locales/
 - node_modules/
+checks:
+  nested-control-flow:
+    config:
+      threshold: 8
+  file-lines:
+    enabled: false
+  method-complexity:
+    enabled: false
+  method-count:
+    enabled: false
+  method-lines:
+    enabled: false
