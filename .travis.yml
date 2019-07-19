@@ -7,13 +7,11 @@ branches:
     - master
     - stable
 before_install: 
-  - "yarn global add nyc"
-install:
-  - "yarn build"
+  - "npm install -g add nyc"
 script:
-  - "travis_wait 5 yarn test-ci"
+  - "npm run test-ci"
 after_script:
-  - "yarn global add coveralls codeclimate-test-reporter"
+  - "npm install -g coveralls codeclimate-test-reporter"
   - "dir ./coverage/"
   - "cat ./coverage/lcov.info | coveralls"
   - "cat ./coverage/lcov.info | CODECLIMATE_REPO_TOKEN=3435a4d60c44136e262d797bc7292611dc4c87a632645e2469510b9b066ec94a codeclimate-test-reporter"
