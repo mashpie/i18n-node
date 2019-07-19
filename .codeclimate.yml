@@ -1,4 +1,5 @@
 ---
+version: "2"         # required to adjust maintainability checks
 engines:
   duplication:
     enabled: true
