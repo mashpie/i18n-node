@@ -24,16 +24,15 @@
     "math-interval-parser": "^2.0.1",
     "messageformat": "^0",
     "mustache": "^3.0.1",
+    "nyc": "^14.1.1",
     "sprintf-js": "^1.1.2",
     "upath": "^1.1.2"
   },
   "devDependencies": {
     "async": "^2.6.3",
     "cookie-parser": "^1.4.4",
-    "eslint": "^6.0.1",
     "express": "^4.17.1",
     "mocha": "^6.1.4",
-    "nyc": "14.1.1",
     "should": "^13.2.3",
     "sinon": "^7.3.2",
     "snyk": "^1.193.2",
@@ -46,7 +45,7 @@
   "scripts": {
     "build": "yarn install --force && yarn snyk-protect",
     "rebuild": "yarn install --force && yarn upgrade && yarn snyk-protect",
-    "eslint": "./node_modules/.bin/eslint .",
+    "eslint": "eslint .",
     "test": "yarn eslint && mocha",
     "test-ci": "yarn eslint && nyc mocha test/*.js && nyc report --reporter=lcov",
     "snyk-protect": "snyk protect"

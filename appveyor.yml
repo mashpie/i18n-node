@@ -1,17 +1,15 @@
 environment:
   matrix:
     - nodejs_version: "8"
-    - nodejs_version: "9"
     - nodejs_version: "10"
 branches:
   only:
     - master
     - stable
 install:
-  - "npm install -g jshint"
-  - "npm install -g istanbul"
-  - "npm install"
+  - "yarn global add nyc eslint"
+  - "yarn"
 build: off
 test_script:
-  - "npm run test-ci"
+  - "yarn test-ci"
 version: "{build}"

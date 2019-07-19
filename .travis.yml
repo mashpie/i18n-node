@@ -7,7 +7,7 @@ branches:
     - master
     - stable
 before_script: 
-  - "yarn global add eslint"
+  - "yarn global add nyc eslint"
 script:
   - "yarn test-ci"
 after_script:
