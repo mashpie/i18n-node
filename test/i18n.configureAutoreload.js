@@ -4,7 +4,7 @@ var i18n = require('../i18n'),
   should = require('should'),
   fs = require('fs'),
   upath = require('upath'),
-  timeout = 300
+  timeout = 200
 ;
 describe('autoreload', function () {
   describe('autoreload configuration', function() {
