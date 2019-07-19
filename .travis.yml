@@ -9,7 +9,7 @@ branches:
 before_script: 
   - "yarn global add nyc eslint"
 script:
-  - "yarn test-ci"
+  - "travis_wait 5 yarn test-ci"
 after_script:
   - "yarn global add coveralls codeclimate-test-reporter"
   - "dir ./coverage/"
