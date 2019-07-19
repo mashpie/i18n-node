@@ -8,6 +8,8 @@ branches:
     - stable
 before_install: 
   - "yarn global add nyc"
+install:
+  - "yarn build"
 script:
   - "travis_wait 5 yarn test-ci"
 after_script:
