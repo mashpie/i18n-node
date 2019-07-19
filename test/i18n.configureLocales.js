@@ -1,12 +1,13 @@
+'use strict';
 var i18n = require('../i18n'),
   should = require("should"),
   fs = require('fs'),
-  path = require('path');
+  upath = require('upath');
 
 describe('locales configuration', function() {
 
   it('omitting it should read all directory contents', function(done) {
-    var directory = path.resolve(__dirname + '/../locales');
+    var directory = upath.join(__dirname,'/../locales');
 
     i18n.configure({
       directory: directory
@@ -19,7 +20,7 @@ describe('locales configuration', function() {
   });
 
   it('should work when using together with prefix', function(done) {
-    var directory = path.resolve(__dirname + '/../testlocales');
+    var directory = upath.join(__dirname,'/../testlocales');
 
     fs.mkdirSync(directory);
     fs.writeFileSync(directory + '/.gitkeepornot', 'just kidding');
@@ -43,7 +44,7 @@ describe('locales configuration', function() {
   });
 
   it('should work when using together with prefix and extension', function(done) {
-    var directory = path.resolve(__dirname + '/../testlocales');
+    var directory = upath.join(__dirname,'/../testlocales');
 
     fs.mkdirSync(directory);
     fs.writeFileSync(directory + '/app-de.js', '{}');
@@ -66,7 +67,7 @@ describe('locales configuration', function() {
   });
 
   it('should ignore unmatching files when using together with prefix and extension', function(done) {
-    var directory = path.resolve(__dirname + '/../testlocales');
+    var directory = upath.join(__dirname,'/../testlocales');
 
     fs.mkdirSync(directory);
     fs.writeFileSync(directory + '/app-de.js', '{}');

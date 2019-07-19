@@ -1,14 +1,14 @@
 {
   "name": "i18n",
   "description": "lightweight translation module with dynamic json storage",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "homepage": "http://github.com/mashpie/i18n-node",
   "repository": {
     "type": "git",
     "url": "http://github.com/mashpie/i18n-node.git"
   },
   "author": "Marcus Spiegel <marcus.spiegel@gmail.com>",
-  "main": "./index",
+  "main": "./index.js",
   "keywords": [
     "template",
     "i18n",
@@ -30,8 +30,8 @@
   "devDependencies": {
     "async": "^2.6.3",
     "cookie-parser": "^1.4.4",
+    "eslint": "^6.0.1",
     "express": "^4.17.1",
-    "jshint": "^2.10.2",
     "mocha": "^6.1.4",
     "nyc": "14.1.1",
     "should": "^13.2.3",
@@ -41,14 +41,14 @@
     "zombie": "^6.1.4"
   },
   "engines": {
-    "node": "8.* || >= 10.*"
+    "node": "^8.10.0 || ^10.13.0 || >=11.10.1"
   },
   "scripts": {
-    "build": "yarn install --force --ignore-engines && yarn snyk-protect",
-    "rebuild": "yarn install --force --ignore-engines && yarn upgrade && yarn snyk-protect",
-    "jshint": "jshint --verbose .",
-    "test": "yarn run jshint && mocha",
-    "test-ci": "nyc mocha test/*.js && nyc report --reporter=lcov",
+    "build": "yarn install --force && yarn snyk-protect",
+    "rebuild": "yarn install --force && yarn upgrade && yarn snyk-protect",
+    "eslint": "./node_modules/.bin/eslint .",
+    "test": "yarn eslint && mocha",
+    "test-ci": "yarn eslint && nyc mocha test/*.js && nyc report --reporter=lcov",
     "snyk-protect": "snyk protect"
   },
   "license": "MIT",

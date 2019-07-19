@@ -6,12 +6,14 @@ branches:
   only:
     - master
     - stable
+before_script: 
+  - "yarn global add eslint"
 script:
   - "yarn test-ci"
 after_script:
-  - "yarn global add coveralls"
+  - "yarn global add coveralls codeclimate-test-reporter"
+  - "dir ./coverage/"
   - "cat ./coverage/lcov.info | coveralls"
-  - "yarn global add codeclimate-test-reporter"
   - "cat ./coverage/lcov.info | CODECLIMATE_REPO_TOKEN=3435a4d60c44136e262d797bc7292611dc4c87a632645e2469510b9b066ec94a codeclimate-test-reporter"
 addons:
   code_climate:

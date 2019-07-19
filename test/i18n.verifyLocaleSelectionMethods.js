@@ -1,19 +1,21 @@
-var i18n = require('../i18n'),
-  should = require("should");
+'use strict';
+var i18n = require('../i18n')
+;
+require('should');
 
 describe('when configuring selected locale', function () {
   var res;
 
-  function setByQueryParam(i18n, locale) {
+  function setByQueryParam(_i18n, locale) {
     var req = {
       request: 'GET /test?lang=' + locale,
       url: '/test?lang=' + locale
     };
-    i18n.init(req, res);
-    return i18n.getLocale(req);
-  };
+    _i18n.init(req, res);
+    return _i18n.getLocale(req);
+  }
 
-  function setByCookie(i18n, locale) {
+  function setByCookie(_i18n, locale) {
     var req = {
       request: 'GET /test',
       url: '/test',
@@ -22,11 +24,11 @@ describe('when configuring selected locale', function () {
       }
     };
 
-    i18n.init(req, res);
-    return i18n.getLocale(req);
-  };
+    _i18n.init(req, res);
+    return _i18n.getLocale(req);
+  }
 
-  function setByHeader(i18n, locale) {
+  function setByHeader(_i18n, locale) {
     var req = {
       request: 'GET /test',
       url: '/test',
@@ -34,9 +36,9 @@ describe('when configuring selected locale', function () {
         'accept-language': locale
       }
     };
-    i18n.init(req, res);
-    return i18n.getLocale(req);
-  };
+    _i18n.init(req, res);
+    return _i18n.getLocale(req);
+  }
 
   beforeEach(function () {
     res = { locals: {} };

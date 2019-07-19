@@ -1,3 +1,4 @@
+'use strict';
 var i18n = require('../i18n'),
     pkg = require('../package.json'),
     should = require('should')
@@ -11,7 +12,6 @@ i18n.configure({
 });
 
 describe('Module Setup', function () {
-  'use strict';
   it('should export a valid version', function () {
     should.equal(i18n.version, pkg.version);
   });

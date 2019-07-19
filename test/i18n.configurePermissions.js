@@ -1,7 +1,9 @@
+'use strict';
 var i18n = require('../i18n'),
-  should = require("should"),
-  path = require("path"),
-  fs = require('fs');
+  clear = require('./helpers/clear'),
+  should = require('should'),
+  fs = require('fs')
+;
 
 var isWin = /^win/.test(process.platform);
 
@@ -9,17 +11,8 @@ describe('Module Config (directoryPermissions)', function() {
 
   var testScope = {};
 
-  afterEach(function() {
-    var stats = fs.lstatSync('./customlocales');
-    should.exist(stats);
-    if (stats) {
-      try {
-        fs.unlinkSync('./customlocales/customprefix-de.customextension');
-        fs.unlinkSync('./customlocales/customprefix-en.customextension');
-        fs.rmdirSync('./customlocales');
-      } catch (e) {}
-    }
-
+  afterEach(function(d) {
+    d(clear(i18n));
   });
 
   it('should be possible to setup a custom directory with default permissions', function() {

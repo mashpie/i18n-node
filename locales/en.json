@@ -113,5 +113,18 @@
 	"repeated argument": "%1$s, %1$s, %1$s",
 	". is first character": "Dot is first character",
 	"last character is .": "last character is Dot",
-	"few sentences. with .": "few sentences with Dot"
+	"few sentences. with .": "few sentences with Dot",
+	"": "format.date",
+	"greeting.plurals": {
+		"one": "greeting.plurals",
+		"other": "greeting.plurals"
+	},
+	"another.nested.extra.deep.example": "another.nested.extra.deep.example",
+	"another.nested.extra.lazy.example": "another.nested.extra.lazy.example",
+	"another.nested.extra.mustache.example": "another.nested.extra.mustache.example",
+	"another.nested.extra.mustacheprintf.example": "another.nested.extra.mustacheprintf.example",
+	"cats.n": {
+		"one": "cats.n",
+		"other": "cats.n"
+	}
 }

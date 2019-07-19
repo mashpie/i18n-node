@@ -1,6 +1,7 @@
-var i18n = require('../i18n'),
-  should = require("should"),
-  path = require("path");
+'use strict';
+var i18n = require('../i18n');
+
+require("should");
 
 describe('Locale switching should work when set via cookie', function() {
 

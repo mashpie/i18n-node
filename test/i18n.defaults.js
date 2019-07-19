@@ -1,4 +1,6 @@
+'use strict';
 var i18n = require('../i18n'),
+  clear = require('./helpers/clear'),
   should = require("should"),
   fs = require('fs');
 
@@ -15,16 +17,8 @@ describe('Module Defaults', function() {
     testScope.__('Hello');
   });
 
-  afterEach(function() {
-    var stats = fs.lstatSync('./defaultlocales');
-    should.exist(stats);
-    if (stats) {
-      try {
-        fs.unlinkSync('./defaultlocales/de.json');
-        fs.unlinkSync('./defaultlocales/en.json');
-        fs.rmdirSync('./defaultlocales');
-      } catch (e) {}
-    }
+  afterEach(function(d) {
+    d(clear(i18n))
 
   });
 

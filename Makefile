@@ -2,10 +2,10 @@ test:
 	mocha
 
 cover:
-	istanbul cover ./node_modules/mocha/bin/_mocha
+	nyc report --reporter=lcov
 
 hint:
-	jshint --verbose .
+	./node_modules/.bin/eslint .
 
 examples:
 	for example in examples/*/test.js ; do \

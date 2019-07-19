@@ -1,7 +1,7 @@
+'use strict';
 var i18n = require('../i18n'),
-  should = require("should"),
-  fs = require('fs'),
-  path = require('path');
+  should = require("should")
+;
 
 describe('i18n.__l() - return a list of translations', function() {
 

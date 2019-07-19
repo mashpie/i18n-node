@@ -1,6 +1,7 @@
-var i18n = require('../i18n'),
-  should = require("should"),
-  path = require("path");
+'use strict';
+var i18n = require('../i18n')
+;
+require("should")
 
 describe('Fallbacks', function() {
   var req = {
@@ -93,12 +94,6 @@ describe('Fallbacks', function() {
 
   describe('Fallback to locale', function() {
     beforeEach(function() {
-      // Force reloading of i18n, to reset configuration
-      var i18nPath = 'i18n';
-      var i18nFilename = path.resolve(i18nPath + '.js');
-      delete require.cache[i18nFilename];
-      i18n = require(i18nFilename);
-
       i18n.configure({
         locales: ['en-US', 'de-DE'],
         defaultLocale: 'en-US',
@@ -128,12 +123,6 @@ describe('Fallbacks', function() {
 
   describe('Keep valid locale', function() {
     beforeEach(function() {
-      // Force reloading of i18n, to reset configuration
-      var i18nPath = 'i18n';
-      var i18nFilename = path.resolve(i18nPath + '.js');
-      delete require.cache[i18nFilename];
-      i18n = require(i18nFilename);
-
       i18n.configure({
         locales: ['de-AT', 'de-DE'],
         defaultLocale: 'en-DE',

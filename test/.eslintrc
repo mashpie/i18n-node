@@ -1,0 +1,26 @@
+{
+  "env": {
+    "es6": true,
+    "node": true,
+    "amd": true,
+    "mocha": true,
+    "browser": false
+  },
+  "rules": {
+    "no-invalid-this": 0
+  },
+  "globals": {
+    "__": "readonly",
+    "__n": "readonly",
+    "__l": "readonly",
+    "__h": "readonly",
+    "__mf": "readonly",
+    "__e": "readonly",
+    "getLocale": "readonly",
+    "setLocale": "readonly",
+    "getCatalog": "readonly",
+    "getLocales": "readonly",
+    "addLocale": "readonly",
+    "removeLocale": "readonly"
+  }
+}

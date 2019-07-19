@@ -32,8 +32,7 @@ function I18n() {
   var MessageformatInstanceForLocale = {},
     PluralsForLocale = {},
     locales = {},
-
-    api = {
+    _api = {
       '__': '__',
       '__n': '__n',
       '__l': '__l',
@@ -47,6 +46,9 @@ function I18n() {
       'addLocale': 'addLocale',
       'removeLocale': 'removeLocale'
     },
+    _defaultLocale = 'en',
+
+    api = {},
     pathsep = upath.sep, // ---> means win support will be available in node 0.8.x and above
     autoReload,
     fsWatcher,
@@ -71,18 +73,28 @@ function I18n() {
   // public exports
   var i18n = {};
 
+  //clone default api
+  for (var method in _api) {
+    if (_api.hasOwnProperty(method)) {
+      api[method] = _api[method]
+    }
+  }
+
   i18n.version = pkg.version;
 
   i18n.Constructor = I18n;
 
+
   i18n.disableReload = function disableReload() {
+    var _fsw;
     if (fsWatcher) {
-      return fsWatcher.close();
+      _fsw = fsWatcher;
+      fsWatcher = undefined;
+      return _fsw.close();
     }
   };
 
   i18n.configure = function i18nConfigure(opt) {
-    const _defaultLocale = 'en';
     // reset
     locales = {};
     defaultLocale = _defaultLocale;
@@ -90,7 +102,7 @@ function I18n() {
 
     // Provide custom API method aliases if desired
     // This needs to be processed before the first call to applyAPItoObject()
-    if (opt.api && typeof opt.api === 'object') {
+    /* if (opt.api && typeof opt.api === 'object') {
       for (var method in opt.api) {
         if (opt.api.hasOwnProperty(method)) {
           var alias = opt.api[method];
@@ -99,19 +111,14 @@ function I18n() {
           }
         }
       }
-    }
-
-    // you may register i18n in global scope, up to you
-    if (typeof opt.register === 'object') {
-      register = opt.register;
-      // or give an array objects to register to
-      if (Array.isArray(opt.register)) {
-        register = opt.register;
-        register.forEach(function (r) {
-          applyAPItoObject(r);
-        });
+    } */
+    for (var _method in _api) {
+      if (opt && opt.api && opt.api.hasOwnProperty(_method)) {
+        //take alias
+        api[_method] = opt.api[_method];
       } else {
-        applyAPItoObject(opt.register);
+        //take default
+        api[_method] = _api[_method]
       }
     }
 
@@ -122,8 +129,8 @@ function I18n() {
     queryParameter = (typeof opt.queryParameter === 'string') ? opt.queryParameter : null;
 
     // where to store json files
-    directory = (typeof opt.directory === 'string') ?
-      opt.directory : upath.join(__dirname, 'locales');
+    directory = (typeof opt.directory === 'string') ? opt.directory : upath.join(__dirname, 'locales');
+    i18n.directory = directory;
 
     // permissions when creating new directories
     directoryPermissions = (typeof opt.directoryPermissions === 'string') ?
@@ -161,12 +168,14 @@ function I18n() {
       }
     }
 
+    //reset current locale to default
+    i18n.locale = defaultLocale;
+
     // auto reload locale files when changed
     autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
 
     // enable object notation?
-    objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
-    if (objectNotation === true) objectNotation = '.';
+    objectNotation = (typeof opt.objectNotation === 'string') ? opt.objectNotation : (opt.objectNotation ? '.' : false);
 
     // read language fallback map
     fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : {};
@@ -176,8 +185,7 @@ function I18n() {
     logWarnFn = (typeof opt.logWarnFn === 'function') ? opt.logWarnFn : warn;
     logErrorFn = (typeof opt.logErrorFn === 'function') ? opt.logErrorFn : error;
 
-    preserveLegacyCase = (typeof opt.preserveLegacyCase === 'undefined') ?
-      true : opt.preserveLegacyCase;
+    preserveLegacyCase = (typeof opt.preserveLegacyCase === 'undefined') ? true : opt.preserveLegacyCase;
 
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {
@@ -203,6 +211,20 @@ function I18n() {
             read(localeFromFile);
           }
         });
+      }
+    }
+
+    // you may register i18n in global scope, up to you
+    if (typeof opt.register === 'object') {
+      register = opt.register;
+      // or give an array objects to register to
+      if (Array.isArray(opt.register)) {
+        register = opt.register;
+        register.forEach(function (r) {
+          applyAPItoObject(r);
+        });
+      } else {
+        applyAPItoObject(opt.register);
       }
     }
   };
@@ -425,6 +447,9 @@ function I18n() {
   };
 
   i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
+    // defaults to called like i18n.setLocale(req, 'en')
+    var targetObject = object;
+    var targetLocale = locale;
 
     // when given an array of objects => setLocale on each
     if (Array.isArray(object) && typeof locale === 'string') {
@@ -434,9 +459,6 @@ function I18n() {
       return i18n.getLocale(object[0]);
     }
 
-    // defaults to called like i18n.setLocale(req, 'en')
-    var targetObject = object;
-    var targetLocale = locale;
 
     // called like req.setLocale('en') or i18n.setLocale('en')
     if (locale === undefined && typeof object === 'string') {
@@ -505,7 +527,6 @@ function I18n() {
   };
 
   i18n.getLocale = function i18nGetLocale(request) {
-
     // called like i18n.getLocale(req)
     if (request && request.locale) {
       return request.locale;
@@ -534,10 +555,12 @@ function I18n() {
     }
 
     // called like req.getCatalog()
-    if (!targetLocale &&
-      object === undefined &&
-      locale === undefined &&
-      typeof this.locale === 'string'
+    if (register &&
+        this !== i18n &&
+        !targetLocale &&
+        object === undefined &&
+        locale === undefined &&
+        typeof this.locale === 'string'
     ) {
       if (register && register.GLOBAL) {
         targetLocale = '';
@@ -628,49 +651,46 @@ function I18n() {
   /**
    * registers all public API methods to a given response object when not already declared
    */
-  var applyAPItoObject = function (object) {
-
-    var alreadySetted = true;
+  var applyAPItoObject = function (object, preventRecursion) {
 
     // attach to itself if not provided
-    for (var method in api) {
-      if (api.hasOwnProperty(method)) {
-        var alias = api[method];
+    for (var _method in _api) {
+      if (_api.hasOwnProperty(_method)) {
+        var alias = api[_method];
 
         // be kind rewind, or better not touch anything already existing
         if (!object[alias]) {
-          alreadySetted = false;
-          object[alias] = i18n[method].bind(object);
+          object[alias] = i18n[_method].bind(object);
         }
       }
     }
 
     // set initial locale if not set
     if (!object.locale) {
-      object.locale = defaultLocale;
+      object.locale = i18n.getLocale();
     }
 
     // escape recursion
-    if (alreadySetted) {
+    if (preventRecursion) {
       return;
     }
 
     // attach to response if present (ie. in express)
     if (object.res) {
-      applyAPItoObject(object.res);
+      applyAPItoObject(object.res, true);
     }
 
     // attach to locals if present (ie. in express)
     if (object.locals) {
-      applyAPItoObject(object.locals);
+      applyAPItoObject(object.locals, true);
     }
   };
 
   /**
    * tries to guess locales by scanning the given directory
    */
-  var guessLocales = function (directory) {
-    var entries = fs.readdirSync(directory);
+  var guessLocales = function (dir) {
+    var entries = fs.readdirSync(dir);
     var localesFound = [];
 
     for (var i = entries.length - 1; i >= 0; i--) {
@@ -922,13 +942,13 @@ function I18n() {
       var indexOfColon = singular.indexOf(':');
       // We compare against 0 instead of -1 because
       // we don't really expect the string to start with ':'.
-      if (0 < indexOfColon) {
+      if (indexOfColon > 0) {
         defaultSingular = singular.substring(indexOfColon + 1);
         singular = singular.substring(0, indexOfColon);
       }
       if (plural && typeof plural !== 'number') {
         indexOfColon = plural.indexOf(':');
-        if (0 < indexOfColon) {
+        if (indexOfColon > 0) {
           defaultPlural = plural.substring(indexOfColon + 1);
           plural = plural.substring(0, indexOfColon);
         }
@@ -988,7 +1008,7 @@ function I18n() {
 
     // Handle object lookup notation
     var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation);
-    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length - 1)) {
+    if (objectNotation && (indexOfDot>0 && indexOfDot < singular.length - 1)) {
       // If delayed traversal wasn't specifically forbidden, it is allowed.
       if (typeof allowDelayedTraversal === 'undefined') allowDelayedTraversal = true;
       // The accessor we're trying to find and which we want to return.
@@ -1005,7 +1025,7 @@ function I18n() {
         accessor = nullAccessor;
         // If our current target object (in the locale tree) doesn't exist or
         // it doesn't have the next subterm as a member...
-        if (null === object || !object.hasOwnProperty(index)) {
+        if (object === null || !object.hasOwnProperty(index)) {
           // ...remember that we need retraversal (because we didn't find our target).
           reTraverse = allowDelayedTraversal;
           // Return null to avoid deeper iterations.
@@ -1054,7 +1074,7 @@ function I18n() {
 
     // Handle object lookup notation
     var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation);
-    if (objectNotation && (0 < indexOfDot && indexOfDot < singular.length - 1)) {
+    if (objectNotation && (indexOfDot>0 && indexOfDot < singular.length - 1)) {
       // If branching wasn't specifically allowed, disable it.
       if (typeof allowBranching === 'undefined') allowBranching = false;
       // This will become the function we want to return.
@@ -1075,11 +1095,11 @@ function I18n() {
         accessor = nullAccessor;
         // If our current target object (in the locale tree) doesn't exist or
         // it doesn't have the next subterm as a member...
-        if (null === object || !object.hasOwnProperty(index)) {
+        if (object === null || !object.hasOwnProperty(index)) {
           // ...check if we're allowed to create new branches.
           if (allowBranching) {
             // Fix `object` if `object` is not Object.
-            if (null === object || typeof object !== 'object') {
+            if (object === null || typeof object !== 'object') {
               object = fixObject();
             }
             // If we are allowed to, create a new object along the path.

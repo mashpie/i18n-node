@@ -1,4 +1,6 @@
+'use strict';
 var i18n = require('../i18n'),
+clear = require('./helpers/clear'),
   should = require("should"),
   fs = require('fs');
 
@@ -17,17 +19,8 @@ describe('Module Config', function() {
     testScope.__('Hello');
   });
 
-  afterEach(function() {
-    var stats = fs.lstatSync('./customlocales');
-    should.exist(stats);
-    if (stats) {
-      try {
-        fs.unlinkSync('./customlocales/customprefix-de.customextension');
-        fs.unlinkSync('./customlocales/customprefix-en.customextension');
-        fs.rmdirSync('./customlocales');
-      } catch (e) {}
-    }
-
+  afterEach(function(d) {
+    d(clear(i18n));
   });
 
   it('should be possible to setup a custom directory', function() {

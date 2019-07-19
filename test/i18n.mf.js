@@ -1,3 +1,4 @@
+'use strict';
 var i18n = require('../i18n'),
   should = require('should')/* ,
   fs = require('fs'),
@@ -5,7 +6,6 @@ var i18n = require('../i18n'),
 ;
 
 describe('parsing Messageformat phrases', function() {
-  'use strict';
   var mfTest = {};
 
   beforeEach(function() {

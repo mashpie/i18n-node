@@ -1,7 +1,8 @@
+'use strict';
 var i18n = require('../i18n'),
   should = require("should"),
-  sinon = require("sinon"),
-  fs = require('fs');
+  sinon = require("sinon")
+;
 
 describe('i18n.init()', function() {
 

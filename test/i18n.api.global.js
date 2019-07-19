@@ -1,9 +1,19 @@
+'use strict';
 var i18n = require('../i18n'),
   should = require('should');
 
 describe('Module API', function() {
-  'use strict';
-  /*global __, __n*/
+
+  before('before', function () {
+    var i18n2 = new i18n.Constructor();
+    i18n2.configure({
+      locales: ['de', 'en'],
+      directory: './locales2',
+      updateFiles: false,
+      syncFiles: false
+    });
+  })
+
   beforeEach(function(d) {
 
     i18n.configure({

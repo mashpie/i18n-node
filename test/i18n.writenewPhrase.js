@@ -1,8 +1,9 @@
+'use strict';
 var i18n = require('../i18n'),
+  clear = require('./helpers/clear'),
   should = require("should"),
-  fs = require('fs'),
-  path = require('path');
-
+  fs = require('fs')
+;
 var directory = './localestowrite';
 
 function getJson(l) {
@@ -18,7 +19,24 @@ describe('when i18n gets a new phrase', function() {
   var TestScope = {};
   var locales = ['en', 'de', 'fr', 'ru'];
 
-  beforeEach(function() {
+  before(function(done) {
+    var clearError = clear({directory});
+    if (clearError) {
+      done(clearError);
+      return;
+    } else {
+      done();
+    }
+  })
+
+  beforeEach(function(done) {
+    //manually add a translation
+    if (this.currentTest.title==='should not alter any given translation with __()') {
+      var german = getJson('de');
+      german['car'] = 'Auto';
+      putJson('de', german);
+      should.deepEqual(getJson('de')['car'], 'Auto', 'sample prepartion check');
+    }
     TestScope = {};
     i18n.configure({
       locales: locales,
@@ -29,6 +47,7 @@ describe('when i18n gets a new phrase', function() {
       objectNotation: true
     });
     TestScope.setLocale('en');
+    done();
   });
 
   it('should get written to all files with __()', function(done) {
@@ -40,13 +59,6 @@ describe('when i18n gets a new phrase', function() {
     done();
   });
 
-  it('is possible to manually add a translation', function(done) {
-    var german = getJson('de');
-    german['car'] = 'Auto';
-    putJson('de', german);
-    should.deepEqual(getJson('de')['car'], 'Auto');
-    done();
-  });
 
   it('should not alter any given translation with __()', function(done) {
     TestScope.__('car');
@@ -86,14 +98,18 @@ describe('when i18n gets a new phrase', function() {
 
   it('should add subnodes to dotnotaction by use of __()', function(done) {
     TestScope.__('some.other.example:with defaults');
-    var expected = {
-      deeper: { example: 'some.deeper.example' },
-      other: { example: 'with defaults' }
+    var _expected = {
+      deeper: {
+        example: 'some.deeper.example'
+      },
+      other: {
+        example: 'with defaults'
+      }
     };
-    should.deepEqual(getJson('en').some, expected);
-    should.deepEqual(getJson('de').some, expected);
-    should.deepEqual(getJson('fr').some, expected);
-    should.deepEqual(getJson('ru').some, expected);
+    should.deepEqual(getJson('en').some, _expected);
+    should.deepEqual(getJson('de').some, _expected);
+    should.deepEqual(getJson('fr').some, _expected);
+    should.deepEqual(getJson('ru').some, _expected);
     done();
   });
 
@@ -107,15 +123,6 @@ describe('when i18n gets a new phrase', function() {
     done();
   });
 
-  it('should add translations with dotnotaction by use of __n()', function(done) {
-    TestScope.__n('example.single.plurals:%s kitty', 2);
-    var expected = { one: '%s kitty', other: '%s kitty' };
-    should.deepEqual(getJson('en').example.single.plurals, expected);
-    should.deepEqual(getJson('de').example.single.plurals, expected);
-    should.deepEqual(getJson('fr').example.single.plurals, expected);
-    should.deepEqual(getJson('ru').example.single.plurals, expected);
-    done();
-  });
 
   it('should add translations with messageformat by use of __mf()', function(done) {
     var msg = 'In {language} there {N, plural,';
@@ -136,5 +143,9 @@ describe('when i18n gets a new phrase', function() {
     should.deepEqual(getJson('ru')[msg], msg);
     done();
   });
+
+  after('after', function (done) {
+    done();
+  })
 
 });

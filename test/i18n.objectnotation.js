@@ -1,3 +1,4 @@
+'use strict';
 var i18n = require('../i18n');
 var should = require("should");
 

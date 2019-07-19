@@ -1,7 +1,8 @@
+'use strict';
 var i18n = require('../i18n'),
   should = require("should"),
-  fs = require('fs'),
-  path = require('path');
+  fs = require('fs')
+;
 
 var directory = './localesmakeplural';
 
@@ -73,7 +74,7 @@ describe('i18n supports MakePlural', function() {
     }
   };
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     TestScope = {};
     i18n.configure({
       locales: locales,
@@ -88,7 +89,8 @@ describe('i18n supports MakePlural', function() {
     TestScope.__('Hello World'); // <-- just inits
     for (var i = 0; i < locales.length; i++) {
       putJson(locales[i], fixture[locales[i]]);
-    };
+    }
+    setTimeout(done, 500);
   });
 
   it('A test phrase should have got written to all files', function(done) {

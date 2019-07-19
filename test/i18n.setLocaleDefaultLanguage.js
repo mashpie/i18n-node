@@ -1,12 +1,13 @@
+'use strict';
 /**
  * regression test to cover
  *
  * req.setLocale("locale") sets defaultLanguage when req.locals is not defined #166
  *
  */
-var i18n = require('../i18n'),
-  should = require("should"),
-  path = require("path");
+var i18n = require('../i18n');
+
+require("should")
 
 describe('Locale switching should not modify defaultLocale on unsupported languages', function() {
 
