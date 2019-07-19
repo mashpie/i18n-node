@@ -47,7 +47,7 @@
     "rebuild": "yarn install --force && yarn upgrade && yarn snyk-protect",
     "eslint": "eslint .",
     "test": "yarn eslint && mocha",
-    "test-ci": "yarn eslint && nyc mocha test/*.js && nyc report --reporter=lcov",
+    "test-ci": "nyc mocha test/*.js && nyc report --reporter=lcov",
     "snyk-protect": "snyk protect"
   },
   "license": "MIT",
