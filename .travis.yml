@@ -11,9 +11,9 @@ before_install:
 script:
   - "npm run test-ci"
 after_script:
-  - "npm install -g coveralls codeclimate-test-reporter"
-  - "dir ./coverage/"
+  - "npm install -g coveralls"
   - "cat ./coverage/lcov.info | coveralls"
+  - "npm install -g codeclimate-test-reporter"
   - "cat ./coverage/lcov.info | CODECLIMATE_REPO_TOKEN=3435a4d60c44136e262d797bc7292611dc4c87a632645e2469510b9b066ec94a codeclimate-test-reporter"
 addons:
   code_climate:
