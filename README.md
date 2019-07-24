@@ -144,6 +144,9 @@ i18n.configure({
     // sets a custom cookie name to parse locale settings from - defaults to NULL
     cookie: 'yourcookiename',
 
+    // sets a custom header name to parse locale settings from - defaults to NULL
+    header: 'x-culture'
+
     // query parameter to switch locale (ie. /home?lang=ch) - defaults to NULL
     queryParameter: 'lang',
 
