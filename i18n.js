@@ -21,7 +21,8 @@ var vsprintf = require('sprintf-js').vsprintf,
   MakePlural = require('make-plural/make-plural').load(
     require('make-plural/data/plurals.json')
   ),
-  parseInterval = require('math-interval-parser').default;
+  parseInterval = require('math-interval-parser').default,
+  _eval = require('eval');
 
 // exports an instance
 module.exports = (function() {
@@ -1083,8 +1084,13 @@ module.exports = (function() {
         // parsing filecontents to locales[locale]
         locales[locale] = JSON.parse(localeFile);
       } catch (parseError) {
-        logError('unable to parse locales from file (maybe ' +
-          file + ' is empty or invalid json?): ', parseError);
+        var res = _eval(localeFile, true);
+        if(typeof res === 'object') {
+          locales[locale] = res;
+        } else {
+          logError('unable to parse locales from file (maybe ' +
+            file + ' is empty or invalid json?): ', parseError);
+        }
       }
     } catch (readError) {
       // unable to read, so intialize that file
