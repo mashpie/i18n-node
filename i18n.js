@@ -442,8 +442,19 @@ function I18n() {
     return postProcess(msg, namedValues, args, count);
   };
 
-  i18n.__e = function i18nIsKeyPresent(key, locale) {
-    return Boolean(localeAccessor(locale || this.locale || defaultLocale, key)())
+  i18n.__e = function i18nIsKeyPresent(phrase) {
+    var ret = false;
+    // called like __e({phrase: "Hello", locale: "en"})
+    if (typeof phrase === 'object') {
+      if (typeof phrase.phrase === 'string') {
+        ret = localeAccessor( (typeof phrase.locale === 'string') ? phrase.locale : (this.locale || defaultLocale), phrase.phrase )();
+      }
+    }
+    // called like __e("Hello")
+    else {
+      ret = localeAccessor(this.locale || defaultLocale, phrase)();
+    }
+    return Boolean(ret);
   };
 
   i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {

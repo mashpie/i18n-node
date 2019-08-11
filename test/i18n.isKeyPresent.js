@@ -25,9 +25,14 @@ describe('i18n.__e()', function() {
     i18n.setLocale('de')
     should.equal(i18n.__e('Bye'), false)
     should.equal(i18n.__e('Hello'), true)
-    should.equal(i18n.__e('Bye', 'en'), false)
-    should.equal(i18n.__e('Hello', 'en'), true)
-    should.equal(i18n.__e('Bye', 'ru'), false)
+
+    should.equal(i18n.__e({phrase: 'Bye'}), false)
+    should.equal(i18n.__e({phrase: 'Hello'}), true)
+
+    should.equal(i18n.__e({phrase: 'Bye', locale: 'en'}), false)
+    should.equal(i18n.__e({phrase: 'Hello', locale: 'en'}), true)
+    should.equal(i18n.__e({phrase: 'Bye', locale: 'ru'}), false)
+    should.equal(i18n.__e({phrase: 'Hello', locale: 'ru'}), false)
     done();
   });
 
