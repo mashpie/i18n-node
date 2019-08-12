@@ -533,8 +533,8 @@ function I18n() {
         i18n.setLocale(targetObject.locals, targetObject.locale);
       }
     }
-
-    return i18n.getLocale(targetObject);
+  
+    return this[ this===i18n ? 'getLocale' : api.getLocale ](targetObject);
   };
 
   i18n.getLocale = function i18nGetLocale(request) {
