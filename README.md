@@ -150,7 +150,7 @@ i18n.configure({
     // where to store json files - defaults to './locales' relative to modules directory
     directory: './mylocales',
 
-    // controll mode on directory creation - defaults to NULL which defaults to umask of process user. Setting has no effect on win.
+    // control mode on directory creation - defaults to NULL which defaults to umask of process user. Setting has no effect on win.
     directoryPermissions: '755',
 
     // watch for changes in json files to reload locale on updates - defaults to false
@@ -218,7 +218,7 @@ After this and until the cookie expires, `i18n.init()` will get the value of the
 
 #### Some words on `register` option
 
-Esp. when used in a cli like scriptyou won't use any `i18n.init()` to guess language settings from your user. Thus `i18n` won't bind itself to any `res` or `req` object and will work like a static module.
+Esp. when used in a cli like script you won't use any `i18n.init()` to guess language settings from your user. Thus `i18n` won't bind itself to any `res` or `req` object and will work like a static module.
 
 ```js
 var anyObject = {};
@@ -418,11 +418,11 @@ __n('%s cat', 6); // --> 6 кошек
 __n('%s cat', 21); // --> 21 кошка
 ```
 
-> __Note__ i18n.__n() will add a blueprint ("one, other" or "one, few, other" for eaxmple) for each locale to your json on updateFiles in a future version.
+> __Note__ i18n.__n() will add a blueprint ("one, other" or "one, few, other" for example) for each locale to your json on updateFiles in a future version.
 
 ### i18n.__mf()
 
-Supports the advanced MessageFormat as provided by excellent [messageformat module](https://www.npmjs.com/package/messageformat). You should definetly head over to [messageformat.github.io](https://messageformat.github.io) for a guide to MessageFormat. i18n takes care of `new MessageFormat('en').compile(msg);` with the current `msg` loaded from it's json files and cache that complied fn in memory. So in short you might use it similar to `__()` plus extra object to accomblish MessageFormat's formating. Ok, some examples:
+Supports the advanced MessageFormat as provided by excellent [messageformat module](https://www.npmjs.com/package/messageformat). You should definetly head over to [messageformat.github.io](https://messageformat.github.io) for a guide to MessageFormat. i18n takes care of `new MessageFormat('en').compile(msg);` with the current `msg` loaded from it's json files and cache that complied fn in memory. So in short you might use it similar to `__()` plus extra object to accomplish MessageFormat's formatting. Ok, some examples:
 
 ```js
 // assume res is set to german
@@ -471,7 +471,7 @@ res.__mf('{N, plural, one{# cat} few{# cats} many{# cats} others{# cats}}', {N: 
 // ru --> 21 кошка       ru uses "__one__" when ending on "1"
 ```
 
-Take a look at [Mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals) to quickly get an idea of what pluralization has to deal with. With `__mf()` you get a very powerfull tool, but you need to handle it correctly.
+Take a look at [Mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals) to quickly get an idea of what pluralization has to deal with. With `__mf()` you get a very powerful tool, but you need to handle it correctly.
 
 But MessageFormat can handle more! You get ability to process:
 
@@ -530,7 +530,7 @@ i18n.setLocale(res, 'ar'); // --> req: Hallo res: مرحبا res.locals: مرح�
 i18n.setLocale(res.locals, 'ar'); // --> req: Hallo res: Hallo res.locals: مرحبا
 ```
 
-You'll get even more controll when passing an array of objects:
+You'll get even more control when passing an array of objects:
 
 ```js
 i18n.setLocale([req, res.locals], req.params.lang); // --> req: مرحبا res: Hallo res.locals: مرحبا
