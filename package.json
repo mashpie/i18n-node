@@ -19,14 +19,14 @@
   },
   "dependencies": {
     "debug": "*",
-    "make-plural": "^3.0.3",
-    "math-interval-parser": "^1.1.0",
-    "messageformat": "^0.3.1",
+    "make-plural": "^6.0.1",
+    "math-interval-parser": "^2.0.1",
+    "messageformat": "^2.3.0",
     "mustache": "*",
     "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
-    "async": "^2.6.2",
+    "async": "^3.1.0",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
     "jshint": "*",
