@@ -953,7 +953,7 @@ i18n.configure({
 });
 ```
 
-[![NPM](https://nodei.co/npm/i18n.svg?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/i18n/)
+[![NPM](https://nodei.co/npm/i18n.svg?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/i18n/) [![Greenkeeper badge](https://badges.greenkeeper.io/mashpie/i18n-node.svg)](https://greenkeeper.io/)
 
 ## Changelog
 
