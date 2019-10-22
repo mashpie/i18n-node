@@ -6,10 +6,13 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-[![Travis][travis-image]][travis-url]
+[![Travis][travis-image]][travis-url] 
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![NPM version][npm-image]][npm-url]
+![npm](https://img.shields.io/npm/dw/i18n)
 [![Known Vulnerabilities][snyk-image]][snyk-url]
+[![FOSSA Status][fossa-image]][fossa-url]
+[![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
 
 ## Install
 ```sh
@@ -953,8 +956,6 @@ i18n.configure({
 });
 ```
 
-[![NPM](https://nodei.co/npm/i18n.svg?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/i18n/) [![Greenkeeper badge](https://badges.greenkeeper.io/mashpie/i18n-node.svg)](https://greenkeeper.io/)
-
 ## Changelog
 
 * 0.8.3:
@@ -1002,3 +1003,9 @@ i18n.configure({
 
 [snyk-image]: https://snyk.io/test/npm/i18n/badge.svg
 [snyk-url]: https://snyk.io/test/npm/i18n
+
+[fossa-image]: https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node.svg?type=shield
+[fossa-url]: https://app.fossa.com/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node?ref=badge_shield
+
+[greenkeeper-image]: https://badges.greenkeeper.io/mashpie/i18n-node.svg
+[greenkeeper-url]: https://greenkeeper.io/
