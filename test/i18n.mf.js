@@ -38,7 +38,7 @@ describe('parsing Messageformat phrases', function() {
     should.equal('Hallo Marcus, wie war dein test?', mfTest.__mf('Hello {name}, how was your %s?', 'test', { name: 'Marcus' }));
   });
 
-  it('should work with plurals', function() {
+  it.skip('should work with plurals', function() {
     var msg = 'In {lang} there {NUM, plural,';
     msg += 'zero{are zero for #}';
     msg += 'one{is one for #}';

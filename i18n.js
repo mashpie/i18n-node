@@ -18,10 +18,9 @@ var vsprintf = require('sprintf-js').vsprintf,
   error = require('debug')('i18n:error'),
   Mustache = require('mustache'),
   Messageformat = require('messageformat'),
-  MakePlural = require('make-plural/make-plural').load(
-    require('make-plural/data/plurals.json')
-  ),
+  MakePlural = require('make-plural'),
   parseInterval = require('math-interval-parser').default;
+
 
 // exports an instance
 module.exports = (function() {
@@ -369,7 +368,7 @@ module.exports = (function() {
         var lc = targetLocale.toLowerCase().split(/[_-\s]+/)
           .filter(function(el){ return true && el; });
         // take the first part of locale, fallback to full locale
-        p = new MakePlural(lc[0] || targetLocale);
+        p = MakePlural[lc[0] || targetLocale];
         PluralsForLocale[targetLocale] = p;
       }
 

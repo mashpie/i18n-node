@@ -2,7 +2,7 @@ test:
 	mocha --exit
 
 cover:
-	istanbul cover ./node_modules/mocha/bin/_mocha
+	npm run test-ci
 
 hint:
 	jshint --verbose .
