@@ -41,8 +41,8 @@
   },
   "scripts": {
     "jshint": "jshint --verbose .",
-    "test": "npm run jshint && make test",
-    "test-ci": "npm run jshint && istanbul cover ./node_modules/mocha/bin/_mocha -- --exit"
+    "test": "npm run jshint && mocha --exit",
+    "test-ci": "npm run jshint && istanbul cover mocha -- --exit"
   },
   "license": "MIT"
 }
