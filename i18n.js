@@ -265,6 +265,9 @@ module.exports = (function() {
       mf = MessageformatInstanceForLocale[targetLocale];
     } else {
       mf = new Messageformat(targetLocale);
+
+      // @see https://messageformat.github.io/messageformat/MessageFormat#disablePluralKeyChecks__anchor
+      mf.disablePluralKeyChecks();
       mf.compiledFunctions = {};
       MessageformatInstanceForLocale[targetLocale] = mf;
     }
