@@ -117,7 +117,7 @@ describe('when i18n gets a new phrase', function() {
     done();
   });
 
-  it.skip('should add translations with messageformat by use of __mf()', function(done) {
+  it('should add translations with messageformat by use of __mf()', function(done) {
     var msg = 'In {language} there {N, plural,';
     msg += 'zero{are zero for # }';
     msg += 'one{is one for # }';
