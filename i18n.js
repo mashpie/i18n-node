@@ -888,7 +888,7 @@ module.exports = (function() {
     var mutator = localeMutator(locale, singular);
 
     if (plural) {
-      if (!accessor()) {
+      if (accessor() == null) {
         mutator({
           'one': defaultSingular || singular,
           'other': defaultPlural || plural
@@ -897,7 +897,7 @@ module.exports = (function() {
       }
     }
 
-    if (!accessor()) {
+    if (accessor() == null) {
       mutator(defaultSingular || singular);
       write(locale);
     }

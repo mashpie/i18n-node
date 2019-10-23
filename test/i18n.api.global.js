@@ -61,6 +61,11 @@ describe('Module API', function() {
     });
 
     describe('i18nTranslate', function() {
+      it('should return an empty string if the translation is an empty string', function() {
+        i18n.setLocale('en');
+        should.equal(__('Empty'), '');
+      });
+
       it('should return en translations as expected', function() {
         i18n.setLocale('en');
         should.equal(__('Hello'), 'Hello');
