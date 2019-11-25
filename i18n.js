@@ -638,6 +638,7 @@ module.exports = (function() {
     var extensionRegex = new RegExp(extension + '$', 'g');
     var prefixRegex = new RegExp('^' + prefix, 'g');
 
+    if (!filename) return false;
     if (prefix && !filename.match(prefixRegex)) return false;
     if (extension && !filename.match(extensionRegex)) return false;
     return filename.replace(prefix, '').replace(extensionRegex, '');

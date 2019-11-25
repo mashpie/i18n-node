@@ -1,6 +1,7 @@
 node_modules/
 testlocales/
 coverage/
+.idea/
 .DS_Store
 /npm-debug.log
 /i18n-cov.js
