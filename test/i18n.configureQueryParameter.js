@@ -47,4 +47,11 @@ describe('Locale switching should work queryParameter', function() {
     res.__('Hello').should.equal('Bonjour');
     res.locals.__('Hello').should.equal('Bonjour');
   });
+
+  it('should support WHATWG URL API', function() {
+    req.url = new URL('/test?lang=fr', 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('fr');
+    i18n.getLocale(res).should.equal('fr');
+  });
 });

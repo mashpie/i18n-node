@@ -661,7 +661,8 @@ module.exports = (function() {
 
       // a query parameter overwrites all
       if (queryParameter && request.url) {
-        var urlObj = url.parse(request.url, true);
+        var urlAsString = typeof request.url === 'string' ? request.url : request.url.toString();
+        var urlObj = url.parse(urlAsString, true);
         if (urlObj.query[queryParameter]) {
           logDebug('Overriding locale from query: ' + urlObj.query[queryParameter]);
           request.language = urlObj.query[queryParameter];
