@@ -1,7 +1,7 @@
 {
   "name": "i18n",
   "description": "lightweight translation module with dynamic json storage",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "homepage": "http://github.com/mashpie/i18n-node",
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
     "jshint": "*",
-    "mocha": "^6.2.2",
+    "mocha": "^7.0.1",
     "should": "*",
     "sinon": "*",
     "url": "^0.11.0",
