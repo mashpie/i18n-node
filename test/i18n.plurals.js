@@ -59,10 +59,20 @@ describe('parsing plural intervals from strings', function() {
     should.equal(pluralTest.__n('%f star', 1), "1 star");
     should.equal(pluralTest.__n('%f star', 2), "2 stars");
     should.equal(pluralTest.__n('%f star', 2.5), "2.5 stars");
+    should.equal(pluralTest.__n('%f star', 5), "5 stars");
+    should.equal(pluralTest.__n('%f star', 5.5), "5.5 stars");
+    should.equal(pluralTest.__n('%s star', 5.5), "5.5 stars");
+    should.equal(pluralTest.__n('%d star', 5.5), "5 stars");
   });
   
   it('should handle floats even when passed as strings (#305)', function() {
     should.equal(pluralTest.__n('%f star', '-1.5'), "-1.5 stars");
+    should.equal(pluralTest.__n('%f star', '-1'), "-1 stars");
+    should.equal(pluralTest.__n('%f star', '0'), "0 stars");
+    should.equal(pluralTest.__n('%f star', '0.5'), "0.5 stars");
+    should.equal(pluralTest.__n('%f star', '1'), "1 star");
+    should.equal(pluralTest.__n('%f star', '2'), "2 stars");
+    should.equal(pluralTest.__n('%f star', '2.5'), "2.5 stars");
     should.equal(pluralTest.__n('%f star', '5'), "5 stars");
     should.equal(pluralTest.__n('%f star', '5.5'), "5.5 stars");
     should.equal(pluralTest.__n('%s star', '5.5'), "5.5 stars");
