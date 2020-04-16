@@ -10,6 +10,18 @@
 		"one": "%s cat",
 		"other": "%s cats"
 	},
+	"%f star": {
+		"one": "%f star",
+		"other": "%f stars"
+	},
+	"%d star": {
+		"one": "%d star",
+		"other": "%d stars"
+	},
+	"%s star": {
+		"one": "%s star",
+		"other": "%s stars"
+	},
 	"cat": {
 		"one": "%s cat",
 		"other": "%s cats"
