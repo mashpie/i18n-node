@@ -8,6 +8,7 @@
 
 // dependencies
 var vsprintf = require('sprintf-js').vsprintf,
+  pkgVersion = require('./package.json').version,
   fs = require('fs'),
   url = require('url'),
   path = require('path'),
@@ -18,7 +19,6 @@ var vsprintf = require('sprintf-js').vsprintf,
   Messageformat = require('messageformat'),
   MakePlural = require('make-plural'),
   parseInterval = require('math-interval-parser').default;
-
 
 // exports an instance
 module.exports = (function() {
@@ -62,7 +62,7 @@ module.exports = (function() {
   // public exports
   var i18n = {};
 
-  i18n.version = '0.8.3';
+  i18n.version = pkgVersion;
 
   i18n.configure = function i18nConfigure(opt) {
 

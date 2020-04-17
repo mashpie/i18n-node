@@ -1,4 +1,5 @@
 var i18n = require('../i18n'),
+    pkgVersion = require('../package.json').version,
     should = require("should");
 
 i18n.configure({
@@ -10,7 +11,7 @@ i18n.configure({
 
 describe('Module Setup', function () {
   it('should export a valid version', function () {
-    should.equal(i18n.version, '0.8.3');
+    should.equal(i18n.version, pkgVersion);
   });
 
   it('should export configure as i18nConfigure', function () {
