@@ -1,15 +1,14 @@
 /**
- * @author      Created by Marcus Spiegel <marcus.spiegel@gmail.com> on 2011-03-25.
+ * @author      Created by Marcus Spiegel <spiegel@uscreen.de> on 2011-03-25.
  * @link        https://github.com/mashpie/i18n-node
  * @license     http://opensource.org/licenses/MIT
- *
- * @version     0.8.3
  */
 
 'use strict';
 
 // dependencies
 var vsprintf = require('sprintf-js').vsprintf,
+  pkgVersion = require('./package.json').version,
   fs = require('fs'),
   url = require('url'),
   path = require('path'),
@@ -20,7 +19,6 @@ var vsprintf = require('sprintf-js').vsprintf,
   Messageformat = require('messageformat'),
   MakePlural = require('make-plural'),
   parseInterval = require('math-interval-parser').default;
-
 
 // exports an instance
 module.exports = (function() {
@@ -64,7 +62,7 @@ module.exports = (function() {
   // public exports
   var i18n = {};
 
-  i18n.version = '0.8.3';
+  i18n.version = pkgVersion;
 
   i18n.configure = function i18nConfigure(opt) {
 
@@ -326,7 +324,7 @@ module.exports = (function() {
       args.unshift(count);
 
       // some template engines pass all values as strings -> so we try to convert them to numbers
-      if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
+      if (typeof plural === 'number' || Number(plural) + '' === plural) {
         count = plural;
       }
 
@@ -337,7 +335,7 @@ module.exports = (function() {
       }
     } else {
       // called like  __n('cat', 3)
-      if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
+      if (typeof plural === 'number' || Number(plural) + '' === plural) {
         count = plural;
 
         // we add same string as default
@@ -357,7 +355,7 @@ module.exports = (function() {
     if (count === null) count = namedValues.count;
 
     // enforce number
-    count = parseInt(count, 10);
+    count = Number(count);
 
     // find the correct plural rule for given locale
     if (typeof msg === 'object') {
@@ -537,7 +535,7 @@ module.exports = (function() {
 
     // replace the counter
     if (typeof count === 'number') {
-      msg = vsprintf(msg, [parseInt(count, 10)]);
+      msg = vsprintf(msg, [Number(count)]);
     }
 
     // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
