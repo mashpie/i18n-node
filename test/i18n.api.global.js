@@ -76,6 +76,8 @@ describe('Module API', function() {
       it('should return en translations as expected, using mustached messages', function() {
         i18n.setLocale('en');
         should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hello Marcus');
+        should.equal(__('Hello {{{name}}}', { name: '<u>Marcus</u>' }), 'Hello <u>Marcus</u>');
+        should.equal(__('Hello {{name}}', { name: '<u>Marcus</u>' }), 'Hello &lt;u&gt;Marcus&lt;&#x2F;u&gt;');
         should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hello Marcus, how was your weekend?');
       });
 
@@ -91,6 +93,8 @@ describe('Module API', function() {
 
         // named only
         should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hallo Marcus');
+        should.equal(__('Hello {{{name}}}', { name: '<u>Marcus</u>' }), 'Hallo <u>Marcus</u>');
+        should.equal(__('Hello {{name}}', { name: '<u>Marcus</u>' }), 'Hallo &lt;u&gt;Marcus&lt;&#x2F;u&gt;');
 
         // named + sprintf
         should.equal(__('Hello {{name}}, how was your %s?', __('weekend'), { name: 'Marcus' }), 'Hallo Marcus, wie war dein Wochenende?');

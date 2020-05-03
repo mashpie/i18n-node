@@ -126,5 +126,6 @@
 	"repeated argument": "%1$s, %1$s, %1$s",
 	". is first character": "Dot is first character",
 	"last character is .": "last character is Dot",
-	"few sentences. with .": "few sentences with Dot"
+	"few sentences. with .": "few sentences with Dot",
+	"Hello {{{name}}}": "Hello {{{name}}}"
 }

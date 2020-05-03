@@ -661,6 +661,7 @@ which puts
 
 You may also use [mustache](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the last parameter. You can still pass unnamed parameters by adding additional arguments.
 
+
 ```js
 var greeting = __('Hello {{name}}, how are you today?', { name: 'Marcus' });
 ```
@@ -678,6 +679,24 @@ var greeting = __( __('Hello {{name}}, how was your %s?', { name: 'Marcus' }), _
 ```
 
 which both put *Hello Marcus, how was your weekend.*
+
+#### how about markup?
+
+Including markup in translation and/or variables is considered to be bad practice, as it leads to side effects (translators need to understand it, might break it, inject malformed markup or worse). But well, mustache supports unescaped markup out-of-the-box (*Quote from https://mustache.github.io/mustache.5.html*):
+
+> All variables are HTML escaped by default. If you want to return unescaped HTML, use the triple mustache: {{{name}}}.
+
+So this will work
+
+```js
+var greeting = __('Hello {{{name}}}, how are you today?', { name: '<u>Marcus</u>' });
+```
+
+as expected:
+
+```html
+Hello <u>Marcus</u>, how are you today
+```
 
 ### basic plural support
 
