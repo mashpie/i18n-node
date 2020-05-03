@@ -1120,7 +1120,12 @@ module.exports = (function() {
       stats = fs.lstatSync(directory);
     } catch (e) {
       logDebug('creating locales dir in: ' + directory);
-      fs.mkdirSync(directory, directoryPermissions);
+      try {
+        fs.mkdirSync(directory, directoryPermissions);
+      } catch (e) {
+        // in case of parallel tasks utilizing in same dir
+        if (e.code !== 'EEXIST') throw e;
+      }
     }
 
     // first time init has an empty file
