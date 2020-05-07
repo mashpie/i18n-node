@@ -147,14 +147,18 @@ module.exports = (function() {
       true : opt.preserveLegacyCase;
 
     // when missing locales we try to guess that from directory
-    opt.locales = opt.locales || guessLocales(directory);
+    opt.locales = opt.staticCatalog ? Object.keys(opt.staticCatalog) : opt.locales || guessLocales(directory);
 
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {
 
-      opt.locales.forEach(function(l) {
-        read(l);
-      });
+      if (opt.staticCatalog) {
+        locales = opt.staticCatalog;
+      } else {
+        opt.locales.forEach(function(l) {
+          read(l);
+        });
+      }
 
       // auto reload locale files when changed
       if (autoReload) {
