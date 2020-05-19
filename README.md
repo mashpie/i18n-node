@@ -6,7 +6,7 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-[![Travis][travis-image]][travis-url] 
+[![Travis][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![NPM version][npm-image]][npm-url]
 ![npm](https://img.shields.io/npm/dw/i18n)
@@ -192,6 +192,11 @@ i18n.configure({
         console.log('error', msg);
     },
 
+    // used to alter the behaviour of missing keys
+    missingKeyFn: function (locale, value) {
+        return value;
+    },
+
     // object or [obj1, obj2] to bind the i18n api and current locale to - defaults to null
     register: global,
 
@@ -346,7 +351,7 @@ __n('%s cat', 3) // --> 3 Katzen
 
 // long syntax works fine in combination with `updateFiles`
 // --> writes '%s cat' to `one` and '%s cats' to `other` plurals
-// "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly. 
+// "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly.
 __n("%s cat", "%s cats", 1); // 1 Katze
 __n("%s cat", "%s cats", 3); // 3 Katzen
 
