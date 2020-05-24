@@ -205,7 +205,13 @@ i18n.configure({
     // Downcase locale when passed on queryParam; e.g. lang=en-US becomes
     // en-us.  When set to false, the queryParam value will be used as passed;
     // e.g. lang=en-US remains en-US.
-    preserveLegacyCase: true
+    preserveLegacyCase: true,
+
+    // set the language catalog statically
+    // also overrides locales
+    staticCatalog: {
+      de: { /* require('de.json') */ },
+    }
 });
 ```
 
