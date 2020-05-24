@@ -57,7 +57,8 @@ module.exports = (function() {
     queryParameter,
     register,
     updateFiles,
-    syncFiles;
+    syncFiles,
+    missingKeyFn;
 
   // public exports
   var i18n = {};
@@ -145,6 +146,9 @@ module.exports = (function() {
 
     preserveLegacyCase = (typeof opt.preserveLegacyCase === 'undefined') ?
       true : opt.preserveLegacyCase;
+
+    // setting custom missing key function
+    missingKeyFn = (typeof opt.missingKeyFn === 'function') ? opt.missingKeyFn : missingKey;
 
     // when missing locales we try to guess that from directory
     opt.locales = opt.staticCatalog ? Object.keys(opt.staticCatalog) : opt.locales || guessLocales(directory);
@@ -1071,12 +1075,14 @@ module.exports = (function() {
         // invoke the search again, but allow branching
         // this time (because here the mutator is being invoked)
         // otherwise, just change the value directly.
+        value = missingKeyFn(locale, value);
         return (reTraverse) ? localeMutator(locale, singular, true)(value) : accessor(value);
       };
 
     } else {
       // No object notation, just return a mutator that performs array lookup and changes the value.
       return function(value) {
+        value = missingKeyFn(locale, value);
         locales[locale][singular] = value;
         return value;
       };
@@ -1196,6 +1202,13 @@ module.exports = (function() {
 
   function logError(msg) {
     logErrorFn(msg);
+  }
+
+  /**
+   * Missing key function
+   */
+  function missingKey(locale, value) {
+    return value;
   }
 
   return i18n;
