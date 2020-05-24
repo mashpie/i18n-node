@@ -258,6 +258,28 @@ i18n.setLocale('de');
 __('Hello'); // --> Hallo`
 ```
 
+#### Some words on `staticCatalog` option
+
+Instead of letting i18n load translations from a given directory you may pass translations as static js object right on configuration. This supports any method that returns a `key:value` translation object (`{ Hello: 'Hallo', Cat: 'Katze' }`). So you might even mix native **json** with **js** modules and parsed **yaml** files, like so:
+
+```js
+// DEMO: quickly add yaml support
+const yaml = require('js-yaml');
+const fs   = require('fs');
+
+// configure and load translations from different locations
+i18n.configure({
+  staticCatalog: {
+    de: require('../../locales/de-as-json.json'),
+    en: require('../../locales/en-as-module.js'),
+    fr: yaml.safeLoad(fs.readFileSync('../../locales/fr-as-yaml.yml', 'utf8'));
+  },
+  defaultLocale: 'de'
+})
+```
+
+**NOTE:** Enabling `staticCatalog` disables all other fs realated options such as `updateFiles`,  `autoReload` and `syncFiles`
+
 ### i18n.init()
 
 When used as middleware in frameworks like express to setup the current environment for each loop. In contrast to configure the `i18n.init()` should be called within each request-response-cycle.
