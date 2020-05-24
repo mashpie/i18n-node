@@ -149,6 +149,13 @@ module.exports = (function() {
     // when missing locales we try to guess that from directory
     opt.locales = opt.staticCatalog ? Object.keys(opt.staticCatalog) : opt.locales || guessLocales(directory);
 
+    // some options should be disabled when using staticCatalog
+    if(opt.staticCatalog){
+      updateFiles = false;
+      autoReload = false;
+      syncFiles = false;
+    }
+
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {
 
