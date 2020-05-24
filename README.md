@@ -6,7 +6,7 @@ Stores language files in json files compatible to [webtranslateit](http://webtra
 Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
-[![Travis][travis-image]][travis-url] 
+[![Travis][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![NPM version][npm-image]][npm-url]
 ![npm](https://img.shields.io/npm/dw/i18n)
@@ -192,6 +192,11 @@ i18n.configure({
         console.log('error', msg);
     },
 
+    // used to alter the behaviour of missing keys
+    missingKeyFn: function (locale, value) {
+        return value;
+    },
+
     // object or [obj1, obj2] to bind the i18n api and current locale to - defaults to null
     register: global,
 
@@ -205,7 +210,13 @@ i18n.configure({
     // Downcase locale when passed on queryParam; e.g. lang=en-US becomes
     // en-us.  When set to false, the queryParam value will be used as passed;
     // e.g. lang=en-US remains en-US.
-    preserveLegacyCase: true
+    preserveLegacyCase: true,
+
+    // set the language catalog statically
+    // also overrides locales
+    staticCatalog: {
+      de: { /* require('de.json') */ },
+    }
 });
 ```
 
@@ -246,6 +257,28 @@ i18n.configure({
 i18n.setLocale('de');
 __('Hello'); // --> Hallo`
 ```
+
+#### Some words on `staticCatalog` option
+
+Instead of letting i18n load translations from a given directory you may pass translations as static js object right on configuration. This supports any method that returns a `key:value` translation object (`{ Hello: 'Hallo', Cat: 'Katze' }`). So you might even mix native **json** with **js** modules and parsed **yaml** files, like so:
+
+```js
+// DEMO: quickly add yaml support
+const yaml = require('js-yaml');
+const fs   = require('fs');
+
+// configure and load translations from different locations
+i18n.configure({
+  staticCatalog: {
+    de: require('../../locales/de-as-json.json'),
+    en: require('../../locales/en-as-module.js'),
+    fr: yaml.safeLoad(fs.readFileSync('../../locales/fr-as-yaml.yml', 'utf8'));
+  },
+  defaultLocale: 'de'
+})
+```
+
+**NOTE:** Enabling `staticCatalog` disables all other fs realated options such as `updateFiles`,  `autoReload` and `syncFiles`
 
 ### i18n.init()
 
@@ -346,7 +379,7 @@ __n('%s cat', 3) // --> 3 Katzen
 
 // long syntax works fine in combination with `updateFiles`
 // --> writes '%s cat' to `one` and '%s cats' to `other` plurals
-// "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly. 
+// "one" (singular) & "other" (plural) just covers the basic Germanic Rule#1 correctly.
 __n("%s cat", "%s cats", 1); // 1 Katze
 __n("%s cat", "%s cats", 3); // 3 Katzen
 
@@ -661,6 +694,7 @@ which puts
 
 You may also use [mustache](http://mustache.github.io/) syntax for your message strings. To pass named parameters to your message, just provide an object as the last parameter. You can still pass unnamed parameters by adding additional arguments.
 
+
 ```js
 var greeting = __('Hello {{name}}, how are you today?', { name: 'Marcus' });
 ```
@@ -678,6 +712,24 @@ var greeting = __( __('Hello {{name}}, how was your %s?', { name: 'Marcus' }), _
 ```
 
 which both put *Hello Marcus, how was your weekend.*
+
+#### how about markup?
+
+Including markup in translation and/or variables is considered to be bad practice, as it leads to side effects (translators need to understand it, might break it, inject malformed markup or worse). But well, mustache supports unescaped markup out-of-the-box (*Quote from https://mustache.github.io/mustache.5.html*):
+
+> All variables are HTML escaped by default. If you want to return unescaped HTML, use the triple mustache: {{{name}}}.
+
+So this will work
+
+```js
+var greeting = __('Hello {{{name}}}, how are you today?', { name: '<u>Marcus</u>' });
+```
+
+as expected:
+
+```html
+Hello <u>Marcus</u>, how are you today
+```
 
 ### basic plural support
 
