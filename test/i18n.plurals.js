@@ -14,6 +14,15 @@ i18n.setLocale(pluralTest, 'en');
 
 describe('parsing plural intervals from strings', function() {
 
+  // ignoring pipe symbols without interval rules, see #274
+  it('should ignore standalone | symbols', function() {
+    const standalone = 'Standalone | 42 symbol somewhere | in the text | 1| 0';
+    should.equal(
+       pluralTest.__(standalone),
+       standalone
+    );
+  });
+
   it('should work with classic format too', function() {
     should.equal(
       "There are 3 monkeys in the tree",

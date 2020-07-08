@@ -127,5 +127,6 @@
 	". is first character": "Dot is first character",
 	"last character is .": "last character is Dot",
 	"few sentences. with .": "few sentences with Dot",
-	"Hello {{{name}}}": "Hello {{{name}}}"
+	"Hello {{{name}}}": "Hello {{{name}}}",
+	"Standalone | 42 symbol somewhere | in the text | 1| 0": "Standalone | 42 symbol somewhere | in the text | 1| 0"
 }
