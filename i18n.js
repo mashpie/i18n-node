@@ -544,7 +544,6 @@ module.exports = (function() {
   var postProcess = function(msg, namedValues, args, count) {
 
     // test for parsable interval string
-    // if ((/\|/).test(msg) && (typeof count !== 'undefined')) {
     if ((/\|/).test(msg)) {
       msg = parsePluralInterval(msg, count);
     }
