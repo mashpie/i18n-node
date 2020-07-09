@@ -23,6 +23,14 @@ describe('parsing plural intervals from strings', function() {
     );
   });
 
+  it('should ignore mixed pipe and newline symbols', function() {
+    const standalone = 'should ignore \n standalone | mixed with \n new lines 42 | value - 42';
+    should.equal(
+       pluralTest.__(standalone),
+       standalone
+    );
+  });
+
   it('should work with classic format too', function() {
     should.equal(
       "There are 3 monkeys in the tree",

@@ -807,7 +807,7 @@ module.exports = (function() {
       var matches = p.match(/^\s*([\(\)\[\]]+[\d,]+[\(\)\[\]]+)?\s*(.*)$/);
 
       // not the same as in combined condition
-      if (matches[1]) {
+      if (matches != null && matches[1]) {
         intervalRuleExists = true;
         if (matchInterval(count, matches[1]) === true) {
           returnPhrase = matches[2];
