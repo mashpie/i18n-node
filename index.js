@@ -1,1 +1,1 @@
-module.exports = require('./i18n');
+module.exports = require('./i18n')();
