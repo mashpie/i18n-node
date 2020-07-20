@@ -1,11 +1,11 @@
 /*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
 
-var i18n = require('../i18n'),
+var i18n = require('../index'),
     should = require("should"),
     fs = require('fs'),
     path = require('path');
 
-var i18nPath = 'i18n';
+var i18nPath = 'index';
 var i18nFilename = path.resolve(i18nPath + '.js');
 
 function reconfigure(config) {

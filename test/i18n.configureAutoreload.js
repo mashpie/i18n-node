@@ -1,9 +1,9 @@
-var i18n = require('../i18n'),
+var i18n = require('../index'),
   should = require("should"),
   fs = require('fs'),
   path = require('path');
 
-var i18nPath = 'i18n';
+var i18nPath = 'index';
 var i18nFilename = path.resolve(i18nPath + '.js');
 var timeout = 50;
 

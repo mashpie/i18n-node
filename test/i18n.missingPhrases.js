@@ -1,7 +1,7 @@
 /*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
 
 // now with coverage suport
-var i18n = require('../i18n'),
+var i18n = require('../index'),
     should = require("should");
 
 describe('Missing Phrases', function () {
