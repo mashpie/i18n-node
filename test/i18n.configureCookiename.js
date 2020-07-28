@@ -28,7 +28,7 @@ describe('Locale switching should work when set via cookie', function() {
     };
 
     res = {
-      locals: {}
+      locales: {}
     };
   });
 
@@ -40,10 +40,10 @@ describe('Locale switching should work when set via cookie', function() {
 
     req.getLocale().should.equal('fr');
     res.getLocale().should.equal('fr');
-    res.locals.getLocale().should.equal('fr');
+    res.locales.getLocale().should.equal('fr');
 
     req.__('Hello').should.equal('Bonjour');
     res.__('Hello').should.equal('Bonjour');
-    res.locals.__('Hello').should.equal('Bonjour');
+    res.locales.__('Hello').should.equal('Bonjour');
   });
 });

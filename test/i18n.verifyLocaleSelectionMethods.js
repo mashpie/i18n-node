@@ -39,7 +39,7 @@ describe('when configuring selected locale', function () {
   };
 
   beforeEach(function () {
-    res = { locals: {} };
+    res = { locales: {} };
     i18n.configure({
       locales: ['de-AT', 'de-DE', 'en-GB', 'tr-TR', 'en-US', 'en'],
       defaultLocale: 'default-locale',

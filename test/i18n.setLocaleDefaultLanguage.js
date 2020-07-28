@@ -1,7 +1,7 @@
 /**
  * regression test to cover
  *
- * req.setLocale("locale") sets defaultLanguage when req.locals is not defined #166
+ * req.setLocale("locale") sets defaultLanguage when req.locales is not defined #166
  *
  */
 var i18n = require('../i18n'),

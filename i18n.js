@@ -441,25 +441,25 @@ module.exports = (function() {
       // escape recursion
       // @see  - https://github.com/balderdashy/sails/pull/3631
       //       - https://github.com/mashpie/i18n-node/pull/218
-      if (targetObject.res.locals) {
+      if (targetObject.res.locales) {
         i18n.setLocale(targetObject.res, targetObject.locale, true);
-        i18n.setLocale(targetObject.res.locals, targetObject.locale, true);
+        i18n.setLocale(targetObject.res.locales, targetObject.locale, true);
       } else {
         i18n.setLocale(targetObject.res, targetObject.locale);
       }
     }
 
-    // consider locals
-    if (targetObject.locals && !skipImplicitObjects) {
+    // consider locales
+    if (targetObject.locales && !skipImplicitObjects) {
 
       // escape recursion
       // @see  - https://github.com/balderdashy/sails/pull/3631
       //       - https://github.com/mashpie/i18n-node/pull/218
-      if (targetObject.locals.res) {
-        i18n.setLocale(targetObject.locals, targetObject.locale, true);
-        i18n.setLocale(targetObject.locals.res, targetObject.locale, true);
+      if (targetObject.locales.res) {
+        i18n.setLocale(targetObject.locales, targetObject.locale, true);
+        i18n.setLocale(targetObject.locales.res, targetObject.locale, true);
       } else {
-        i18n.setLocale(targetObject.locals, targetObject.locale);
+        i18n.setLocale(targetObject.locales, targetObject.locale);
       }
     }
 
@@ -622,9 +622,9 @@ module.exports = (function() {
       applyAPItoObject(object.res);
     }
 
-    // attach to locals if present (ie. in express)
-    if (object.locals) {
-      applyAPItoObject(object.locals);
+    // attach to locales if present (ie. in express)
+    if (object.locales) {
+      applyAPItoObject(object.locales);
     }
   };
 

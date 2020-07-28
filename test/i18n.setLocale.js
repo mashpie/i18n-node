@@ -128,9 +128,9 @@ describe('Locale switching should work on req and res', function() {
     res.__('Hello').should.equal('Bonjour');
   });
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly', function() {
-    // add locals to res
-    res.locals = {};
+  it('setLocale() should switch locale for req, res and res.locales implicitly', function() {
+    // add locales to res
+    res.locales = {};
 
     // add res to req to simulate express 4.x schema
     req.res = res;
@@ -139,20 +139,20 @@ describe('Locale switching should work on req and res', function() {
 
     i18n.getLocale(req).should.equal('fr');
     i18n.getLocale(res).should.equal('fr');
-    i18n.getLocale(res.locals).should.equal('fr');
+    i18n.getLocale(res.locales).should.equal('fr');
 
     req.getLocale().should.equal('fr');
     res.getLocale().should.equal('fr');
-    res.locals.getLocale().should.equal('fr');
+    res.locales.getLocale().should.equal('fr');
 
     req.__('Hello').should.equal('Bonjour');
     res.__('Hello').should.equal('Bonjour');
-    res.locals.__('Hello').should.equal('Bonjour');
+    res.locales.__('Hello').should.equal('Bonjour');
   });
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly when set on req', function() {
-    // add locals to res
-    res.locals = {};
+  it('setLocale() should switch locale for req, res and res.locales implicitly when set on req', function() {
+    // add locales to res
+    res.locales = {};
 
     // add res to req to simulate express 4.x schema
     req.res = res;
@@ -161,20 +161,20 @@ describe('Locale switching should work on req and res', function() {
 
     i18n.getLocale(req).should.equal('fr');
     i18n.getLocale(res).should.equal('fr');
-    i18n.getLocale(res.locals).should.equal('fr');
+    i18n.getLocale(res.locales).should.equal('fr');
 
     req.getLocale().should.equal('fr');
     res.getLocale().should.equal('fr');
-    res.locals.getLocale().should.equal('fr');
+    res.locales.getLocale().should.equal('fr');
 
     req.__('Hello').should.equal('Bonjour');
     res.__('Hello').should.equal('Bonjour');
-    res.locals.__('Hello').should.equal('Bonjour');
+    res.locales.__('Hello').should.equal('Bonjour');
   });
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly when set on res', function() {
-    // add locals to res
-    res.locals = {};
+  it('setLocale() should switch locale for req, res and res.locales implicitly when set on res', function() {
+    // add locales to res
+    res.locales = {};
 
     // add res to req to simulate express 4.x schema
     req.res = res;
@@ -183,66 +183,66 @@ describe('Locale switching should work on req and res', function() {
 
     i18n.getLocale(req).should.equal('de');
     i18n.getLocale(res).should.equal('fr');
-    i18n.getLocale(res.locals).should.equal('fr');
+    i18n.getLocale(res.locales).should.equal('fr');
 
     req.getLocale().should.equal('de');
     res.getLocale().should.equal('fr');
-    res.locals.getLocale().should.equal('fr');
+    res.locales.getLocale().should.equal('fr');
 
     req.__('Hello').should.equal('Hallo');
     res.__('Hello').should.equal('Bonjour');
-    res.locals.__('Hello').should.equal('Bonjour');
+    res.locales.__('Hello').should.equal('Bonjour');
   });
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly when set on res.locals', function() {
-    // add locals to res
-    res.locals = {};
+  it('setLocale() should switch locale for req, res and res.locales implicitly when set on res.locales', function() {
+    // add locales to res
+    res.locales = {};
 
     // add res to req to simulate express 4.x schema
     req.res = res;
     i18n.init(req, res);
-    res.locals.setLocale('fr');
+    res.locales.setLocale('fr');
 
     i18n.getLocale(req).should.equal('de');
     i18n.getLocale(res).should.equal('de');
-    i18n.getLocale(res.locals).should.equal('fr');
+    i18n.getLocale(res.locales).should.equal('fr');
 
     req.getLocale().should.equal('de');
     res.getLocale().should.equal('de');
-    res.locals.getLocale().should.equal('fr');
+    res.locales.getLocale().should.equal('fr');
 
     req.__('Hello').should.equal('Hallo');
     res.__('Hello').should.equal('Hallo');
-    res.locals.__('Hello').should.equal('Bonjour');
+    res.locales.__('Hello').should.equal('Bonjour');
   });
 
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly when set as array', function() {
-    // add locals to res
-    res.locals = {};
+  it('setLocale() should switch locale for req, res and res.locales implicitly when set as array', function() {
+    // add locales to res
+    res.locales = {};
 
     // add res to req to simulate express 4.x schema
     req.res = res;
     i18n.init(req, res);
-    i18n.setLocale([req, res, res.locals], 'fr');
+    i18n.setLocale([req, res, res.locales], 'fr');
 
     i18n.getLocale(req).should.equal('fr');
     i18n.getLocale(res).should.equal('fr');
-    i18n.getLocale(res.locals).should.equal('fr');
+    i18n.getLocale(res.locales).should.equal('fr');
 
     req.getLocale().should.equal('fr');
     res.getLocale().should.equal('fr');
-    res.locals.getLocale().should.equal('fr');
+    res.locales.getLocale().should.equal('fr');
 
     req.__('Hello').should.equal('Bonjour');
     res.__('Hello').should.equal('Bonjour');
-    res.locals.__('Hello').should.equal('Bonjour');
+    res.locales.__('Hello').should.equal('Bonjour');
   });
 
 
-  it('setLocale(object) should escape res -> locals -> res recursion', function() {
-    // add locals to res
-    res.locals = { res: res };
+  it('setLocale(object) should escape res -> locales -> res recursion', function() {
+    // add locales to res
+    res.locales = { res: res };
 
     // add res to req to simulate express 4.x schema
     req.res = res;
@@ -250,7 +250,7 @@ describe('Locale switching should work on req and res', function() {
     i18n.setLocale(req, 'fr');
 
     res.locale.should.equal('fr');
-    res.locals.locale.should.equal('fr');
+    res.locales.locale.should.equal('fr');
   });
 
 });

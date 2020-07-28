@@ -69,9 +69,9 @@ describe('configure api', function() {
         should.equal(typeof customObject.__, 'undefined');
     });
 
-    it('should escape res -> locals -> res recursion', function() {
+    it('should escape res -> locales -> res recursion', function() {
         var customObject = {};
-        customObject.locals = { res: customObject };
+        customObject.locales = { res: customObject };
         reconfigure({
             locales: ['en', 'de'],
             register: customObject,
@@ -80,6 +80,6 @@ describe('configure api', function() {
             }
         });
         should.equal(typeof customObject.t, 'function');
-        should.equal(typeof customObject.locals.t, 'function');
+        should.equal(typeof customObject.locales.t, 'function');
     });
 });
