@@ -662,20 +662,20 @@ module.exports = (function() {
    * @return the first non-empty language query parameter found, null otherwise.
    */
   function extractQueryLanguage(queryLanguage) {
-    let language = null
+    let language = null;
 
     if (Array.isArray(queryLanguage)) {
       for (let i = 0; i < queryLanguage.length; ++i) {
-        if (queryLanguage[i] && (queryLanguage[i] !== "")) {
-          language = queryLanguage[i]
-          break
+        if (queryLanguage[i] && (queryLanguage[i] !== '')) {
+          language = queryLanguage[i];
+          break;
         }
       }
-    } else if (queryLanguage !== "") {
-      language = queryLanguage
+    } else if (queryLanguage !== '') {
+      language = queryLanguage;
     }
 
-    return language
+    return language;
   }
 
 

@@ -54,4 +54,22 @@ describe('Locale switching should work queryParameter', function() {
     i18n.getLocale(req).should.equal('fr');
     i18n.getLocale(res).should.equal('fr');
   });
+
+  it('should handle multiple query parameters', function() {
+    const uriPath = '/test?lang=de&lang=fr';
+    req.request = `GET ${uriPath}`;
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('de');
+    i18n.getLocale(res).should.equal('de');
+  });
+
+  it('should handle multiple query parameters, first is empty', function() {
+    const uriPath = '/test?lang=&lang=de';
+    req.request = `GET ${uriPath}`;
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('de');
+    i18n.getLocale(res).should.equal('de');
+  });
 });
