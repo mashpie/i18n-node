@@ -169,7 +169,7 @@ i18n.configure({
     indent: "\t",
 
     // setting extension of json files - defaults to '.json' (you might want to set this to '.js' according to webtranslateit)
-    extension: '.js',
+    extension: '.json',
 
     // setting prefix of json files name - default to none '' (in case you use different locale files naming scheme (webapp-en.json), rather then just en.json)
     prefix: 'webapp-',
@@ -208,7 +208,7 @@ i18n.configure({
     },
 
     // Downcase locale when passed on queryParam; e.g. lang=en-US becomes
-    // en-us.  When set to false, the queryParam value will be used as passed;
+    // en-us. When set to false, the queryParam value will be used as passed;
     // e.g. lang=en-US remains en-US.
     preserveLegacyCase: true,
 
@@ -216,7 +216,13 @@ i18n.configure({
     // also overrides locales
     staticCatalog: {
       de: { /* require('de.json') */ },
-    }
+    },
+
+    // use mustache with customTags (https://www.npmjs.com/package/mustache#custom-delimiters) or disable mustache entirely 
+    mustacheConfig: {
+      tags: [ '{{', '}}' ],
+      disable: false
+    },
 });
 ```
 

@@ -20,6 +20,11 @@ var vsprintf = require('sprintf-js').vsprintf,
   MakePlural = require('make-plural'),
   parseInterval = require('math-interval-parser').default;
 
+// utils
+var escapeRegExp = function(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+};
+
 // exports an instance
 module.exports = (function() {
 
@@ -39,6 +44,11 @@ module.exports = (function() {
       'addLocale': 'addLocale',
       'removeLocale': 'removeLocale'
     },
+    mustacheConfig = {
+      tags: [ '{{', '}}' ],
+      disable: false
+    },
+    mustacheRegex,
     pathsep = path.sep, // ---> means win support will be available in node 0.8.x and above
     autoReload,
     cookiename,
@@ -159,6 +169,19 @@ module.exports = (function() {
       autoReload = false;
       syncFiles = false;
     }
+
+    // customize mustache parsing
+    if(opt.mustacheConfig) {
+      if(Array.isArray(opt.mustacheConfig.tags)){
+        mustacheConfig.tags = opt.mustacheConfig.tags;
+      }
+      if(opt.mustacheConfig.disable === true){
+        mustacheConfig.disable = true;
+      }
+    }
+
+    const [ start, end ] = mustacheConfig.tags;
+    mustacheRegex = new RegExp(escapeRegExp(start) + '.*' + escapeRegExp(end));
 
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {
@@ -554,8 +577,8 @@ module.exports = (function() {
     }
 
     // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
-    if ((/{{.*}}/).test(msg)) {
-      msg = Mustache.render(msg, namedValues);
+    if (!mustacheConfig.disable && mustacheRegex.test(msg)) {
+      msg = Mustache.render(msg, namedValues, {}, mustacheConfig.tags);
     }
 
     // if we have extra arguments with values to get replaced,
