@@ -661,23 +661,12 @@ module.exports = (function() {
    * @param queryLanguage - language query parameter, either an array or a string.
    * @return the first non-empty language query parameter found, null otherwise.
    */
-  function extractQueryLanguage(queryLanguage) {
-    let language = null;
-
+  var extractQueryLanguage = function(queryLanguage) {
     if (Array.isArray(queryLanguage)) {
-      for (let i = 0; i < queryLanguage.length; ++i) {
-        if (queryLanguage[i] && (queryLanguage[i] !== '')) {
-          language = queryLanguage[i];
-          break;
-        }
-      }
-    } else if (queryLanguage !== '') {
-      language = queryLanguage;
-    }
-
-    return language;
-  }
-
+      return queryLanguage.find(lang => lang !== '' && lang);
+    } 
+    return typeof queryLanguage === 'string' && queryLanguage;
+  };
 
   /**
    * guess language setting based on http headers
@@ -700,14 +689,14 @@ module.exports = (function() {
         var urlObj = url.parse(urlAsString, true);
         var languageQueryParameter = urlObj.query[queryParameter];
         if (languageQueryParameter) {
-          logDebug('Overriding locale from query: ' + languageQueryParameter);
           let queryLanguage = extractQueryLanguage(languageQueryParameter);
-
-          if (queryLanguage && preserveLegacyCase) {
-            queryLanguage = queryLanguage.toLowerCase();
+          if(queryLanguage){
+            logDebug('Overriding locale from query: ' + queryLanguage);
+            if (preserveLegacyCase) {
+              queryLanguage = queryLanguage.toLowerCase();
+            }
+            return i18n.setLocale(request, queryLanguage);
           }
-
-          return i18n.setLocale(request, queryLanguage);
         }
       }
 
