@@ -800,19 +800,24 @@ module.exports = (function() {
   var parsePluralInterval = function(phrase, count) {
     var returnPhrase = phrase;
     var phrases = phrase.split(/\|/);
+    var intervalRuleExists = false;
 
     // some() breaks on 1st true
     phrases.some(function(p) {
-      var matches = p.match(/^\s*([\(\)\[\]\d,]+)?\s*(.*)$/);
+      var matches = p.match(/^\s*([\(\)\[\]]+[\d,]+[\(\)\[\]]+)?\s*(.*)$/);
 
       // not the same as in combined condition
-      if (matches[1]) {
+      if (matches != null && matches[1]) {
+        intervalRuleExists = true;
         if (matchInterval(count, matches[1]) === true) {
           returnPhrase = matches[2];
           return true;
         }
       } else {
-        returnPhrase = p;
+        // this is a other or catch all case, this only is taken into account if there is actually another rule
+        if (intervalRuleExists) {
+          returnPhrase = p;
+        }
       }
 
     });
