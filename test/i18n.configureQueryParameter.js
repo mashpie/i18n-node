@@ -54,4 +54,75 @@ describe('Locale switching should work queryParameter', function() {
     i18n.getLocale(req).should.equal('fr');
     i18n.getLocale(res).should.equal('fr');
   });
+
+  it('should handle multiple query parameters', function() {
+    const uriPath = '/test?lang=de&lang=fr';
+    req.request = `GET ${uriPath}`;
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('de');
+    i18n.getLocale(res).should.equal('de');
+  });
+
+  it('should handle multiple query parameters, first is empty', function() {
+    const uriPath = '/test?lang=&lang=de';
+    req.request = `GET ${uriPath}`;
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('de');
+    i18n.getLocale(res).should.equal('de');
+  });
+
+  it('should handle multiple query parameters, repeated values', function() {
+    const uriPath = '/test?lang=en&lang=en';
+    req.request = `GET ${uriPath}`;
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('en');
+    i18n.getLocale(res).should.equal('en');
+  });
+  
+  it('should handle empty query parameters', function() {
+    const uriPath = '/test?lang=';
+    req.request = `GET ${uriPath}`;
+    req.headers = {}
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('en');
+    i18n.getLocale(res).should.equal('en');
+  });
+  
+  it('should handle empty query parameters, repeated params', function() {
+    const uriPath = '/test?lang=&lang=&lang=';
+    req.request = `GET ${uriPath}`;
+    req.headers = {}
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('en');
+    i18n.getLocale(res).should.equal('en');
+  });
+
+  it('should fall back to language header if present on empty query parameters', function() {
+    const uriPath = '/test?lang=';
+    req.request = `GET ${uriPath}`;
+    req.headers = {
+      'accept-language': 'fr'
+    }
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('fr');
+    i18n.getLocale(res).should.equal('fr');
+  });
+
+  it('should fall back to language header if present on empty query parameters, with repeated params', function() {
+    const uriPath = '/test?lang=&lang=';
+    req.request = `GET ${uriPath}`;
+    req.headers = {
+      'accept-language': 'fr'
+    }
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('fr');
+    i18n.getLocale(res).should.equal('fr');
+  });
 });

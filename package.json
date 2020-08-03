@@ -1,13 +1,16 @@
 {
   "name": "i18n",
   "description": "lightweight translation module with dynamic json storage",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "homepage": "http://github.com/mashpie/i18n-node",
   "repository": {
     "type": "git",
     "url": "http://github.com/mashpie/i18n-node.git"
   },
   "author": "Marcus Spiegel <marcus.spiegel@gmail.com>",
+  "funding": {
+    "url": "https://github.com/sponsors/mashpie"
+  },
   "main": "./index",
   "keywords": [
     "template",
@@ -29,6 +32,7 @@
     "async": "^3.2.0",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
+    "import-fresh": "^3.2.1",
     "jshint": "^2.11.0",
     "mocha": "^7.1.2",
     "should": "*",

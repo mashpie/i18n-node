@@ -20,6 +20,11 @@ var vsprintf = require('sprintf-js').vsprintf,
   MakePlural = require('make-plural'),
   parseInterval = require('math-interval-parser').default;
 
+// utils
+var escapeRegExp = function(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+};
+
 // exports an instance
 module.exports = (function() {
 
@@ -39,6 +44,11 @@ module.exports = (function() {
       'addLocale': 'addLocale',
       'removeLocale': 'removeLocale'
     },
+    mustacheConfig = {
+      tags: [ '{{', '}}' ],
+      disable: false
+    },
+    mustacheRegex,
     pathsep = path.sep, // ---> means win support will be available in node 0.8.x and above
     autoReload,
     cookiename,
@@ -159,6 +169,19 @@ module.exports = (function() {
       autoReload = false;
       syncFiles = false;
     }
+
+    // customize mustache parsing
+    if(opt.mustacheConfig) {
+      if(Array.isArray(opt.mustacheConfig.tags)){
+        mustacheConfig.tags = opt.mustacheConfig.tags;
+      }
+      if(opt.mustacheConfig.disable === true){
+        mustacheConfig.disable = true;
+      }
+    }
+
+    const [ start, end ] = mustacheConfig.tags;
+    mustacheRegex = new RegExp(escapeRegExp(start) + '.*' + escapeRegExp(end));
 
     // implicitly read all locales
     if (Array.isArray(opt.locales)) {
@@ -417,8 +440,8 @@ module.exports = (function() {
     }
 
     // consider a fallback
-    if (!locales[targetLocale] && fallbacks[targetLocale]) {
-      targetLocale = fallbacks[targetLocale];
+    if (!locales[targetLocale]) {
+      targetLocale = getFallback(targetLocale, fallbacks) || targetLocale;
     }
 
     // now set locale on object
@@ -513,8 +536,8 @@ module.exports = (function() {
       return locales;
     }
 
-    if (!locales[targetLocale] && fallbacks[targetLocale]) {
-      targetLocale = fallbacks[targetLocale];
+    if (!locales[targetLocale]) {
+      targetLocale = getFallback(targetLocale, fallbacks) || targetLocale;
     }
 
     if (locales[targetLocale]) {
@@ -554,8 +577,8 @@ module.exports = (function() {
     }
 
     // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
-    if ((/{{.*}}/).test(msg)) {
-      msg = Mustache.render(msg, namedValues);
+    if (!mustacheConfig.disable && mustacheRegex.test(msg)) {
+      msg = Mustache.render(msg, namedValues, {}, mustacheConfig.tags);
     }
 
     // if we have extra arguments with values to get replaced,
@@ -658,6 +681,17 @@ module.exports = (function() {
   };
 
   /**
+   * @param queryLanguage - language query parameter, either an array or a string.
+   * @return the first non-empty language query parameter found, null otherwise.
+   */
+  var extractQueryLanguage = function(queryLanguage) {
+    if (Array.isArray(queryLanguage)) {
+      return queryLanguage.find(lang => lang !== '' && lang);
+    } 
+    return typeof queryLanguage === 'string' && queryLanguage;
+  };
+
+  /**
    * guess language setting based on http headers
    */
 
@@ -676,15 +710,16 @@ module.exports = (function() {
       if (queryParameter && request.url) {
         var urlAsString = typeof request.url === 'string' ? request.url : request.url.toString();
         var urlObj = url.parse(urlAsString, true);
-        if (urlObj.query[queryParameter]) {
-          logDebug('Overriding locale from query: ' + urlObj.query[queryParameter]);
-          request.language = urlObj.query[queryParameter];
-
-          if (preserveLegacyCase) {
-            request.language = request.language.toLowerCase();
+        var languageQueryParameter = urlObj.query[queryParameter];
+        if (languageQueryParameter) {
+          let queryLanguage = extractQueryLanguage(languageQueryParameter);
+          if(queryLanguage){
+            logDebug('Overriding locale from query: ' + queryLanguage);
+            if (preserveLegacyCase) {
+              queryLanguage = queryLanguage.toLowerCase();
+            }
+            return i18n.setLocale(request, queryLanguage);
           }
-
-          return i18n.setLocale(request, request.language);
         }
       }
 
@@ -705,8 +740,9 @@ module.exports = (function() {
             region = lr[1];
 
           // Check if we have a configured fallback set for this language.
-          if (fallbacks && fallbacks[lang]) {
-            fallback = fallbacks[lang];
+          var fallbackLang = getFallback(lang, fallbacks);
+          if (fallbackLang) {
+            fallback = fallbackLang;
             // Fallbacks for languages should be inserted
             // where the original, unsupported language existed.
             var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
@@ -718,8 +754,9 @@ module.exports = (function() {
           }
 
           // Check if we have a configured fallback set for the parent language of the locale.
-          if (fallbacks && fallbacks[parentLang]) {
-            fallback = fallbacks[parentLang];
+          var fallbackParentLang = getFallback(parentLang, fallbacks);
+          if (fallbackParentLang) {
+            fallback = fallbackParentLang;
             // Fallbacks for a parent language should be inserted
             // to the end of the list, so they're only picked
             // if there is no better match.
@@ -800,19 +837,24 @@ module.exports = (function() {
   var parsePluralInterval = function(phrase, count) {
     var returnPhrase = phrase;
     var phrases = phrase.split(/\|/);
+    var intervalRuleExists = false;
 
     // some() breaks on 1st true
     phrases.some(function(p) {
-      var matches = p.match(/^\s*([\(\)\[\]\d,]+)?\s*(.*)$/);
+      var matches = p.match(/^\s*([\(\)\[\]]+[\d,]+[\(\)\[\]]+)?\s*(.*)$/);
 
       // not the same as in combined condition
-      if (matches[1]) {
+      if (matches != null && matches[1]) {
+        intervalRuleExists = true;
         if (matchInterval(count, matches[1]) === true) {
           returnPhrase = matches[2];
           return true;
         }
       } else {
-        returnPhrase = p;
+        // this is a other or catch all case, this only is taken into account if there is actually another rule
+        if (intervalRuleExists) {
+          returnPhrase = p;
+        }
       }
 
     });
@@ -859,8 +901,8 @@ module.exports = (function() {
       locale = defaultLocale;
     }
 
-    if (!locales[locale] && fallbacks[locale]) {
-      locale = fallbacks[locale];
+    if (!locales[locale]) {
+      locale = getFallback(locale, fallbacks) || locale;
     }
 
     // attempt to read when defined as valid locale
@@ -1187,6 +1229,22 @@ module.exports = (function() {
       logDebug('will use ' + filepath);
     }
     return filepath;
+  };
+
+  /**
+   * Get locales with wildcard support
+   */
+  var getFallback = function(targetLocale, fallbacks) {
+    fallbacks = fallbacks || {};
+    if (fallbacks[targetLocale]) return fallbacks[targetLocale];
+    var fallBackLocale = null;
+    for (var key in fallbacks) {
+      if(targetLocale.match(new RegExp('^' + key.replace('*', '.*') + '$'))) {
+        fallBackLocale = fallbacks[key];
+        break;
+      }
+    }
+    return fallBackLocale;
   };
 
   /**
