@@ -72,4 +72,13 @@ describe('Locale switching should work queryParameter', function() {
     i18n.getLocale(req).should.equal('de');
     i18n.getLocale(res).should.equal('de');
   });
+
+  it('should handle multiple query parameters, repeated values', function() {
+    const uriPath = '/test?lang=en&lang=en';
+    req.request = `GET ${uriPath}`;
+    req.url = new URL(uriPath, 'http://localhost');
+    i18n.init(req, res);
+    i18n.getLocale(req).should.equal('en');
+    i18n.getLocale(res).should.equal('en');
+  });
 });
