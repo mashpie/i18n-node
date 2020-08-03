@@ -417,8 +417,8 @@ module.exports = (function() {
     }
 
     // consider a fallback
-    if (!locales[targetLocale] && fallbacks[targetLocale]) {
-      targetLocale = fallbacks[targetLocale];
+    if (!locales[targetLocale]) {
+      targetLocale = getFallback(targetLocale, fallbacks) || targetLocale;
     }
 
     // now set locale on object
@@ -513,8 +513,8 @@ module.exports = (function() {
       return locales;
     }
 
-    if (!locales[targetLocale] && fallbacks[targetLocale]) {
-      targetLocale = fallbacks[targetLocale];
+    if (!locales[targetLocale]) {
+      targetLocale = getFallback(targetLocale, fallbacks) || targetLocale;
     }
 
     if (locales[targetLocale]) {
@@ -705,8 +705,9 @@ module.exports = (function() {
             region = lr[1];
 
           // Check if we have a configured fallback set for this language.
-          if (fallbacks && fallbacks[lang]) {
-            fallback = fallbacks[lang];
+          var fallbackLang = getFallback(lang, fallbacks);
+          if (fallbackLang) {
+            fallback = fallbackLang;
             // Fallbacks for languages should be inserted
             // where the original, unsupported language existed.
             var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
@@ -718,8 +719,9 @@ module.exports = (function() {
           }
 
           // Check if we have a configured fallback set for the parent language of the locale.
-          if (fallbacks && fallbacks[parentLang]) {
-            fallback = fallbacks[parentLang];
+          var fallbackParentLang = getFallback(parentLang, fallbacks);
+          if (fallbackParentLang) {
+            fallback = fallbackParentLang;
             // Fallbacks for a parent language should be inserted
             // to the end of the list, so they're only picked
             // if there is no better match.
@@ -864,8 +866,8 @@ module.exports = (function() {
       locale = defaultLocale;
     }
 
-    if (!locales[locale] && fallbacks[locale]) {
-      locale = fallbacks[locale];
+    if (!locales[locale]) {
+      locale = getFallback(locale, fallbacks) || locale;
     }
 
     // attempt to read when defined as valid locale
@@ -1192,6 +1194,22 @@ module.exports = (function() {
       logDebug('will use ' + filepath);
     }
     return filepath;
+  };
+
+  /**
+   * Get locales with wildcard support
+   */
+  var getFallback = function(targetLocale, fallbacks) {
+    fallbacks = fallbacks || {};
+    if (fallbacks[targetLocale]) return fallbacks[targetLocale];
+    var fallBackLocale = null;
+    for (var key in fallbacks) {
+      if(targetLocale.match(new RegExp('^' + key.replace('*', '.*') + '$'))) {
+        fallBackLocale = fallbacks[key];
+        break;
+      }
+    }
+    return fallBackLocale;
   };
 
   /**

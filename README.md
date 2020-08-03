@@ -138,8 +138,8 @@ i18n.configure({
     // setup some locales - other locales default to en silently
     locales:['en', 'de'],
 
-    // fall back from Dutch to German
-    fallbacks:{'nl': 'de'},
+    // fall back from Dutch to German and from any localized German (de-at, de-li etc.) to German
+    fallbacks:{'nl': 'de', 'de-*': 'de'},
 
     // you may alter a site wide default locale
     defaultLocale: 'de',
