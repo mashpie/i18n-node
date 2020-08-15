@@ -12,7 +12,11 @@ No extra parsing needed.
 ![npm](https://img.shields.io/npm/dw/i18n)
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![FOSSA Status][fossa-image]][fossa-url]
-[![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
+
+<p align="center">
+<a href="https://www.buymeacoffee.com/mashpie" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important; border-radius: 0.5rem !important;" ></a><br>
+...if you like  :)
+</p>
 
 ## Install
 ```sh
@@ -1041,6 +1045,3 @@ For current release notes see [GitHub Release Notes](https://github.com/mashpie/
 
 [fossa-image]: https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node.svg?type=shield
 [fossa-url]: https://app.fossa.com/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node?ref=badge_shield
-
-[greenkeeper-image]: https://badges.greenkeeper.io/mashpie/i18n-node.svg
-[greenkeeper-url]: https://greenkeeper.io/
