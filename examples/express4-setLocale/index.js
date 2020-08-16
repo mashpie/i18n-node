@@ -1,6 +1,6 @@
 var express = require('express');
 var url = require('url');
-var i18n = require('../../i18n');
+var i18n = require('../..'); // require('i18n')
 
 // another 'global' object that is bound to i18n additionaly
 // DANGER! this `funkyObject` is NOT concurrency aware,
@@ -10,7 +10,8 @@ var funkyObject = {};
 i18n.configure({
   locales: ['en', 'de', 'ar'],
   register: funkyObject,
-  directory: __dirname + '/locales'
+  directory: __dirname + '/locales',
+  updateFiles: false
 });
 
 var app = express();

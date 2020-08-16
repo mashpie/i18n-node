@@ -12,38 +12,120 @@ No extra parsing needed.
 ![npm](https://img.shields.io/npm/dw/i18n)
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![FOSSA Status][fossa-image]][fossa-url]
-[![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
+
+<p align="center">
+<a href="https://www.buymeacoffee.com/mashpie" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important; border-radius: 0.5rem !important;" width="217" height="51"></a><br>
+...if you like  :)
+</p>
 
 ## Install
 ```sh
 npm install i18n --save
 ```
 
-## Test
-```sh
-npm test
-```
-
-## Load
-```js
-// load modules
-var express = require('express'),
-    i18n = require("i18n");
-```
-
-## Configure
-
-Minimal example, just setup two locales and a project specific directory
+## Synopsis
 
 ```js
+const http = require('http')
+const { I18n } = require('i18n')
+
+const i18n = new I18n({
+  locales:['en', 'de'],
+  directory: __dirname + '/locales'
+})
+
+const app = http.createServer((req, res) => {
+  i18n.init(req, res);
+  res.end(res.__('Hello'));
+});
+
+app.listen(3000, '127.0.0.1');
+
+```
+This wires up a plain http server and return "Hello" or "Hallo" depending on browsers 'Accept-Language'. The first configured locale 'en' will default in case the browser doesn't include any of those locales in his request.
+
+---
+
+## Usage 
+
+With __0.12.0__ `i18n` now provides options to be used as instance or singleton.
+
+- __Instances__ allow to work with multiple different configurations and encapsulate resources and states.
+- __Singletons__ allow to share configuration, state and resources across multiple requires, modules or files.
+
+Before __0.12.0__ _singleton usage_ was the only option. Instances give much more intuitive control and should be considered the "better practice" in complex setups.
+
+### As Instance
+
+Minimal example, just setup two locales and a project specific directory.
+
+```js
+/**
+ * require I18n with capital I as constructor
+ */
+const { I18n } = require("i18n");
+
+/**
+ * create a new instance with it's configuration
+ */
+const i18n = new I18n({
+    locales:['en', 'de'],
+    directory: __dirname + '/locales'
+});
+```
+
+Alternatively split creation and configuration, useful when split up into different modules for bootstrapping.
+
+```js
+/**
+ * require I18n with capital I as constructor
+ */
+const { I18n } = require("i18n");
+
+/**
+ * create a new instance 
+ */
+const i18n = new I18n();
+
+/**
+ * later in code configure
+ */
+i18n.configure({
+    locales:['en', 'de'],
+    directory: __dirname + '/locales'
+})
+```
+
+
+### As Singleton
+
+Same Minimal example, just setup two locales and a project specific directory.
+
+```js
+const i18n = require("i18n");
+
+/**
+ * configure shared state
+ */
 i18n.configure({
     locales:['en', 'de'],
     directory: __dirname + '/locales'
 });
 ```
-now you are ready to use a global `i18n.__('Hello')`.
 
-## Example usage in global scope
+Now you are ready to use a global `i18n.__('Hello')`.
+
+Require `i18n`in another file reuses same configuration and shares state:
+
+```js
+const i18n = require("i18n");
+
+module.exports = () => {
+  console.log(i18n.__('Hello'))
+}
+```
+
+### CLI within global scope
 
 In your cli, when not registered to a specific object:
 
@@ -54,7 +136,7 @@ var greeting = i18n.__('Hello');
 
 > **Global** assumes you share a common state of localization in any time and any part of your app. This is usually fine in cli-style scripts. When serving responses to http requests you'll need to make sure that scope is __NOT__ shared globally but attached to your request object.
 
-## Example usage in express.js
+### Middleware in express.js
 
 In an express app, you might use i18n.init to gather language settings of your visitors and also bind your helpers to response object honoring request objects locale, ie:
 
@@ -88,9 +170,9 @@ in your templates (depending on your template engine)
 ${__('Hello')}
 ```
 
-## Examples for common setups
+### Some examples for common setups
 
-See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples) inside `/examples` for some inspiration in node 4.x / 5.x or browse these gists:
+See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples) inside `/examples` for some inspiration in node and express or browse these gists:
 
 > PLEASE NOTE: Those gist examples worked until node 0.12.x only
 
@@ -108,6 +190,7 @@ app.use(express.static(__dirname + '/www'));
 app.use('/en', express.static(__dirname + '/www'));
 app.use('/de', express.static(__dirname + '/www'));
 ```
+---
 
 ## API
 
@@ -1014,6 +1097,11 @@ i18n.configure({
 });
 ```
 
+## Test
+```sh
+npm test
+```
+
 ## Roadmap
 
 * add a storage adapter (to support .yaml, .js, memory)
@@ -1041,6 +1129,3 @@ For current release notes see [GitHub Release Notes](https://github.com/mashpie/
 
 [fossa-image]: https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node.svg?type=shield
 [fossa-url]: https://app.fossa.com/projects/git%2Bgithub.com%2Fmashpie%2Fi18n-node?ref=badge_shield
-
-[greenkeeper-image]: https://badges.greenkeeper.io/mashpie/i18n-node.svg
-[greenkeeper-url]: https://greenkeeper.io/
