@@ -1,4 +1,4 @@
-var i18n = require('../i18n');
+var i18n = require('..');
 var should = require("should");
 
 describe('Object Notation', function() {
