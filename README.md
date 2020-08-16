@@ -25,8 +25,6 @@ npm install i18n --save
 
 ## Synopsis
 
-Wire up a plain http server and return "Hello" or "Hallo" depending on browsers 'Accept-Language'. The first configured locale 'en' will default in case the browser doesn't include any of those locales in his request.
-
 ```js
 const http = require('http')
 const { I18n } = require('i18n')
@@ -44,6 +42,9 @@ const app = http.createServer((req, res) => {
 app.listen(3000, '127.0.0.1');
 
 ```
+This wires up a plain http server and return "Hello" or "Hallo" depending on browsers 'Accept-Language'. The first configured locale 'en' will default in case the browser doesn't include any of those locales in his request.
+
+---
 
 ## Usage 
 
