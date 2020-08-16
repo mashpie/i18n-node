@@ -1,4 +1,4 @@
-var i18n = require('../i18n'),
+var i18n = require('..'),
   should = require("should");
 
 // reserve a "private" scope

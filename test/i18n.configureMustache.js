@@ -1,13 +1,5 @@
-var importFresh = require('import-fresh'),
-  i18n1 = importFresh('../i18n'),
-  i18n2 = importFresh('../i18n'),
-  i18n3 = importFresh('../i18n'),
-  i18n4 = importFresh('../i18n'),
-  path = require('path'),
-  should = require("should");
-
-// cleanup for other tests
-delete require.cache[path.resolve('i18n.js')];
+const { I18n } = require('..');
+const  should = require("should");
 
 describe('mustache configuration', function() {
   const e = should.equal
@@ -23,10 +15,10 @@ describe('mustache configuration', function() {
   }
   const name = 'Pudo & Moka'
 
-  i18n1.configure({ staticCatalog });
-  i18n2.configure({ staticCatalog, mustacheConfig: { tags: [ '<%', '%>' ] } });
-  i18n3.configure({ staticCatalog, mustacheConfig: { tags: [ '**', '**' ] } });
-  i18n4.configure({ staticCatalog, mustacheConfig: { disable: true } });
+  const i18n1 = new I18n({ staticCatalog });
+  const i18n2 = new I18n({ staticCatalog, mustacheConfig: { tags: [ '<%', '%>' ] } });
+  const i18n3 = new I18n({ staticCatalog, mustacheConfig: { tags: [ '**', '**' ] } });
+  const i18n4 = new I18n({ staticCatalog, mustacheConfig: { disable: true } });
 
   it('should parse with defaults', function(done) {
     e(i18n1.__('Hello {{{name}}}', { name }), 'Hello Pudo & Moka')

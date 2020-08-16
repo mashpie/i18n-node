@@ -4,7 +4,7 @@
  * req.setLocale("locale") sets defaultLanguage when req.locals is not defined #166
  *
  */
-var i18n = require('../i18n'),
+var i18n = require('..'),
   should = require("should"),
   path = require("path");
 

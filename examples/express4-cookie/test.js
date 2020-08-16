@@ -1,3 +1,8 @@
+/**
+ * run like so:
+ * $ mocha --exit test.js
+ */
+
 require('./index');
 
 var Browser = require('zombie'),

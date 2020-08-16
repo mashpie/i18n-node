@@ -25,8 +25,8 @@ var escapeRegExp = function(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 };
 
-// exports an instance
-module.exports = (function() {
+// create constructor function
+const i18n = function I18n(_OPTS = false) {
 
   var MessageformatInstanceForLocale = {},
     PluralsForLocale = {},
@@ -1269,6 +1269,18 @@ module.exports = (function() {
     return value;
   }
 
+  /**
+   * implicitly configure when created with given options
+   * @example
+   * const i18n = new I18n({
+   *   locales: ['en', 'fr']
+   * });
+   */
+  if(_OPTS) i18n.configure(_OPTS);
+  
+
   return i18n;
 
-}());
+};
+
+module.exports = i18n;

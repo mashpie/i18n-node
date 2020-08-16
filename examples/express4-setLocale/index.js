@@ -1,6 +1,6 @@
 var express = require('express');
 var url = require('url');
-var i18n = require('../../i18n');
+var i18n = require('../..'); // require('i18n')
 
 // another 'global' object that is bound to i18n additionaly
 // DANGER! this `funkyObject` is NOT concurrency aware,
@@ -8,21 +8,18 @@ var i18n = require('../../i18n');
 var funkyObject = {};
 
 i18n.configure({
-  locales: ['en', 'kr'],
-  fallbacks: {
-    'en-US': 'en',
-    'ko-KR': 'kr'
-  },
+  locales: ['en', 'de', 'ar'],
   register: funkyObject,
-  directory: __dirname + '/locales'
+  directory: __dirname + '/locales',
+  updateFiles: false
 });
 
 var app = express();
 app.use(i18n.init);
 
-// uses locale as guessed by accept-language
+// uses locale as guessed by accept-headers
 // req: Hallo res: Hallo res.locals: Hallo funkyObject: Hallo
-app.get('/default/', function(req, res) {
+app.get('/default/:lang', function(req, res) {
   render(req, res);
 });
 
