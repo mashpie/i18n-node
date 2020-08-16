@@ -1,24 +1,13 @@
 /*jslint nomen: true, undef: true, sloppy: true, white: true, stupid: true, passfail: false, node: true, plusplus: true, indent: 2 */
 
-var i18n = require('..'),
-    should = require("should"),
-    fs = require('fs'),
-    path = require('path');
-
-var i18nPath = 'i18n';
-var i18nFilename = path.resolve(i18nPath + '.js');
-
-function reconfigure(config) {
-    delete require.cache[i18nFilename];
-    i18n = require(i18nFilename);
-    i18n.configure(config);
-}
+const { I18n } = require('..');
+const should = require("should");
 
 describe('configure register', function() {
 
     it('should work on a custom object', function(done) {
         var customObject = {};
-        reconfigure({
+        new I18n({
             locales: ['en', 'de'],
             register: customObject
         });
@@ -30,7 +19,7 @@ describe('configure register', function() {
 
     it('should work on list of objects', function() {
         var obj1 = {}, obj2 = {};
-        reconfigure({
+        const i18n = new I18n({
             locales: ['en', 'de', 'fr'],
             register: [obj1, obj2]
         });

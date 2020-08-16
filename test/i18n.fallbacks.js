@@ -1,8 +1,10 @@
-var i18n = require('..'),
-  should = require("should"),
+const { I18n } = require('..');
+
+var should = require("should"),
   path = require("path");
 
 describe('Fallbacks', function() {
+  let i18n = new I18n()
   var req = {
     request: "GET /test",
     __: i18n.__,
@@ -13,6 +15,8 @@ describe('Fallbacks', function() {
 
   describe('Fallback to language', function() {
     beforeEach(function() {
+
+
 
       i18n.configure({
         locales: ['en', 'de', 'fr'],
@@ -103,19 +107,13 @@ describe('Fallbacks', function() {
 
   describe('Fallback to locale', function() {
     beforeEach(function() {
-      // Force reloading of i18n, to reset configuration
-      var i18nPath = 'i18n';
-      var i18nFilename = path.resolve(i18nPath + '.js');
-      delete require.cache[i18nFilename];
-      i18n = require(i18nFilename);
-
-      i18n.configure({
+      i18n = new I18n({
         locales: ['en-US', 'de-DE', 'fr-CA'],
         defaultLocale: 'en-US',
         fallbacks: { 'de': 'de-DE', 'fr*': 'fr-CA' },
         directory: './locales',
         register: req
-      });
+      })
       req.headers = {};
       delete req.languages;
       delete req.language;
@@ -143,19 +141,13 @@ describe('Fallbacks', function() {
 
   describe('Keep valid locale', function() {
     beforeEach(function() {
-      // Force reloading of i18n, to reset configuration
-      var i18nPath = 'i18n';
-      var i18nFilename = path.resolve(i18nPath + '.js');
-      delete require.cache[i18nFilename];
-      i18n = require(i18nFilename);
-
-      i18n.configure({
+      i18n = new I18n({
         locales: ['de-AT', 'de-DE'],
         defaultLocale: 'en-DE',
         fallbacks: { 'de': 'de-DE' },
         directory: './locales',
         register: global
-      });
+      })
       req.headers = {};
       delete req.languages;
       delete req.language;
