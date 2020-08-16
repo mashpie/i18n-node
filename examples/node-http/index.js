@@ -8,14 +8,15 @@
 
 // require modules
 var http = require('http'),
-    i18n = require('../../i18n'),
+    i18n = require('../..'), // require('i18n')
     url = require('url'),
     app;
 
 // minimal config
 i18n.configure({
   locales: ['en', 'de'],
-  directory: __dirname + '/locales'
+  directory: __dirname + '/locales',
+  updateFiles: false
 });
 
 // simple server
