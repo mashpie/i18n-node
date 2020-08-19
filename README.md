@@ -225,7 +225,10 @@ i18n.configure({
     fallbacks:{'nl': 'de', 'de-*': 'de'},
 
     // you may alter a site wide default locale
-    defaultLocale: 'de',
+    defaultLocale: 'en',
+
+    // will return translation from defaultLocale in case current locale doesn't provide it
+    retryInDefaultLocale: false,
 
     // sets a custom cookie name to parse locale settings from - defaults to NULL
     cookie: 'yourcookiename',
