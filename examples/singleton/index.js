@@ -1,11 +1,12 @@
+const path = require('path')
 const i18n = require('../..')
 const one = require('./modules/one')
 const two = require('./modules/two')
 
 i18n.configure({
-  locales:['en', 'de'],
-  directory: __dirname + '/locales'
-});
+  locales: ['en', 'de'],
+  directory: path.join(__dirname, 'locales')
+})
 
 // set to german
 i18n.setLocale('de')

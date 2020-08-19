@@ -7,38 +7,39 @@
  */
 
 // require modules
-var http = require('http'),
-    i18n = require('../..'), // require('i18n')
-    url = require('url'),
-    app;
+var http = require('http')
+var i18n = require('../..') // require('i18n')
+var url = require('url')
+var path = require('path')
+var app
 
 // minimal config
 i18n.configure({
   locales: ['en', 'de'],
-  directory: __dirname + '/locales',
+  directory: path.join(__dirname, 'locales'),
   updateFiles: false,
   autoReload: true
-});
+})
 
 // simple server
 app = http.createServer(function (req, res) {
-  var delay = app.getDelay(req, res);
+  var delay = app.getDelay(req, res)
 
   // init & guess
-  i18n.init(req, res);
+  i18n.init(req, res)
 
   // delay a response to simulate a long running process,
   // while another request comes in with altered language settings
   setTimeout(function () {
-    res.end(res.__('Hello'));
-  }, delay);
-
-});
+    res.end(res.__('Hello'))
+  }, delay)
+})
 
 // simple param parsing
 app.getDelay = function (req, res) {
-  return url.parse(req.url, true).query.delay || 0;
-};
+  // eslint-disable-next-line node/no-deprecated-api
+  return url.parse(req.url, true).query.delay || 0
+}
 
 // startup
-app.listen(3000, '127.0.0.1');
+app.listen(3000, '127.0.0.1')
