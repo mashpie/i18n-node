@@ -1,5 +1,6 @@
 coverage/
 locales/
+localestowrite/
+localesmakeplural/
 node_modules/
-test/
 i18n-cov.js
