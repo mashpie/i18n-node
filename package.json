@@ -55,9 +55,9 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "lint": "eslint '**/*.js' --fix",
-    "test": "mocha --exit",
-    "test-ci": "istanbul cover mocha -- --exit"
+    "lint": "eslint '**/*.js'",
+    "test": "npm run lint && mocha --exit",
+    "test-ci": "npm run lint && istanbul cover mocha -- --exit"
   },
   "lint-staged": {
     "*.js": "eslint --fix"

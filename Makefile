@@ -7,6 +7,7 @@ test.examples:
 clean:
 	rm -rf ./localestowrite
 	rm -rf ./localesmakeplural
+	rm -rf ./coverage
 
 test: clean
 	npm run test
@@ -15,6 +16,6 @@ cover:
 	npm run test-ci
 
 lint:
-	npm run lint
+	npm run lint -- --fix
 
 .PHONY: test examples
