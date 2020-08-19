@@ -1,6 +1,6 @@
 # i18n
 
-Lightweight simple translation module with dynamic json storage. Supports plain vanilla node.js apps and should work with any framework (like _express_, _restify_ and probably more) that exposes an `app.use()` method passing in `res` and `req` objects.
+Lightweight simple translation module with dynamic JSON storage. Supports plain vanilla Node.js apps and should work with any framework (like _Express_, _restify_ and probably more) that exposes an `app.use()` method passing in `res` and `req` objects.
 Uses common __('...') syntax in app and templates.
 Stores language files in json files compatible to [webtranslateit](http://webtranslateit.com/) json format.
 Adds new strings on-the-fly when first used in your app.
@@ -176,12 +176,12 @@ See [tested examples](https://github.com/mashpie/i18n-node/tree/master/examples)
 
 > PLEASE NOTE: Those gist examples worked until node 0.12.x only
 
-* [plain node.js + http](https://gist.github.com/mashpie/5188567)
-* [plain node.js + restify](https://gist.github.com/mashpie/5694251)
-* [express 3 + cookie](https://gist.github.com/mashpie/5124626)
-* [express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
-* [express 3 + mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
-* [express 4 + cookie](https://gist.github.com/mashpie/08e5a0ee764f7b6b1355)
+* [plain Node.js + HTTP](https://gist.github.com/mashpie/5188567)
+* [plain Node.js + restify](https://gist.github.com/mashpie/5694251)
+* [Express 3 + cookie](https://gist.github.com/mashpie/5124626)
+* [Express 3 + hbs 2 (+ cookie)](https://gist.github.com/mashpie/5246334)
+* [Express 3 + Mustache (+ cookie)](https://gist.github.com/mashpie/5247373)
+* [Express 4 + cookie](https://gist.github.com/mashpie/08e5a0ee764f7b6b1355)
 
 For serving the same static files with different language url, you could:
 
@@ -221,7 +221,7 @@ i18n.configure({
     // setup some locales - other locales default to en silently
     locales:['en', 'de'],
 
-    // fall back from Dutch to German and from any localized German (de-at, de-li etc.) to German
+    // fallback from Dutch to German and from any localized German (de-at, de-li etc.) to German
     fallbacks:{'nl': 'de', 'de-*': 'de'},
 
     // you may alter a site wide default locale
@@ -239,7 +239,7 @@ i18n.configure({
     // control mode on directory creation - defaults to NULL which defaults to umask of process user. Setting has no effect on win.
     directoryPermissions: '755',
 
-    // watch for changes in json files to reload locale on updates - defaults to false
+    // watch for changes in JSON files to reload locale on updates - defaults to false
     autoReload: true,
 
     // whether to write new locale information to disk - defaults to true
@@ -321,7 +321,7 @@ After this and until the cookie expires, `i18n.init()` will get the value of the
 
 #### Some words on `register` option
 
-Esp. when used in a cli like script you won't use any `i18n.init()` to guess language settings from your user. Thus `i18n` won't bind itself to any `res` or `req` object and will work like a static module.
+Used especially in a CLI-like script. You won't use any `i18n.init()` to guess language settings from your user, thus `i18n` won't bind itself to any `res` or `req` object and will work like a static module.
 
 ```js
 var anyObject = {};
