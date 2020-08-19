@@ -51,10 +51,15 @@
     "sinon": "^9.0.2",
     "tap": "^14.10.8"
   },
+  "resolutions": {
+    "lodash": "^4.17.20",
+    "ajv": "^6.12.4"
+  },
   "engines": {
     "node": ">=0.10.0"
   },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "lint": "eslint '**/*.js'",
     "test": "npm run lint && mocha --exit",
     "test-ci": "npm run lint && istanbul cover mocha -- --exit"
