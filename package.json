@@ -55,7 +55,6 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "jshint": "jshint --verbose .",
     "lint": "eslint '**/*.js' --fix",
     "test": "mocha --exit",
     "test-ci": "istanbul cover mocha -- --exit"

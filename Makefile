@@ -14,4 +14,7 @@ test: clean
 cover:
 	npm run test-ci
 
+lint:
+	npm run lint
+
 .PHONY: test examples
