@@ -52,6 +52,7 @@ const i18n = function I18n(_OPTS = false) {
     pathsep = path.sep, // ---> means win support will be available in node 0.8.x and above
     autoReload,
     cookiename,
+	languageHeaderName,
     defaultLocale,
     retryInDefaultLocale,
     directory,
@@ -110,6 +111,9 @@ const i18n = function I18n(_OPTS = false) {
 
     // sets a custom cookie name to parse locale settings from
     cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
+	
+	// set the custom header name to extract the language locale
+    languageHeaderName = (typeof opt.header === 'string') ? opt.header : 'accept-language';
 
     // query-string parameter to be watched - @todo: add test & doc
     queryParameter = (typeof opt.queryParameter === 'string') ? opt.queryParameter : null;
@@ -701,7 +705,7 @@ const i18n = function I18n(_OPTS = false) {
 
   var guessLanguage = function(request) {
     if (typeof request === 'object') {
-      var languageHeader = request.headers? request.headers['accept-language'] : undefined,
+      var languageHeader = request.headers? request.headers[languageHeaderName] : undefined,
         languages = [],
         regions = [];
 
