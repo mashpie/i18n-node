@@ -232,9 +232,9 @@ i18n.configure({
 
     // sets a custom cookie name to parse locale settings from - defaults to NULL
     cookie: 'yourcookiename',
-	
-	// sets a custom header name to read the language preference from - accept-language header by default
-	header: 'accept-language',
+
+    // sets a custom header name to read the language preference from - accept-language header by default
+    header: 'accept-language',
 
     // query parameter to switch locale (ie. /home?lang=ch) - defaults to NULL
     queryParameter: 'lang',
@@ -296,10 +296,10 @@ i18n.configure({
       '__n': 'tn' //and req.__n can be called as req.tn
     },
 
-    // Downcase locale when passed on queryParam; e.g. lang=en-US becomes
-    // en-us. When set to false, the queryParam value will be used as passed;
+    // When set to true, downcase locale when passed on queryParam; e.g. lang=en-US becomes en-us. 
+    // When set to false, the queryParam value will be used as passed;
     // e.g. lang=en-US remains en-US.
-    preserveLegacyCase: true,
+    preserveLegacyCase: true, // defaults to true
 
     // set the language catalog statically
     // also overrides locales
