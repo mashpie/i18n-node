@@ -53,6 +53,7 @@ const i18n = function I18n(_OPTS = false) {
     autoReload,
     cookiename,
     defaultLocale,
+    retryInDefaultLocale,
     directory,
     directoryPermissions,
     extension,
@@ -138,6 +139,9 @@ const i18n = function I18n(_OPTS = false) {
 
     // setting defaultLocale
     defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+
+    // allow to retry in default locale, useful for production
+    retryInDefaultLocale = (typeof opt.retryInDefaultLocale === 'boolean') ? opt.retryInDefaultLocale : false;
 
     // auto reload locale files when changed
     autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
@@ -901,6 +905,7 @@ const i18n = function I18n(_OPTS = false) {
       locale = defaultLocale;
     }
 
+    // try to get a fallback
     if (!locales[locale]) {
       locale = getFallback(locale, fallbacks) || locale;
     }
@@ -944,18 +949,45 @@ const i18n = function I18n(_OPTS = false) {
     var accessor = localeAccessor(locale, singular);
     var mutator = localeMutator(locale, singular);
 
+    // if (plural) {
+    //   if (accessor() == null) {
+    //     mutator({
+    //       'one': defaultSingular || singular,
+    //       'other': defaultPlural || plural
+    //     });
+    //     write(locale);
+    //   }
+    // }
+
+    // if (accessor() == null) {
+    //   mutator(defaultSingular || singular);
+    //   write(locale);
+    // }
+
     if (plural) {
       if (accessor() == null) {
-        mutator({
-          'one': defaultSingular || singular,
-          'other': defaultPlural || plural
-        });
+        // when retryInDefaultLocale is true - try to set default value from defaultLocale
+        if (retryInDefaultLocale && locale !== defaultLocale) {
+          logDebug('Missing ' + singular + ' in ' + locale + ' retrying in ' + defaultLocale);
+          mutator(translate(defaultLocale, singular, plural));
+        } else {
+          mutator({
+            'one': defaultSingular || singular,
+            'other': defaultPlural || plural
+          });
+        }
         write(locale);
       }
     }
-
+  
     if (accessor() == null) {
-      mutator(defaultSingular || singular);
+      // when retryInDefaultLocale is true - try to set default value from defaultLocale
+      if (retryInDefaultLocale && locale !== defaultLocale) {
+        logDebug('Missing ' + singular + ' in ' + locale + ' retrying in ' + defaultLocale);
+        mutator(translate(defaultLocale, singular, plural));
+      } else {
+        mutator(defaultSingular || singular);
+      }
       write(locale);
     }
 
