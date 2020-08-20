@@ -1,7 +1,7 @@
 {
   "name": "i18n",
   "description": "lightweight translation module with dynamic json storage",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "homepage": "http://github.com/mashpie/i18n-node",
   "repository": {
     "type": "git",
@@ -12,6 +12,11 @@
     "url": "https://github.com/sponsors/mashpie"
   },
   "main": "./index",
+  "files": [
+    "i18n.js",
+    "index.js",
+    "SECURITY.md"
+  ],
   "keywords": [
     "template",
     "i18n",
