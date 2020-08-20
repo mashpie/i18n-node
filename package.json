@@ -1,7 +1,7 @@
 {
   "name": "i18n",
   "description": "lightweight translation module with dynamic json storage",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "homepage": "http://github.com/mashpie/i18n-node",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "debug": "^4.1.1",
-    "make-plural": "^6.2.1",
+    "make-plural": "^6.2.2",
     "math-interval-parser": "^2.0.1",
     "messageformat": "^2.3.0",
     "mustache": "^4.0.1",
@@ -51,9 +51,9 @@
     "husky": "^4.2.5",
     "import-fresh": "^3.2.1",
     "lint-staged": "^10.2.11",
-    "mocha": "^7.1.2",
+    "mocha": "^7.2.0",
     "prettier": "^2.0.5",
-    "sinon": "^9.0.2",
+    "sinon": "^9.0.3",
     "tap": "^14.10.8"
   },
   "resolutions": {
@@ -64,7 +64,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
+    "force-resolutions": "npx npm-force-resolutions",
     "lint": "eslint '**/*.js'",
     "test": "npm run lint && mocha --exit",
     "test-ci": "npm run lint && istanbul cover mocha -- --exit"
