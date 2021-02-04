@@ -27,11 +27,11 @@
   },
   "dependencies": {
     "debug": "^4.1.1",
+    "fast-printf": "^1.4.1",
     "make-plural": "^6.2.2",
     "math-interval-parser": "^2.0.1",
     "messageformat": "^2.3.0",
-    "mustache": "^4.0.1",
-    "sprintf-js": "^1.1.2"
+    "mustache": "^4.0.1"
   },
   "devDependencies": {
     "async": "^3.2.0",

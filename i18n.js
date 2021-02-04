@@ -7,7 +7,7 @@
 'use strict'
 
 // dependencies
-var vsprintf = require('sprintf-js').vsprintf
+var printf = require('fast-printf').printf
 var pkgVersion = require('./package.json').version
 var fs = require('fs')
 var url = require('url')
@@ -621,10 +621,14 @@ const i18n = function I18n(_OPTS = false) {
 
     // replace the counter
     if (typeof count === 'number') {
-      msg = vsprintf(msg, [Number(count)])
+      console.log({
+        msg,
+        args: [Number(count)]
+      })
+      msg = printf(msg, Number(count))
     }
 
-    // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
+    // if the msg string contains {{Mustache}} patterns we render it as a mini template
     if (!mustacheConfig.disable && mustacheRegex.test(msg)) {
       msg = Mustache.render(msg, namedValues, {}, mustacheConfig.tags)
     }
@@ -632,7 +636,7 @@ const i18n = function I18n(_OPTS = false) {
     // if we have extra arguments with values to get replaced,
     // an additional substition injects those strings afterwards
     if (/%/.test(msg) && args && args.length > 0) {
-      msg = vsprintf(msg, args)
+      msg = printf(msg, ...args)
     }
 
     return msg
