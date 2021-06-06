@@ -555,7 +555,7 @@ __n('%s cat', 21) // --> 21 кошка
 
 ### i18n.__mf()
 
-Supports the advanced MessageFormat as provided by excellent [messageformat module](https://www.npmjs.com/package/messageformat). You should definetly head over to [messageformat.github.io](https://messageformat.github.io) for a guide to MessageFormat. i18n takes care of `new MessageFormat('en').compile(msg);` with the current `msg` loaded from it's json files and cache that complied fn in memory. So in short you might use it similar to `__()` plus extra object to accomplish MessageFormat's formatting. Ok, some examples:
+Supports the advanced MessageFormat as provided by excellent [messageformat module](https://www.npmjs.com/package/@messageformat/core). You should definetly head over to [messageformat.github.io](http://messageformat.github.io/messageformat/api/core/) for a guide to MessageFormat. i18n takes care of `new MessageFormat('en').compile(msg);` with the current `msg` loaded from it's json files and cache that complied fn in memory. So in short you might use it similar to `__()` plus extra object to accomplish MessageFormat's formatting. Ok, some examples:
 
 ```js
 // assume res is set to german
@@ -571,7 +571,7 @@ res.__mf('Hello {name}', { name: 'Marcus' }) // --> Hallo Marcus
 res.__mf('Hello {name}, how was your %s?', 'test', { name: 'Marcus' }) // --> Hallo Marcus, wie war dein test?
 
 // now check out a plural rule
-res.__mf('{N, plural, one{# cat} few{# cats} many{# cats} others{# cats}}', {
+res.__mf('{N, selectordinal, one{# cat} two{# cats} few{# cats} other{# cats}}', {
   N: 1
 })
 
@@ -612,7 +612,7 @@ But MessageFormat can handle more! You get ability to process:
 
 * Simple Variable Replacement (similar to mustache placeholders)
 * SelectFormat (ie. switch msg based on gender)
-* PluralFormat (see above and [ranges](#ranged-interval-support))
+* [PluralFormat](http://messageformat.github.io/messageformat/guide/#pluralformat) (see above and [ranges](#ranged-interval-support))
 
 Combinations of those give superpower, but should get tested well (contribute your use case, please!) on integration.
 
