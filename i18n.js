@@ -328,8 +328,6 @@ const i18n = function I18n(_OPTS = false) {
     } else {
       mf = new Messageformat(targetLocale)
 
-      // @see https://messageformat.github.io/messageformat/MessageFormat#disablePluralKeyChecks__anchor
-      mf.disablePluralKeyChecks()
       mf.compiledFunctions = {}
       MessageformatInstanceForLocale[targetLocale] = mf
     }
