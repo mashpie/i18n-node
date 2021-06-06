@@ -26,10 +26,10 @@
     "lib": "."
   },
   "dependencies": {
+    "@messageformat/core": "^3.0.0",
     "debug": "^4.1.1",
     "make-plural": "^6.2.2",
     "math-interval-parser": "^2.0.1",
-    "messageformat": "^2.3.0",
     "mustache": "^4.0.1",
     "sprintf-js": "^1.1.2"
   },

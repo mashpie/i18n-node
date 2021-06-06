@@ -16,7 +16,7 @@ var debug = require('debug')('i18n:debug')
 var warn = require('debug')('i18n:warn')
 var error = require('debug')('i18n:error')
 var Mustache = require('mustache')
-var Messageformat = require('messageformat')
+var Messageformat = require('@messageformat/core')
 var MakePlural = require('make-plural')
 var parseInterval = require('math-interval-parser').default
 
