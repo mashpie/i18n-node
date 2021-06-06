@@ -49,16 +49,13 @@ describe('parsing Messageformat phrases', function () {
 
   it('should work with plurals', function () {
     var msg = 'In {lang} there {NUM, plural,'
-    msg += 'zero{are zero for #}'
-    msg += 'one{is one for #}'
-    msg += 'two{is two for #}'
-    msg += 'few{are a few for #}'
-    msg += 'many{are many for #}'
+    msg += '=0{are zero for #}'
+    msg += 'one {is one for #}'
     msg += 'other{others for #}}'
 
     mfTest.setLocale('en')
     should.equal(
-      'In english there others for 0',
+      'In english there are zero for 0',
       mfTest.__mf(msg, { NUM: 0, lang: 'english' })
     )
     should.equal(
@@ -88,7 +85,7 @@ describe('parsing Messageformat phrases', function () {
 
     mfTest.setLocale('de')
     should.equal(
-      'In german there others for 0',
+      'In german there are zero for 0',
       mfTest.__mf(msg, { NUM: 0, lang: 'german' })
     )
     should.equal(
@@ -118,7 +115,7 @@ describe('parsing Messageformat phrases', function () {
 
     mfTest.setLocale('fr')
     should.equal(
-      'In french there is one for 0',
+      'In french there are zero for 0',
       mfTest.__mf(msg, { NUM: 0, lang: 'french' })
     )
     should.equal(
@@ -148,7 +145,7 @@ describe('parsing Messageformat phrases', function () {
 
     mfTest.setLocale('ru')
     should.equal(
-      'In russian there are many for 0',
+      'In russian there are zero for 0',
       mfTest.__mf(msg, { NUM: 0, lang: 'russian' })
     )
     should.equal(
@@ -156,23 +153,23 @@ describe('parsing Messageformat phrases', function () {
       mfTest.__mf(msg, { NUM: 1, lang: 'russian' })
     )
     should.equal(
-      'In russian there are a few for 2',
+      'In russian there others for 2',
       mfTest.__mf(msg, { NUM: 2, lang: 'russian' })
     )
     should.equal(
-      'In russian there are a few for 3',
+      'In russian there others for 3',
       mfTest.__mf(msg, { NUM: 3, lang: 'russian' })
     )
     should.equal(
-      'In russian there are a few for 4',
+      'In russian there others for 4',
       mfTest.__mf(msg, { NUM: 4, lang: 'russian' })
     )
     should.equal(
-      'In russian there are many for 5',
+      'In russian there others for 5',
       mfTest.__mf(msg, { NUM: 5, lang: 'russian' })
     )
     should.equal(
-      'In russian there are many for 6',
+      'In russian there others for 6',
       mfTest.__mf(msg, { NUM: 6, lang: 'russian' })
     )
     should.equal(
