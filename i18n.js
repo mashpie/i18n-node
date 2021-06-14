@@ -16,7 +16,7 @@ var debug = require('debug')('i18n:debug')
 var warn = require('debug')('i18n:warn')
 var error = require('debug')('i18n:error')
 var Mustache = require('mustache')
-var Messageformat = require('messageformat')
+var Messageformat = require('@messageformat/core')
 var MakePlural = require('make-plural')
 var parseInterval = require('math-interval-parser').default
 
@@ -328,8 +328,6 @@ const i18n = function I18n(_OPTS = false) {
     } else {
       mf = new Messageformat(targetLocale)
 
-      // @see https://messageformat.github.io/messageformat/MessageFormat#disablePluralKeyChecks__anchor
-      mf.disablePluralKeyChecks()
       mf.compiledFunctions = {}
       MessageformatInstanceForLocale[targetLocale] = mf
     }
