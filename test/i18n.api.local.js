@@ -439,40 +439,6 @@ describe('Module API', function () {
         should.equal(plural, 'Im Baum sitzen 3 Affen')
       })
 
-      it("won't return substitutions when not masked by an extra % (%% issue #49)", function () {
-        i18n.setLocale(req, 'en')
-        var singular = req.__n(
-          'There is one monkey in the %s',
-          'There are %d monkeys in the %s',
-          1,
-          req.__('tree')
-        )
-        var plural = req.__n(
-          'There is one monkey in the %s',
-          'There are %d monkeys in the %s',
-          3,
-          req.__('tree')
-        )
-        should.equal(singular, 'There is one monkey in the 1')
-        should.equal(plural, 'There are 3 monkeys in the undefined')
-
-        i18n.setLocale(req, 'de')
-        singular = req.__n(
-          'There is one monkey in the %s',
-          'There are %d monkeys in the %s',
-          1,
-          req.__('tree')
-        )
-        plural = req.__n(
-          'There is one monkey in the %s',
-          'There are %d monkeys in the %s',
-          3,
-          req.__('tree')
-        )
-        should.equal(singular, 'There is one monkey in the 1')
-        should.equal(plural, 'There are 3 monkeys in the undefined')
-      })
-
       it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
         i18n.setLocale(req, 'en')
         var singular = req.__n(
