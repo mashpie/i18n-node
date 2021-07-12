@@ -1257,7 +1257,7 @@ const i18n = function I18n(_OPTS = false) {
     var file = getStorageFilePath(locale)
     try {
       logDebug('read ' + file + ' for locale: ' + locale)
-      localeFile = fs.readFileSync(file)
+      localeFile = fs.readFileSync(file, {encoding: 'utf-8'})
       try {
         // parsing filecontents to locales[locale]
         locales[locale] = JSON.parse(localeFile)
