@@ -9,3 +9,5 @@ coverage/
 defaultlocales
 localestowrite
 localesmakeplural
+/locales_traversal/is/not/possible/en.json
+/.nyc_output
