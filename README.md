@@ -311,7 +311,11 @@ i18n.configure({
   mustacheConfig: {
     tags: ['{{', '}}'],
     disable: false
-  }
+  },
+
+  // Parse file contents with a YAML parser
+  // The parser can be any object that responds to .parse & .stringify
+  parser: YAML
 })
 
 ```
