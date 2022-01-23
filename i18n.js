@@ -21,11 +21,11 @@ const MakePlural = require('make-plural')
 const parseInterval = require('math-interval-parser').default
 
 // utils
-const escapeRegExp = function (string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
-}
+const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 
-// create constructor function
+/**
+ * create constructor function
+ */
 const i18n = function I18n(_OPTS = false) {
   const MessageformatInstanceForLocale = {}
   const PluralsForLocale = {}
@@ -99,9 +99,7 @@ const i18n = function I18n(_OPTS = false) {
       // or give an array objects to register to
       if (Array.isArray(opt.register)) {
         register = opt.register
-        register.forEach(function (r) {
-          applyAPItoObject(r)
-        })
+        register.forEach(applyAPItoObject)
       } else {
         applyAPItoObject(opt.register)
       }
@@ -210,15 +208,13 @@ const i18n = function I18n(_OPTS = false) {
       if (opt.staticCatalog) {
         locales = opt.staticCatalog
       } else {
-        opt.locales.forEach(function (l) {
-          read(l)
-        })
+        opt.locales.forEach(read)
       }
 
       // auto reload locale files when changed
       if (autoReload) {
         // watch changes of locale files (it's called twice because fs.watch is still unstable)
-        fs.watch(directory, function (event, filename) {
+        fs.watch(directory, (event, filename) => {
           const localeFromFile = guessLocaleFromFile(filename)
 
           if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
@@ -347,7 +343,7 @@ const i18n = function I18n(_OPTS = false) {
     const translations = []
     Object.keys(locales)
       .sort()
-      .forEach(function (l) {
+      .forEach((l) => {
         translations.push(i18n.__({ phrase: phrase, locale: l }))
       })
     return translations
@@ -357,7 +353,7 @@ const i18n = function I18n(_OPTS = false) {
     const translations = []
     Object.keys(locales)
       .sort()
-      .forEach(function (l) {
+      .forEach((l) => {
         const hash = {}
         hash[l] = i18n.__({ phrase: phrase, locale: l })
         translations.push(hash)
@@ -445,9 +441,7 @@ const i18n = function I18n(_OPTS = false) {
         const lc = targetLocale
           .toLowerCase()
           .split(/[_-\s]+/)
-          .filter(function (el) {
-            return true && el
-          })
+          .filter((el) => true && el)
         // take the first part of locale, fallback to full locale
         p = MakePlural[lc[0] || targetLocale]
         PluralsForLocale[targetLocale] = p
@@ -491,7 +485,7 @@ const i18n = function I18n(_OPTS = false) {
     // consider any extra registered objects
     if (typeof register === 'object') {
       if (Array.isArray(register) && !skipImplicitObjects) {
-        register.forEach(function (r) {
+        register.forEach((r) => {
           r.locale = targetObject.locale
         })
       } else {
@@ -611,7 +605,7 @@ const i18n = function I18n(_OPTS = false) {
   // = private methods =
   // ===================
 
-  const postProcess = function (msg, namedValues, args, count) {
+  const postProcess = (msg, namedValues, args, count) => {
     // test for parsable interval string
     if (/\|/.test(msg)) {
       msg = parsePluralInterval(msg, count)
@@ -636,15 +630,12 @@ const i18n = function I18n(_OPTS = false) {
     return msg
   }
 
-  const argsEndWithNamedObject = function (args) {
-    return (
-      args.length > 1 &&
-      args[args.length - 1] !== null &&
-      typeof args[args.length - 1] === 'object'
-    )
-  }
+  const argsEndWithNamedObject = (args) =>
+    args.length > 1 &&
+    args[args.length - 1] !== null &&
+    typeof args[args.length - 1] === 'object'
 
-  const parseArgv = function (args) {
+  const parseArgv = (args) => {
     let namedValues, returnArgs
 
     if (argsEndWithNamedObject(args)) {
@@ -661,7 +652,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * registers all public API methods to a given response object when not already declared
    */
-  const applyAPItoObject = function (object) {
+  const applyAPItoObject = (object) => {
     let alreadySetted = true
 
     // attach to itself if not provided
@@ -701,7 +692,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * tries to guess locales by scanning the given directory
    */
-  const guessLocales = function (directory) {
+  const guessLocales = (directory) => {
     const entries = fs.readdirSync(directory)
     const localesFound = []
 
@@ -717,7 +708,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * tries to guess locales from a given filename
    */
-  const guessLocaleFromFile = function (filename) {
+  const guessLocaleFromFile = (filename) => {
     const extensionRegex = new RegExp(extension + '$', 'g')
     const prefixRegex = new RegExp('^' + prefix, 'g')
 
@@ -731,7 +722,7 @@ const i18n = function I18n(_OPTS = false) {
    * @param queryLanguage - language query parameter, either an array or a string.
    * @return the first non-empty language query parameter found, null otherwise.
    */
-  const extractQueryLanguage = function (queryLanguage) {
+  const extractQueryLanguage = (queryLanguage) => {
     if (Array.isArray(queryLanguage)) {
       return queryLanguage.find((lang) => lang !== '' && lang)
     }
@@ -742,7 +733,7 @@ const i18n = function I18n(_OPTS = false) {
    * guess language setting based on http headers
    */
 
-  const guessLanguage = function (request) {
+  const guessLanguage = (request) => {
     if (typeof request === 'object') {
       const languageHeader = request.headers
         ? request.headers[languageHeaderName]
@@ -853,11 +844,11 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * Get a sorted list of accepted languages from the HTTP Accept-Language header
    */
-  const getAcceptedLanguagesFromHeader = function (header) {
+  const getAcceptedLanguagesFromHeader = (header) => {
     const languages = header.split(',')
     const preferences = {}
     return languages
-      .map(function parseLanguagePreference(item) {
+      .map((item) => {
         const preferenceParts = item.trim().split(';q=')
         if (preferenceParts.length < 2) {
           preferenceParts[1] = 1.0
@@ -869,19 +860,15 @@ const i18n = function I18n(_OPTS = false) {
 
         return preferenceParts[0]
       })
-      .filter(function (lang) {
-        return preferences[lang] > 0
-      })
-      .sort(function sortLanguages(a, b) {
-        return preferences[b] - preferences[a]
-      })
+      .filter((lang) => preferences[lang] > 0)
+      .sort((a, b) => preferences[b] - preferences[a])
   }
 
   /**
    * searches for locale in given object
    */
 
-  const getLocaleFromObject = function (obj) {
+  const getLocaleFromObject = (obj) => {
     let locale
     if (obj && obj.scope) {
       locale = obj.scope.locale
@@ -895,13 +882,13 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * splits and parses a phrase for mathematical interval expressions
    */
-  const parsePluralInterval = function (phrase, count) {
+  const parsePluralInterval = (phrase, count) => {
     let returnPhrase = phrase
     const phrases = phrase.split(/\|/)
     let intervalRuleExists = false
 
     // some() breaks on 1st true
-    phrases.some(function (p) {
+    phrases.some((p) => {
       const matches = p.match(/^\s*([()[\]]+[\d,]+[()[\]]+)?\s*(.*)$/)
 
       // not the same as in combined condition
@@ -917,6 +904,7 @@ const i18n = function I18n(_OPTS = false) {
           returnPhrase = p
         }
       }
+      return false
     })
     return returnPhrase
   }
@@ -929,7 +917,7 @@ const i18n = function I18n(_OPTS = false) {
    * [20,] - all numbers ≥20 (matches: 20, 21, 22, ...)
    * [,20] - all numbers ≤20 (matches: 20, 21, 22, ...)
    */
-  const matchInterval = function (number, interval) {
+  const matchInterval = (number, interval) => {
     interval = parseInterval(interval)
     if (interval && typeof number === 'number') {
       if (interval.from.value === number) {
@@ -950,7 +938,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * read locale file, translate a msg and write to fs if new
    */
-  const translate = function (locale, singular, plural, skipSyncToAllFiles) {
+  const translate = (locale, singular, plural, skipSyncToAllFiles) => {
     // add same key to all translations
     if (!skipSyncToAllFiles && syncFiles) {
       syncToAllFiles(singular, plural)
@@ -1021,12 +1009,10 @@ const i18n = function I18n(_OPTS = false) {
     //     write(locale);
     //   }
     // }
-
     // if (accessor() == null) {
     //   mutator(defaultSingular || singular);
     //   write(locale);
     // }
-
     if (plural) {
       if (accessor() == null) {
         // when retryInDefaultLocale is true - try to set default value from defaultLocale
@@ -1075,7 +1061,7 @@ const i18n = function I18n(_OPTS = false) {
    * initialize the same key in all locales
    * when not already existing, checked via translate
    */
-  const syncToAllFiles = function (singular, plural) {
+  const syncToAllFiles = (singular, plural) => {
     // iterate over locales and translate again
     // this will implicitly write/sync missing keys
     // to the rest of locales
@@ -1095,7 +1081,7 @@ const i18n = function I18n(_OPTS = false) {
    * @returns {Function} A function that, when invoked, returns the current value stored
    * in the object at the requested location.
    */
-  const localeAccessor = function (locale, singular, allowDelayedTraversal) {
+  const localeAccessor = (locale, singular, allowDelayedTraversal) => {
     // Bail out on non-existent locales to defend against internal errors.
     if (!locales[locale]) return Function.prototype
 
@@ -1108,13 +1094,11 @@ const i18n = function I18n(_OPTS = false) {
       // The accessor we're trying to find and which we want to return.
       let accessor = null
       // An accessor that returns null.
-      const nullAccessor = function () {
-        return null
-      }
+      const nullAccessor = () => null
       // Do we need to re-traverse the tree upon invocation of the accessor?
       let reTraverse = false
       // Split the provided term and run the callback for each subterm.
-      singular.split(objectNotation).reduce(function (object, index) {
+      singular.split(objectNotation).reduce((object, index) => {
         // Make the accessor return null.
         accessor = nullAccessor
         // If our current target object (in the locale tree) doesn't exist or
@@ -1129,26 +1113,19 @@ const i18n = function I18n(_OPTS = false) {
           return null
         }
         // We can traverse deeper, so we generate an accessor for this current level.
-        accessor = function () {
-          return object[index]
-        }
+        accessor = () => object[index]
         // Return a reference to the next deeper level in the locale tree.
         return object[index]
       }, locales[locale])
       // Return the requested accessor.
-      return function () {
+      return () =>
         // If we need to re-traverse (because we didn't find our target term)
         // traverse again and return the new result (but don't allow further iterations)
         // or return the previously found accessor if it was already valid.
-        return reTraverse
-          ? localeAccessor(locale, singular, false)()
-          : accessor()
-      }
+        reTraverse ? localeAccessor(locale, singular, false)() : accessor()
     } else {
       // No object notation, just return an accessor that performs array lookup.
-      return function () {
-        return locales[locale][singular]
-      }
+      return () => locales[locale][singular]
     }
   }
 
@@ -1177,17 +1154,13 @@ const i18n = function I18n(_OPTS = false) {
       // This will become the function we want to return.
       let accessor = null
       // An accessor that takes one argument and returns null.
-      const nullAccessor = function () {
-        return null
-      }
+      const nullAccessor = () => null
       // Fix object path.
-      let fixObject = function () {
-        return {}
-      }
+      let fixObject = () => ({})
       // Are we going to need to re-traverse the tree when the mutator is invoked?
       let reTraverse = false
       // Split the provided term and run the callback for each subterm.
-      singular.split(objectNotation).reduce(function (object, index) {
+      singular.split(objectNotation).reduce((object, index) => {
         // Make the mutator do nothing.
         accessor = nullAccessor
         // If our current target object (in the locale tree) doesn't exist or
@@ -1212,12 +1185,12 @@ const i18n = function I18n(_OPTS = false) {
           }
         }
         // Generate a mutator for the current level.
-        accessor = function (value) {
+        accessor = (value) => {
           object[index] = value
           return value
         }
         // Generate a fixer for the current level.
-        fixObject = function () {
+        fixObject = () => {
           object[index] = {}
           return object[index]
         }
@@ -1227,7 +1200,7 @@ const i18n = function I18n(_OPTS = false) {
       }, locales[locale])
 
       // Return the final mutator.
-      return function (value) {
+      return (value) => {
         // If we need to re-traverse the tree
         // invoke the search again, but allow branching
         // this time (because here the mutator is being invoked)
@@ -1239,7 +1212,7 @@ const i18n = function I18n(_OPTS = false) {
       }
     } else {
       // No object notation, just return a mutator that performs array lookup and changes the value.
-      return function (value) {
+      return (value) => {
         value = missingKeyFn(locale, value)
         locales[locale][singular] = value
         return value
@@ -1250,7 +1223,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * try reading a file
    */
-  const read = function (locale) {
+  const read = (locale) => {
     let localeFile = {}
     const file = getStorageFilePath(locale)
     try {
@@ -1271,7 +1244,6 @@ const i18n = function I18n(_OPTS = false) {
       // unable to read, so intialize that file
       // locales[locale] are already set in memory, so no extra read required
       // or locales[locale] are empty, which initializes an empty locale.json file
-
       // since the current invalid locale could exist, we should back it up
       if (fs.existsSync(file)) {
         logDebug(
@@ -1288,7 +1260,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * try writing a file in a created directory
    */
-  const write = function (locale) {
+  const write = (locale) => {
     let stats, target, tmp
 
     // don't write new locale information to disk if updateFiles isn't true
@@ -1350,7 +1322,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * basic normalization of filepath
    */
-  const getStorageFilePath = function (locale) {
+  const getStorageFilePath = (locale) => {
     // changed API to use .json as default, #16
     const ext = extension || '.json'
     const filepath = path.normalize(directory + pathsep + prefix + locale + ext)
@@ -1373,7 +1345,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * Get locales with wildcard support
    */
-  const getFallback = function (targetLocale, fallbacks) {
+  const getFallback = (targetLocale, fallbacks) => {
     fallbacks = fallbacks || {}
     if (fallbacks[targetLocale]) return fallbacks[targetLocale]
     let fallBackLocale = null
@@ -1389,22 +1361,22 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * Logging proxies
    */
-  function logDebug(msg) {
+  const logDebug = (msg) => {
     logDebugFn(msg)
   }
 
-  function logWarn(msg) {
+  const logWarn = (msg) => {
     logWarnFn(msg)
   }
 
-  function logError(msg) {
+  const logError = (msg) => {
     logErrorFn(msg)
   }
 
   /**
    * Missing key function
    */
-  function missingKey(locale, value) {
+  const missingKey = (locale, value) => {
     return value
   }
 
