@@ -1,8 +1,8 @@
-var i18n = require('..')
-var should = require('should')
+const i18n = require('..')
+const should = require('should')
 
 describe('parsing Messageformat phrases', function () {
-  var mfTest = {}
+  const mfTest = {}
 
   beforeEach(function () {
     i18n.configure({
@@ -48,133 +48,140 @@ describe('parsing Messageformat phrases', function () {
   })
 
   it('should work with plurals', function () {
-    var msg = 'In {lang} there {NUM, plural,'
-    msg += '=0{are zero for #}'
-    msg += 'one {is one for #}'
-    msg += 'other{others for #}}'
-
+    /**
+     * en: "mftest": "In {lang} there {NUM, plural,one{is one for #}other{others for #}}"
+     */
     mfTest.setLocale('en')
     should.equal(
-      'In english there are zero for 0',
-      mfTest.__mf(msg, { NUM: 0, lang: 'english' })
+      'In english there others for 0',
+      mfTest.__mf('mftest', { NUM: 0, lang: 'english' })
     )
     should.equal(
       'In english there is one for 1',
-      mfTest.__mf(msg, { NUM: 1, lang: 'english' })
+      mfTest.__mf('mftest', { NUM: 1, lang: 'english' })
     )
     should.equal(
       'In english there others for 2',
-      mfTest.__mf(msg, { NUM: 2, lang: 'english' })
+      mfTest.__mf('mftest', { NUM: 2, lang: 'english' })
     )
     should.equal(
       'In english there others for 3',
-      mfTest.__mf(msg, { NUM: 3, lang: 'english' })
+      mfTest.__mf('mftest', { NUM: 3, lang: 'english' })
     )
     should.equal(
       'In english there others for 4',
-      mfTest.__mf(msg, { NUM: 4, lang: 'english' })
+      mfTest.__mf('mftest', { NUM: 4, lang: 'english' })
     )
     should.equal(
       'In english there others for 5',
-      mfTest.__mf(msg, { NUM: 5, lang: 'english' })
+      mfTest.__mf('mftest', { NUM: 5, lang: 'english' })
     )
     should.equal(
       'In english there others for 6',
-      mfTest.__mf(msg, { NUM: 6, lang: 'english' })
+      mfTest.__mf('mftest', { NUM: 6, lang: 'english' })
     )
 
+    /**
+     * de: "mftest": "In {lang} there {NUM, plural,one{is one for #}other{others for #}}"
+     */
     mfTest.setLocale('de')
     should.equal(
-      'In german there are zero for 0',
-      mfTest.__mf(msg, { NUM: 0, lang: 'german' })
+      'In german there others for 0',
+      mfTest.__mf('mftest', { NUM: 0, lang: 'german' })
     )
     should.equal(
       'In german there is one for 1',
-      mfTest.__mf(msg, { NUM: 1, lang: 'german' })
+      mfTest.__mf('mftest', { NUM: 1, lang: 'german' })
     )
     should.equal(
       'In german there others for 2',
-      mfTest.__mf(msg, { NUM: 2, lang: 'german' })
+      mfTest.__mf('mftest', { NUM: 2, lang: 'german' })
     )
     should.equal(
       'In german there others for 3',
-      mfTest.__mf(msg, { NUM: 3, lang: 'german' })
+      mfTest.__mf('mftest', { NUM: 3, lang: 'german' })
     )
     should.equal(
       'In german there others for 4',
-      mfTest.__mf(msg, { NUM: 4, lang: 'german' })
+      mfTest.__mf('mftest', { NUM: 4, lang: 'german' })
     )
     should.equal(
       'In german there others for 5',
-      mfTest.__mf(msg, { NUM: 5, lang: 'german' })
+      mfTest.__mf('mftest', { NUM: 5, lang: 'german' })
     )
     should.equal(
       'In german there others for 6',
-      mfTest.__mf(msg, { NUM: 6, lang: 'german' })
+      mfTest.__mf('mftest', { NUM: 6, lang: 'german' })
     )
 
+    /**
+     * fr: "mftest": "In {lang} there {NUM, plural,one{is one for #}other{others for #}}"
+     */
     mfTest.setLocale('fr')
     should.equal(
-      'In french there are zero for 0',
-      mfTest.__mf(msg, { NUM: 0, lang: 'french' })
+      'In french there is one for 0',
+      mfTest.__mf('mftest', { NUM: 0, lang: 'french' })
     )
     should.equal(
       'In french there is one for 1',
-      mfTest.__mf(msg, { NUM: 1, lang: 'french' })
+      mfTest.__mf('mftest', { NUM: 1, lang: 'french' })
     )
     should.equal(
       'In french there others for 2',
-      mfTest.__mf(msg, { NUM: 2, lang: 'french' })
+      mfTest.__mf('mftest', { NUM: 2, lang: 'french' })
     )
     should.equal(
       'In french there others for 3',
-      mfTest.__mf(msg, { NUM: 3, lang: 'french' })
+      mfTest.__mf('mftest', { NUM: 3, lang: 'french' })
     )
     should.equal(
       'In french there others for 4',
-      mfTest.__mf(msg, { NUM: 4, lang: 'french' })
+      mfTest.__mf('mftest', { NUM: 4, lang: 'french' })
     )
     should.equal(
       'In french there others for 5',
-      mfTest.__mf(msg, { NUM: 5, lang: 'french' })
+      mfTest.__mf('mftest', { NUM: 5, lang: 'french' })
     )
     should.equal(
       'In french there others for 6',
-      mfTest.__mf(msg, { NUM: 6, lang: 'french' })
+      mfTest.__mf('mftest', { NUM: 6, lang: 'french' })
     )
 
+    /**
+     * ru: "mftest": "In {lang} there {NUM, plural,one{is one for #}few{are a few for #}many{are many for #}other{others for #}}"
+     */
     mfTest.setLocale('ru')
     should.equal(
-      'In russian there are zero for 0',
-      mfTest.__mf(msg, { NUM: 0, lang: 'russian' })
+      'In russian there are many for 0',
+      mfTest.__mf('mftest', { NUM: 0, lang: 'russian' })
     )
     should.equal(
       'In russian there is one for 1',
-      mfTest.__mf(msg, { NUM: 1, lang: 'russian' })
+      mfTest.__mf('mftest', { NUM: 1, lang: 'russian' })
     )
     should.equal(
-      'In russian there others for 2',
-      mfTest.__mf(msg, { NUM: 2, lang: 'russian' })
+      'In russian there are a few for 2',
+      mfTest.__mf('mftest', { NUM: 2, lang: 'russian' })
     )
     should.equal(
-      'In russian there others for 3',
-      mfTest.__mf(msg, { NUM: 3, lang: 'russian' })
+      'In russian there are a few for 3',
+      mfTest.__mf('mftest', { NUM: 3, lang: 'russian' })
     )
     should.equal(
-      'In russian there others for 4',
-      mfTest.__mf(msg, { NUM: 4, lang: 'russian' })
+      'In russian there are a few for 4',
+      mfTest.__mf('mftest', { NUM: 4, lang: 'russian' })
     )
     should.equal(
-      'In russian there others for 5',
-      mfTest.__mf(msg, { NUM: 5, lang: 'russian' })
+      'In russian there are many for 5',
+      mfTest.__mf('mftest', { NUM: 5, lang: 'russian' })
     )
     should.equal(
-      'In russian there others for 6',
-      mfTest.__mf(msg, { NUM: 6, lang: 'russian' })
+      'In russian there are many for 6',
+      mfTest.__mf('mftest', { NUM: 6, lang: 'russian' })
     )
     should.equal(
       'In russian there is one for 21',
-      mfTest.__mf(msg, { NUM: 21, lang: 'russian' })
+      mfTest.__mf('mftest', { NUM: 21, lang: 'russian' })
     )
   })
 })

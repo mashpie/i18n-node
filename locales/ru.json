@@ -1,1 +1,3 @@
-{}
+{
+  "mftest": "In {lang} there {NUM, plural,one{is one for #}few{are a few for #}many{are many for #}other{others for #}}"
+}

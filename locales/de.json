@@ -34,5 +34,6 @@
 	"ordered arguments": "%1$s then %2$s",
 	"ordered arguments with numbers": "%1$s then %2$d then %3$.2f",
 	"Hallo Marcus, wie war dein %s?": "Hallo Marcus, wie war dein %s?",
-	"Hello {{{name}}}": "Hallo {{{name}}}"
+	"Hello {{{name}}}": "Hallo {{{name}}}",
+  "mftest": "In {lang} there {NUM, plural,one{is one for #}other{others for #}}"
 }

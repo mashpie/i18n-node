@@ -18,5 +18,6 @@
 		"one": "There is one monkey in the %s",
 		"other": "There are %d monkeys in the %s"
 	},
-	"Hello %s": "Bonjour %s"
+	"Hello %s": "Bonjour %s",
+  "mftest": "In {lang} there {NUM, plural,one{is one for #}other{others for #}}"
 }
