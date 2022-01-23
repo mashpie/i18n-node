@@ -1,23 +1,22 @@
-const i18n = require('..')
-const should = require('should')
+const { I18n } = require('..')
 const YAML = require('yaml')
+require('should')
 
 describe('configure parser', function () {
-  context('with YAML parser', () => {
-    i18n.configure({
+  context('with YAML parser', function () {
+    const i18n = new I18n({
       locales: ['en', 'de'],
       parser: YAML
     })
 
     it('should parse the locale files with the YAML parser', function () {
-      should.equal(i18n.__('Hello'), 'Hello')
+      i18n.__('Hello').should.equal('Hello')
     })
 
     it('should write unknown keys to the catalog', function () {
       i18n.__('does.not.exist')
 
-      var catalog = i18n.getCatalog()
-      catalog.should.have.property('does.not.exist', 'does.not.exist')
+      i18n.getCatalog().should.have.property('does.not.exist', 'does.not.exist')
     })
   })
 })

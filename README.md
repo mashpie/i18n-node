@@ -313,11 +313,9 @@ i18n.configure({
     disable: false
   },
 
-  // Parse file contents with a YAML parser
-  // The parser can be any object that responds to .parse & .stringify
-  parser: YAML
+  // Parser can be any object that responds to .parse & .stringify
+  parser: JSON
 })
-
 ```
 
 The locale itself is gathered directly from the browser by header, cookie or query parameter depending on your setup.
@@ -379,6 +377,18 @@ i18n.configure({
 ```
 
 **NOTE:** Enabling `staticCatalog` disables all other fs realated options such as `updateFiles`,  `autoReload` and `syncFiles`
+
+#### Some words on `parser` option
+
+Instead of parsing all file contents as JSON, you can parse them as YAML or any other format you like
+```js
+const YAML = require('yaml')
+
+i18n.configure({
+  extension: '.yml',
+  parser: YAML
+})
+```
 
 ### i18n.init()
 
