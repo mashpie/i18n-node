@@ -1,7 +1,7 @@
 const { I18n } = require('..')
 const should = require('should')
 
-describe('retryInDefaultLocale', function () {
+describe('retryInDefaultLocale', () => {
   const i18nWithDefault = new I18n({
     locales: ['en', 'nl'],
     defaultLocale: 'en',
@@ -20,8 +20,8 @@ describe('retryInDefaultLocale', function () {
     retryInDefaultLocale: false
   })
 
-  describe('singular with retryInDefaultLocale enabled', function () {
-    it('should use translations from defaultLocale for missing key', function () {
+  describe('singular with retryInDefaultLocale enabled', () => {
+    it('should use translations from defaultLocale for missing key', () => {
       i18nWithDefault.setLocale('nl')
       should.equal(i18nWithDefault.getLocale(), 'nl')
       should.equal(i18nWithDefault.__('greeting.formal'), 'Hello')
@@ -31,13 +31,13 @@ describe('retryInDefaultLocale', function () {
       should.equal(i18nWithDefault.__('greeting.formal'), 'Hello')
     })
 
-    it('should default "en" when locale is set to unconfigured value', function () {
+    it('should default "en" when locale is set to unconfigured value', () => {
       i18nWithDefault.setLocale('sv')
       should.equal(i18nWithDefault.getLocale(), 'en')
       should.equal(i18nWithDefault.__('greeting.formal'), 'Hello')
     })
 
-    it('should work multple times (not set wrong cache)', function () {
+    it('should work multple times (not set wrong cache)', () => {
       i18nWithDefault.setLocale('nl')
       for (let i = 0; i <= 5; i += 1) {
         should.equal(
@@ -48,15 +48,15 @@ describe('retryInDefaultLocale', function () {
       }
     })
 
-    it('should set cache to work fast', function () {
+    it('should set cache to work fast', () => {
       i18nWithDefault.setLocale('nl')
       i18nWithDefault.__('greeting.formal')
       should.equal(i18nWithDefault.getCatalog('nl').greeting.formal, 'Hello')
     })
   })
 
-  describe('singular without retryInDefaultLocale', function () {
-    it('should english translation for missing key', function () {
+  describe('singular without retryInDefaultLocale', () => {
+    it('should english translation for missing key', () => {
       i18nNoDefault.setLocale('nl')
       should.equal(i18nNoDefault.getLocale(), 'nl')
       should.equal(i18nNoDefault.__('greeting.formal'), 'greeting.formal')
@@ -66,13 +66,13 @@ describe('retryInDefaultLocale', function () {
       should.equal(i18nNoDefault.__('greeting.formal'), 'Hello')
     })
 
-    it('should default "en" when locale is set to unconfigured value', function () {
+    it('should default "en" when locale is set to unconfigured value', () => {
       i18nNoDefault.setLocale('sv')
       should.equal(i18nNoDefault.getLocale(), 'en')
       should.equal(i18nNoDefault.__('greeting.formal'), 'Hello')
     })
 
-    it('should work multple times (not set wrong cache)', function () {
+    it('should work multple times (not set wrong cache)', () => {
       i18nNoDefault.setLocale('nl')
       for (let i = 0; i <= 5; i += 1) {
         should.equal(
@@ -83,7 +83,7 @@ describe('retryInDefaultLocale', function () {
       }
     })
 
-    it('should set cache to work fast', function () {
+    it('should set cache to work fast', () => {
       i18nNoDefault.setLocale('nl')
       i18nNoDefault.__('greeting.formal')
       should.equal(
@@ -93,8 +93,8 @@ describe('retryInDefaultLocale', function () {
     })
   })
 
-  describe('plural with retryInDefaultLocale enabled', function () {
-    it('should use translations from defaultLocale for missing key', function () {
+  describe('plural with retryInDefaultLocale enabled', () => {
+    it('should use translations from defaultLocale for missing key', () => {
       i18nWithDefault.setLocale('nl')
       should.equal(i18nWithDefault.getLocale(), 'nl')
       should.equal(i18nWithDefault.__n('%s star', 1), '1 star')
@@ -106,14 +106,14 @@ describe('retryInDefaultLocale', function () {
       should.equal(i18nWithDefault.__n('%s star', 3), '3 stars')
     })
 
-    it('should default "en" when locale is set to unconfigured value', function () {
+    it('should default "en" when locale is set to unconfigured value', () => {
       i18nWithDefault.setLocale('sv')
       should.equal(i18nWithDefault.getLocale(), 'en')
       should.equal(i18nWithDefault.__n('%s star', 1), '1 star')
       should.equal(i18nWithDefault.__n('%s star', 3), '3 stars')
     })
 
-    it('should work multple times (not set wrong cache)', function () {
+    it('should work multple times (not set wrong cache)', () => {
       i18nWithDefault.setLocale('nl')
       for (let i = 0; i <= 5; i += 1) {
         should.equal(
@@ -124,7 +124,7 @@ describe('retryInDefaultLocale', function () {
       }
     })
 
-    it('should set cache to work fast', function () {
+    it('should set cache to work fast', () => {
       i18nWithDefault.setLocale('nl')
       should.equal(i18nWithDefault.__n('%s star', 3), '3 stars')
       should.deepEqual(i18nWithDefault.getCatalog('nl')['%s star'], {
@@ -134,8 +134,8 @@ describe('retryInDefaultLocale', function () {
     })
   })
 
-  describe('plural without retryInDefaultLocale enabled', function () {
-    it('should use translations from defaultLocale for missing key', function () {
+  describe('plural without retryInDefaultLocale enabled', () => {
+    it('should use translations from defaultLocale for missing key', () => {
       i18nNoDefault.setLocale('nl')
       should.equal(i18nNoDefault.getLocale(), 'nl')
       should.equal(i18nNoDefault.__n('%s star', 1), '1 star')
@@ -147,14 +147,14 @@ describe('retryInDefaultLocale', function () {
       should.equal(i18nNoDefault.__n('%s star', 3), '3 stars')
     })
 
-    it('should default "en" when locale is set to unconfigured value', function () {
+    it('should default "en" when locale is set to unconfigured value', () => {
       i18nNoDefault.setLocale('sv')
       should.equal(i18nNoDefault.getLocale(), 'en')
       should.equal(i18nNoDefault.__n('%s star', 1), '1 star')
       should.equal(i18nNoDefault.__n('%s star', 3), '3 stars')
     })
 
-    it('should work multple times (not set wrong cache)', function () {
+    it('should work multple times (not set wrong cache)', () => {
       i18nNoDefault.setLocale('nl')
       for (let i = 0; i <= 5; i += 1) {
         should.equal(
@@ -165,7 +165,7 @@ describe('retryInDefaultLocale', function () {
       }
     })
 
-    it('should set cache to work fast', function () {
+    it('should set cache to work fast', () => {
       i18nNoDefault.setLocale('nl')
       should.equal(i18nNoDefault.__n('%s star', 3), '3 star')
       should.deepEqual(i18nNoDefault.getCatalog('nl')['%s star'], {

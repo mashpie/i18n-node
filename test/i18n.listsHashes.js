@@ -1,8 +1,8 @@
 const i18n = require('..')
 const should = require('should')
 
-describe('i18n.__l() - return a list of translations', function () {
-  it('should work on a custom object', function () {
+describe('i18n.__l() - return a list of translations', () => {
+  it('should work on a custom object', () => {
     const customObject = {}
     i18n.configure({
       locales: ['en', 'de'],
@@ -13,7 +13,7 @@ describe('i18n.__l() - return a list of translations', function () {
     should.deepEqual(customObject.__l('Hello'), ['Hallo', 'Hello'])
   })
 
-  it('should work on list of objects', function () {
+  it('should work on list of objects', () => {
     const obj1 = {}
     const obj2 = {}
     i18n.configure({
@@ -45,8 +45,8 @@ describe('i18n.__l() - return a list of translations', function () {
   })
 })
 
-describe('i18n.__h() - return a hash of translations', function () {
-  it('should work on a custom object', function () {
+describe('i18n.__h() - return a hash of translations', () => {
+  it('should work on a custom object', () => {
     const customObject = {}
     i18n.configure({
       locales: ['en', 'de'],
@@ -60,7 +60,7 @@ describe('i18n.__h() - return a hash of translations', function () {
     ])
   })
 
-  it('should work on list of objects', function () {
+  it('should work on list of objects', () => {
     const obj1 = {}
     const obj2 = {}
     i18n.configure({

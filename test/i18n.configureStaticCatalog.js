@@ -1,8 +1,8 @@
 const i18n = require('..')
 const should = require('should')
 
-describe('staticCatalog configuration', function () {
-  it('should take locales from static catalog if set', function (done) {
+describe('staticCatalog configuration', () => {
+  it('should take locales from static catalog if set', (done) => {
     i18n.configure({
       staticCatalog: {
         en: {}
@@ -15,7 +15,7 @@ describe('staticCatalog configuration', function () {
     done()
   })
 
-  it('should use static locale definitions from static catalog if set', function (done) {
+  it('should use static locale definitions from static catalog if set', (done) => {
     i18n.configure({
       staticCatalog: {
         en: {}

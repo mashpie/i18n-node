@@ -1,7 +1,7 @@
 const i18n = require('..')
 require('should')
 
-describe('when configuring selected locale', function () {
+describe('when configuring selected locale', () => {
   let res
 
   function setByQueryParam(i18n, locale) {
@@ -38,7 +38,7 @@ describe('when configuring selected locale', function () {
     return i18n.getLocale(req)
   }
 
-  beforeEach(function () {
+  beforeEach(() => {
     res = { locals: {} }
     i18n.configure({
       locales: ['de-AT', 'de-DE', 'en-GB', 'tr-TR', 'en-US', 'en'],
@@ -50,8 +50,8 @@ describe('when configuring selected locale', function () {
     })
   })
 
-  describe('should result in the same locale whether set by cookie, queryParam, or header', function () {
-    it('should work for simple language codes', function (done) {
+  describe('should result in the same locale whether set by cookie, queryParam, or header', () => {
+    it('should work for simple language codes', (done) => {
       setByQueryParam(i18n, 'en').should.be.equal(
         'en',
         'when set via queryParameter'
@@ -61,7 +61,7 @@ describe('when configuring selected locale', function () {
       done()
     })
 
-    it('should work for compound language codes', function (done) {
+    it('should work for compound language codes', (done) => {
       setByQueryParam(i18n, 'de-AT').should.be.equal(
         'de-AT',
         'when set via queryParameter'

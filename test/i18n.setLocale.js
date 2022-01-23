@@ -1,11 +1,11 @@
 const i18n = require('..')
 require('should')
 
-describe('Locale switching should work on req and res', function () {
+describe('Locale switching should work on req and res', () => {
   let req
   let res
 
-  beforeEach(function () {
+  beforeEach(() => {
     i18n.configure({
       locales: ['en', 'de', 'fr'],
       defaultLocale: 'en',
@@ -22,7 +22,7 @@ describe('Locale switching should work on req and res', function () {
     res = {}
   })
 
-  it('getLocale should return same locale for req and res without any setLocale switch', function () {
+  it('getLocale should return same locale for req and res without any setLocale switch', () => {
     i18n.init(req, res)
 
     i18n.getLocale(req).should.equal('de')
@@ -32,7 +32,7 @@ describe('Locale switching should work on req and res', function () {
     res.getLocale().should.equal('de')
   })
 
-  it('i18n.setLocale(req) should switch locale for req only', function () {
+  it('i18n.setLocale(req) should switch locale for req only', () => {
     i18n.init(req, res)
 
     i18n.setLocale(req, 'fr')
@@ -47,7 +47,7 @@ describe('Locale switching should work on req and res', function () {
     res.__('Hello').should.equal('Hallo')
   })
 
-  it('req.setLocale() should switch locale for req only (alternative notation)', function () {
+  it('req.setLocale() should switch locale for req only (alternative notation)', () => {
     i18n.init(req, res)
 
     req.setLocale('fr')
@@ -62,7 +62,7 @@ describe('Locale switching should work on req and res', function () {
     res.__('Hello').should.equal('Hallo')
   })
 
-  it('i18n.setLocale(res) should switch locale for res only', function () {
+  it('i18n.setLocale(res) should switch locale for res only', () => {
     i18n.init(req, res)
 
     i18n.setLocale(res, 'fr')
@@ -77,7 +77,7 @@ describe('Locale switching should work on req and res', function () {
     res.__('Hello').should.equal('Bonjour')
   })
 
-  it('res.setLocale() should switch locale for res only (alternative notation)', function () {
+  it('res.setLocale() should switch locale for res only (alternative notation)', () => {
     i18n.init(req, res)
 
     res.setLocale('fr')
@@ -92,7 +92,7 @@ describe('Locale switching should work on req and res', function () {
     res.__('Hello').should.equal('Bonjour')
   })
 
-  it('setLocale() should switch locale for req and res implicitly', function () {
+  it('setLocale() should switch locale for req and res implicitly', () => {
     // add res to req to simulate express 4.x schema
     req.res = res
     i18n.init(req, res)
@@ -108,7 +108,7 @@ describe('Locale switching should work on req and res', function () {
     res.__('Hello').should.equal('Bonjour')
   })
 
-  it('setLocale() should switch locale for req and res implicitly (alternative notation)', function () {
+  it('setLocale() should switch locale for req and res implicitly (alternative notation)', () => {
     // add res to req to simulate express 4.x schema
     req.res = res
     i18n.init(req, res)
@@ -124,7 +124,7 @@ describe('Locale switching should work on req and res', function () {
     res.__('Hello').should.equal('Bonjour')
   })
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly', function () {
+  it('setLocale() should switch locale for req, res and res.locals implicitly', () => {
     // add locals to res
     res.locals = {}
 
@@ -146,7 +146,7 @@ describe('Locale switching should work on req and res', function () {
     res.locals.__('Hello').should.equal('Bonjour')
   })
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly when set on req', function () {
+  it('setLocale() should switch locale for req, res and res.locals implicitly when set on req', () => {
     // add locals to res
     res.locals = {}
 
@@ -168,7 +168,7 @@ describe('Locale switching should work on req and res', function () {
     res.locals.__('Hello').should.equal('Bonjour')
   })
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly when set on res', function () {
+  it('setLocale() should switch locale for req, res and res.locals implicitly when set on res', () => {
     // add locals to res
     res.locals = {}
 
@@ -190,7 +190,7 @@ describe('Locale switching should work on req and res', function () {
     res.locals.__('Hello').should.equal('Bonjour')
   })
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly when set on res.locals', function () {
+  it('setLocale() should switch locale for req, res and res.locals implicitly when set on res.locals', () => {
     // add locals to res
     res.locals = {}
 
@@ -212,7 +212,7 @@ describe('Locale switching should work on req and res', function () {
     res.locals.__('Hello').should.equal('Bonjour')
   })
 
-  it('setLocale() should switch locale for req, res and res.locals implicitly when set as array', function () {
+  it('setLocale() should switch locale for req, res and res.locals implicitly when set as array', () => {
     // add locals to res
     res.locals = {}
 
@@ -234,7 +234,7 @@ describe('Locale switching should work on req and res', function () {
     res.locals.__('Hello').should.equal('Bonjour')
   })
 
-  it('setLocale(object) should escape res -> locals -> res recursion', function () {
+  it('setLocale(object) should escape res -> locals -> res recursion', () => {
     // add locals to res
     res.locals = { res: res }
 

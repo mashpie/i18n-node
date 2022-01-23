@@ -14,7 +14,7 @@ const timeout = 50
  * ...needs a proper shutdown as of https://github.com/mashpie/i18n-node/issues/359
  */
 
-describe('autoreload configuration', function () {
+describe('autoreload configuration', () => {
   const testScope = {}
   const directory = path.join(__dirname, '..', 'testlocalesauto')
   fs.mkdirSync(directory)
@@ -26,30 +26,30 @@ describe('autoreload configuration', function () {
     autoReload: true
   })
 
-  it('will start with empty catalogs', function (done) {
+  it('will start with empty catalogs', (done) => {
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} })
     setTimeout(done, timeout)
   })
 
-  it('reloads when a catalog is altered', function (done) {
+  it('reloads when a catalog is altered', (done) => {
     fs.writeFileSync(directory + '/de.json', '{"Hello":"Hallo"}')
     setTimeout(done, timeout)
   })
 
-  it('has added new string to catalog and translates correctly', function (done) {
+  it('has added new string to catalog and translates correctly', (done) => {
     i18n.setLocale(testScope, 'de')
     should.equal('Hallo', testScope.__('Hello'))
     should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} })
     done()
   })
 
-  it('will add new string to catalog and files from __()', function (done) {
+  it('will add new string to catalog and files from __()', (done) => {
     should.equal('Hallo', testScope.__('Hello'))
     should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} })
     done()
   })
 
-  it('will remove testlocalesauto after tests', function (done) {
+  it('will remove testlocalesauto after tests', (done) => {
     fs.unlinkSync(directory + '/de.json')
     fs.unlinkSync(directory + '/en.json')
     fs.rmdirSync(directory)
@@ -57,7 +57,7 @@ describe('autoreload configuration', function () {
   })
 })
 
-describe('autoreload configuration with prefix', function () {
+describe('autoreload configuration with prefix', () => {
   const testScope = {}
   const directory = path.join(__dirname, '..', 'testlocalesautoprefixed')
   fs.mkdirSync(directory)
@@ -70,30 +70,30 @@ describe('autoreload configuration with prefix', function () {
     autoReload: true
   })
 
-  it('will start with empty catalogs', function (done) {
+  it('will start with empty catalogs', (done) => {
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} })
     setTimeout(done, timeout)
   })
 
-  it('reloads when a catalog is altered', function (done) {
+  it('reloads when a catalog is altered', (done) => {
     fs.writeFileSync(directory + '/customprefix-de.json', '{"Hello":"Hallo"}')
     setTimeout(done, timeout)
   })
 
-  it('has added new string to catalog and translates correctly', function (done) {
+  it('has added new string to catalog and translates correctly', (done) => {
     i18n.setLocale(testScope, 'de')
     should.equal('Hallo', testScope.__('Hello'))
     should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} })
     done()
   })
 
-  it('will add new string to catalog and files from __()', function (done) {
+  it('will add new string to catalog and files from __()', (done) => {
     should.equal('Hallo', testScope.__('Hello'))
     should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} })
     done()
   })
 
-  it('will remove testlocalesautoprefixed after tests', function (done) {
+  it('will remove testlocalesautoprefixed after tests', (done) => {
     fs.unlinkSync(directory + '/customprefix-de.json')
     fs.unlinkSync(directory + '/customprefix-en.json')
     fs.rmdirSync(directory)
@@ -101,7 +101,7 @@ describe('autoreload configuration with prefix', function () {
   })
 })
 
-describe('autoreload configuration with prefix and customextension', function () {
+describe('autoreload configuration with prefix and customextension', () => {
   const testScope = {}
   const directory = path.join(__dirname, '..', 'testlocalesautoprefixedext')
   fs.mkdirSync(directory)
@@ -115,12 +115,12 @@ describe('autoreload configuration with prefix and customextension', function ()
     autoReload: true
   })
 
-  it('will start with empty catalogs', function (done) {
+  it('will start with empty catalogs', (done) => {
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} })
     setTimeout(done, timeout)
   })
 
-  it('reloads when a catalog is altered', function (done) {
+  it('reloads when a catalog is altered', (done) => {
     fs.writeFileSync(
       directory + '/customprefix-de.customextension',
       '{"Hello":"Hallo"}'
@@ -128,20 +128,20 @@ describe('autoreload configuration with prefix and customextension', function ()
     setTimeout(done, timeout)
   })
 
-  it('has added new string to catalog and translates correctly', function (done) {
+  it('has added new string to catalog and translates correctly', (done) => {
     i18n.setLocale(testScope, 'de')
     should.equal('Hallo', testScope.__('Hello'))
     should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} })
     done()
   })
 
-  it('will add new string to catalog and files from __()', function (done) {
+  it('will add new string to catalog and files from __()', (done) => {
     should.equal('Hallo', testScope.__('Hello'))
     should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} })
     done()
   })
 
-  it('will remove testlocalesautoprefixed after tests', function (done) {
+  it('will remove testlocalesautoprefixed after tests', (done) => {
     fs.unlinkSync(directory + '/customprefix-de.customextension')
     fs.unlinkSync(directory + '/customprefix-en.customextension')
     fs.rmdirSync(directory)
@@ -149,7 +149,7 @@ describe('autoreload configuration with prefix and customextension', function ()
   })
 })
 
-describe('autoreload configuration with customextension', function () {
+describe('autoreload configuration with customextension', () => {
   const testScope = {}
   const directory = path.join(__dirname, '..', 'testlocalesautocustomextension')
   fs.mkdirSync(directory)
@@ -162,30 +162,30 @@ describe('autoreload configuration with customextension', function () {
     autoReload: true
   })
 
-  it('will start with empty catalogs', function (done) {
+  it('will start with empty catalogs', (done) => {
     should.deepEqual(i18n.getCatalog(), { de: {}, en: {} })
     setTimeout(done, timeout)
   })
 
-  it('reloads when a catalog is altered', function (done) {
+  it('reloads when a catalog is altered', (done) => {
     fs.writeFileSync(directory + '/de.customextension', '{"Hello":"Hallo"}')
     setTimeout(done, timeout)
   })
 
-  it('has added new string to catalog and translates correctly', function (done) {
+  it('has added new string to catalog and translates correctly', (done) => {
     i18n.setLocale(testScope, 'de')
     should.equal('Hallo', testScope.__('Hello'))
     should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} })
     done()
   })
 
-  it('will add new string to catalog and files from __()', function (done) {
+  it('will add new string to catalog and files from __()', (done) => {
     should.equal('Hallo', testScope.__('Hello'))
     should.deepEqual(i18n.getCatalog(), { de: { Hello: 'Hallo' }, en: {} })
     done()
   })
 
-  it('will remove testlocalesautoprefixed after tests', function (done) {
+  it('will remove testlocalesautoprefixed after tests', (done) => {
     fs.unlinkSync(directory + '/de.customextension')
     fs.unlinkSync(directory + '/en.customextension')
     fs.rmdirSync(directory)

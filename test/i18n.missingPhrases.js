@@ -3,8 +3,8 @@
 const i18n = require('..')
 const should = require('should')
 
-describe('Missing Phrases', function () {
-  beforeEach(function () {
+describe('Missing Phrases', () => {
+  beforeEach(() => {
     i18n.configure({
       locales: ['en', 'de'],
       fallbacks: { nl: 'de' },
@@ -14,7 +14,7 @@ describe('Missing Phrases', function () {
     })
   })
 
-  describe('Local Module API', function () {
+  describe('Local Module API', () => {
     const req = {
       request: 'GET /test',
       __: i18n.__,
@@ -23,8 +23,8 @@ describe('Missing Phrases', function () {
       headers: {}
     }
 
-    describe('i18nTranslate', function () {
-      it('should return the key if the translation does not exist', function (done) {
+    describe('i18nTranslate', () => {
+      it('should return the key if the translation does not exist', (done) => {
         i18n.configure({
           locales: ['en', 'de', 'en-GB'],
           defaultLocale: 'en',
@@ -39,7 +39,7 @@ describe('Missing Phrases', function () {
         done()
       })
 
-      it('should return a custom key if a missing key function is provided', function (done) {
+      it('should return a custom key if a missing key function is provided', (done) => {
         i18n.configure({
           locales: ['en', 'de', 'en-GB'],
           defaultLocale: 'en',
@@ -47,9 +47,7 @@ describe('Missing Phrases', function () {
           register: req,
           updateFiles: false,
           syncFiles: false,
-          missingKeyFn: function (locale, value) {
-            return 'DoesReallyNotExist'
-          }
+          missingKeyFn: (locale, value) => 'DoesReallyNotExist'
         })
 
         i18n.setLocale(req, 'en').should.equal('en')
@@ -59,9 +57,9 @@ describe('Missing Phrases', function () {
     })
   })
 
-  describe('Global Module API', function () {
-    describe('i18nTranslate', function () {
-      it('should return the key if the translation does not exist', function () {
+  describe('Global Module API', () => {
+    describe('i18nTranslate', () => {
+      it('should return the key if the translation does not exist', () => {
         i18n.configure({
           locales: ['en', 'de', 'en-GB'],
           defaultLocale: 'en',
@@ -75,7 +73,7 @@ describe('Missing Phrases', function () {
         should.equal(__('DoesNotExist'), 'DoesNotExist')
       })
 
-      it('should return a custom key if a missing key function is provided', function () {
+      it('should return a custom key if a missing key function is provided', () => {
         i18n.configure({
           locales: ['en', 'de', 'en-GB'],
           defaultLocale: 'en',
@@ -83,9 +81,7 @@ describe('Missing Phrases', function () {
           register: global,
           updateFiles: false,
           syncFiles: false,
-          missingKeyFn: function (locale, value) {
-            return 'DoesReallyNotExist'
-          }
+          missingKeyFn: (locale, value) => 'DoesReallyNotExist'
         })
 
         i18n.setLocale('en')

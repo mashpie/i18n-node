@@ -12,7 +12,7 @@ function putJson(l, d) {
   fs.writeFileSync(directory + '/' + l + '.json', JSON.stringify(d, null, '\t'))
 }
 
-describe('i18n supports MakePlural', function () {
+describe('i18n supports MakePlural', () => {
   let TestScope = {}
   const locales = ['en', 'de', 'fr', 'ru', 'ar', 'de-DE', 'de-AT', 'de-CH']
   const fixture = {
@@ -71,7 +71,7 @@ describe('i18n supports MakePlural', function () {
     }
   }
 
-  beforeEach(function () {
+  beforeEach(() => {
     TestScope = {}
     i18n.configure({
       locales: locales,
@@ -89,7 +89,7 @@ describe('i18n supports MakePlural', function () {
     }
   })
 
-  it('A test phrase should have got written to all files', function (done) {
+  it('A test phrase should have got written to all files', (done) => {
     should.deepEqual(getJson('en')['%s cat'], {
       one: '%d cat',
       other: '%d cats'
@@ -110,7 +110,7 @@ describe('i18n supports MakePlural', function () {
     done()
   })
 
-  it('__n() should return correctly in russian', function (done) {
+  it('__n() should return correctly in russian', (done) => {
     TestScope.setLocale('ru')
     should.deepEqual(TestScope.__n('%s cat', 0), '0 кошек')
     should.deepEqual(TestScope.__n('%s cat', 1), '1 кошка')
@@ -121,7 +121,7 @@ describe('i18n supports MakePlural', function () {
     done()
   })
 
-  it('__n() should return correctly in french', function (done) {
+  it('__n() should return correctly in french', (done) => {
     TestScope.setLocale('fr')
     should.deepEqual(TestScope.__n('%s cat', 0), '0 chat')
     should.deepEqual(TestScope.__n('%s cat', 1), '1 chat')
@@ -132,7 +132,7 @@ describe('i18n supports MakePlural', function () {
     done()
   })
 
-  it('__n() should return correctly in german', function (done) {
+  it('__n() should return correctly in german', (done) => {
     TestScope.setLocale('de')
     should.deepEqual(TestScope.__n('%s cat', 0), '0 Katzen')
     should.deepEqual(TestScope.__n('%s cat', 1), '1 Katze')
@@ -143,7 +143,7 @@ describe('i18n supports MakePlural', function () {
     done()
   })
 
-  it('__n() should return correctly in english', function (done) {
+  it('__n() should return correctly in english', (done) => {
     TestScope.setLocale('en')
     should.deepEqual(TestScope.__n('%s cat', 0), '0 cats')
     should.deepEqual(TestScope.__n('%s cat', 1), '1 cat')
@@ -154,7 +154,7 @@ describe('i18n supports MakePlural', function () {
     done()
   })
 
-  it('__n() should return correctly in arabic', function (done) {
+  it('__n() should return correctly in arabic', (done) => {
     TestScope.setLocale('ar')
     should.deepEqual(TestScope.__n('%s book', 0), '‫٠ كتاب')
     should.deepEqual(TestScope.__n('%s book', 1), 'كتاب')
@@ -167,7 +167,7 @@ describe('i18n supports MakePlural', function () {
     done()
   })
 
-  it('__n() should return correctly in german for all regions', function (done) {
+  it('__n() should return correctly in german for all regions', (done) => {
     const regions = ['de-DE', 'de-AT', 'de-CH']
     for (let i = 0; i < regions.length; i++) {
       TestScope.setLocale(regions[i])

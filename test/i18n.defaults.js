@@ -2,10 +2,10 @@ const i18n = require('..')
 const should = require('should')
 const fs = require('fs')
 
-describe('Module Defaults', function () {
+describe('Module Defaults', () => {
   const testScope = {}
 
-  beforeEach(function () {
+  beforeEach(() => {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
@@ -14,7 +14,7 @@ describe('Module Defaults', function () {
     testScope.__('Hello')
   })
 
-  afterEach(function () {
+  afterEach(() => {
     const stats = fs.lstatSync('./defaultlocales')
     should.exist(stats)
     if (stats) {
@@ -26,12 +26,12 @@ describe('Module Defaults', function () {
     }
   })
 
-  it('should be possible to setup a custom directory', function () {
+  it('should be possible to setup a custom directory', () => {
     const stats = fs.lstatSync('./defaultlocales')
     should.exist(stats)
   })
 
-  it('should be possible to read custom files with default a extension of .json (issue #16)', function () {
+  it('should be possible to read custom files with default a extension of .json (issue #16)', () => {
     const statsde = fs.lstatSync('./defaultlocales/de.json')
     const statsen = fs.lstatSync('./defaultlocales/en.json')
     should.exist(statsde)

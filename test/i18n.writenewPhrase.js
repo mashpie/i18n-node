@@ -12,11 +12,11 @@ function putJson(l, d) {
   fs.writeFileSync(directory + '/' + l + '.json', JSON.stringify(d, null, '\t'))
 }
 
-describe('when i18n gets a new phrase', function () {
+describe('when i18n gets a new phrase', () => {
   let TestScope = {}
   const locales = ['en', 'de', 'fr', 'ru']
 
-  beforeEach(function () {
+  beforeEach(() => {
     TestScope = {}
     i18n.configure({
       locales: locales,
@@ -29,7 +29,7 @@ describe('when i18n gets a new phrase', function () {
     TestScope.setLocale('en')
   })
 
-  it('should get written to all files with __()', function (done) {
+  it('should get written to all files with __()', (done) => {
     TestScope.__('Hello World')
     should.deepEqual(getJson('en')['Hello World'], 'Hello World')
     should.deepEqual(getJson('de')['Hello World'], 'Hello World')
@@ -38,7 +38,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('is possible to manually add a translation', function (done) {
+  it('is possible to manually add a translation', (done) => {
     const german = getJson('de')
     german.car = 'Auto'
     putJson('de', german)
@@ -46,7 +46,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('should not alter any given translation with __()', function (done) {
+  it('should not alter any given translation with __()', (done) => {
     TestScope.__('car')
     should.deepEqual(getJson('en').car, 'car')
     should.deepEqual(getJson('de').car, 'Auto')
@@ -55,7 +55,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('should get written to all files with __n()', function (done) {
+  it('should get written to all files with __n()', (done) => {
     TestScope.__n('%s cat', '%s cats', 3)
     should.deepEqual(getJson('en')['%s cat'], {
       one: '%s cat',
@@ -76,7 +76,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('should get written to all files with __n() - short signature', function (done) {
+  it('should get written to all files with __n() - short signature', (done) => {
     TestScope.__n('%s dog', 3)
     should.deepEqual(getJson('en')['%s dog'], {
       one: '%s dog',
@@ -97,7 +97,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('should work with dotnotaction by use of __()', function (done) {
+  it('should work with dotnotaction by use of __()', (done) => {
     TestScope.__('some.deeper.example')
     should.deepEqual(getJson('en').some.deeper, {
       example: 'some.deeper.example'
@@ -114,7 +114,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('should add subnodes to dotnotaction by use of __()', function (done) {
+  it('should add subnodes to dotnotaction by use of __()', (done) => {
     TestScope.__('some.other.example:with defaults')
     const expected = {
       deeper: { example: 'some.deeper.example' },
@@ -127,7 +127,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('should add translations with dotnotaction by use of __n()', function (done) {
+  it('should add translations with dotnotaction by use of __n()', (done) => {
     TestScope.__n(
       'example.nested.plurals:%s kitty',
       'example.for.plurals:%s kitties',
@@ -141,7 +141,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('should add translations with dotnotaction by use of __n()', function (done) {
+  it('should add translations with dotnotaction by use of __n()', (done) => {
     TestScope.__n('example.single.plurals:%s kitty', 2)
     const expected = { one: '%s kitty', other: '%s kitty' }
     should.deepEqual(getJson('en').example.single.plurals, expected)
@@ -151,7 +151,7 @@ describe('when i18n gets a new phrase', function () {
     done()
   })
 
-  it('should add translations with messageformat by use of __mf()', function (done) {
+  it('should add translations with messageformat by use of __mf()', (done) => {
     let msg = 'In {language} there {N, plural,'
     msg += '=0{are zero for #}'
     msg += 'one {is one for #}'

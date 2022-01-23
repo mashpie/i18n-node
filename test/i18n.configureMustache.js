@@ -1,7 +1,7 @@
 const { I18n } = require('..')
 const should = require('should')
 
-describe('mustache configuration', function () {
+describe('mustache configuration', () => {
   const e = should.equal
   const staticCatalog = {
     en: {
@@ -26,7 +26,7 @@ describe('mustache configuration', function () {
   })
   const i18n4 = new I18n({ staticCatalog, mustacheConfig: { disable: true } })
 
-  it('should parse with defaults', function (done) {
+  it('should parse with defaults', (done) => {
     e(i18n1.__('Hello {{{name}}}', { name }), 'Hello Pudo & Moka')
     e(i18n1.__('Hello {{name}}', { name }), 'Hello Pudo &amp; Moka')
     e(i18n1.__('Hello <%{name}%>', { name }), 'Hello <%{name}%>')
@@ -36,7 +36,7 @@ describe('mustache configuration', function () {
     done()
   })
 
-  it('should parse with customTags', function (done) {
+  it('should parse with customTags', (done) => {
     e(i18n2.__('Hello {{{name}}}', { name }), 'Hello {{{name}}}')
     e(i18n2.__('Hello {{name}}', { name }), 'Hello {{name}}')
     e(i18n2.__('Hello <%{name}%>', { name }), 'Hello Pudo & Moka')
@@ -46,7 +46,7 @@ describe('mustache configuration', function () {
     done()
   })
 
-  it('should parse with customTags (regex safe)', function (done) {
+  it('should parse with customTags (regex safe)', (done) => {
     e(i18n3.__('Hello {{{name}}}', { name }), 'Hello {{{name}}}')
     e(i18n3.__('Hello {{name}}', { name }), 'Hello {{name}}')
     e(i18n3.__('Hello <%{name}%>', { name }), 'Hello <%{name}%>')
@@ -56,7 +56,7 @@ describe('mustache configuration', function () {
     done()
   })
 
-  it('should ignore mustache tags when opted-out', function (done) {
+  it('should ignore mustache tags when opted-out', (done) => {
     e(i18n4.__('Hello {{{name}}}', { name }), 'Hello {{{name}}}')
     e(i18n4.__('Hello {{name}}', { name }), 'Hello {{name}}')
     e(i18n4.__('Hello <%{name}%>', { name }), 'Hello <%{name}%>')

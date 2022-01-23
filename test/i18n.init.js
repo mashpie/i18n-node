@@ -2,7 +2,7 @@ const i18n = require('..')
 const should = require('should')
 const sinon = require('sinon')
 
-describe('i18n.init()', function () {
+describe('i18n.init()', () => {
   let TestScope
   let UnboundTestScope
   let UnboundTestScopeWithLocale
@@ -10,7 +10,7 @@ describe('i18n.init()', function () {
   let TestResponse
   let next
 
-  beforeEach(function () {
+  beforeEach(() => {
     TestScope = {
       scope: {
         locale: 'de'
@@ -40,13 +40,13 @@ describe('i18n.init()', function () {
     })
   })
 
-  it('should break silently when called without parameters', function (done) {
+  it('should break silently when called without parameters', (done) => {
     should.equal(i18n.init(), undefined)
     should.equal(TestScope.__('Hello'), 'Hello')
     done()
   })
 
-  it('should break when called without parameters', function (done) {
+  it('should break when called without parameters', (done) => {
     should.equal(i18n.init(TestRequest, TestResponse, next), undefined)
     should.equal(TestScope.locale, 'de')
     should.equal(next.called, true)
@@ -54,7 +54,7 @@ describe('i18n.init()', function () {
     done()
   })
 
-  it('should be possible to bind to non-request objects', function (done) {
+  it('should be possible to bind to non-request objects', (done) => {
     const plain = {}
     should.equal(i18n.init(plain), undefined)
     should.equal(plain.locale, 'en')
@@ -64,7 +64,7 @@ describe('i18n.init()', function () {
     done()
   })
 
-  it('should be possible to bind public methods to foreign objects', function (done) {
+  it('should be possible to bind public methods to foreign objects', (done) => {
     UnboundTestScope.translate = i18n.__
     should.equal(UnboundTestScope.translate('Hello'), 'Hallo')
 

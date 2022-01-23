@@ -1,8 +1,8 @@
 const { I18n } = require('..')
 const should = require('should')
 
-describe('configure register', function () {
-  it('should work on a custom object', function (done) {
+describe('configure register', () => {
+  it('should work on a custom object', (done) => {
     const customObject = {}
     I18n({
       locales: ['en', 'de'],
@@ -14,7 +14,7 @@ describe('configure register', function () {
     done()
   })
 
-  it('should work on list of objects', function () {
+  it('should work on list of objects', () => {
     const obj1 = {}
     const obj2 = {}
     const i18n = new I18n({

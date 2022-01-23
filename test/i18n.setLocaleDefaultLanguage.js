@@ -7,11 +7,11 @@
 const i18n = require('..')
 require('should')
 
-describe('Locale switching should not modify defaultLocale on unsupported languages', function () {
+describe('Locale switching should not modify defaultLocale on unsupported languages', () => {
   let req
   let res
 
-  beforeEach(function () {
+  beforeEach(() => {
     i18n.configure({
       locales: ['de', 'en'],
       directory: './locales'
@@ -27,7 +27,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     res = {}
   })
 
-  it('getLocale should return defaultLocale for req and res without any setLocale switch', function () {
+  it('getLocale should return defaultLocale for req and res without any setLocale switch', () => {
     i18n.init(req, res)
 
     // as we don't support es i18n defaults to (yet internal en)
@@ -44,7 +44,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.__('Hello').should.equal('Hello')
   })
 
-  it('getLocale should return defaultLocale for req and res with i18n.setLocale(req) switching to any unsupported locale', function () {
+  it('getLocale should return defaultLocale for req and res with i18n.setLocale(req) switching to any unsupported locale', () => {
     i18n.init(req, res)
 
     // explicitly switch locale on req to unsuperted es
@@ -64,7 +64,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.__('Hello').should.equal('Hello')
   })
 
-  it('getLocale should return defaultLocale for req and res with req.setLocale() switching to any unsupported locale', function () {
+  it('getLocale should return defaultLocale for req and res with req.setLocale() switching to any unsupported locale', () => {
     i18n.init(req, res)
 
     // explicitly switch locale on req to unsuperted es
@@ -84,7 +84,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.__('Hello').should.equal('Hello')
   })
 
-  it('getLocale should return defaultLocale for req and res with i18n.setLocale(res) switching to any unsupported locale', function () {
+  it('getLocale should return defaultLocale for req and res with i18n.setLocale(res) switching to any unsupported locale', () => {
     i18n.init(req, res)
 
     // explicitly switch locale on req to unsuperted es
@@ -104,7 +104,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.__('Hello').should.equal('Hello')
   })
 
-  it('getLocale should return defaultLocale for req and res with res.setLocale() switching to any unsupported locale', function () {
+  it('getLocale should return defaultLocale for req and res with res.setLocale() switching to any unsupported locale', () => {
     i18n.init(req, res)
 
     // explicitly switch locale on req to unsuperted es
@@ -124,7 +124,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.__('Hello').should.equal('Hello')
   })
 
-  it('i18n.setLocale(req) should switch locale for req but not change defaultLocale', function () {
+  it('i18n.setLocale(req) should switch locale for req but not change defaultLocale', () => {
     i18n.init(req, res)
 
     // switch locale on req
@@ -145,7 +145,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.__('Hello').should.equal('Hello')
   })
 
-  it('req.setLocale() should switch locale for req but not change defaultLocale', function () {
+  it('req.setLocale() should switch locale for req but not change defaultLocale', () => {
     i18n.init(req, res)
 
     // switch locale on req
@@ -166,7 +166,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.__('Hello').should.equal('Hello')
   })
 
-  it('i18n.setLocale(res) should switch locale for res but not change defaultLocale', function () {
+  it('i18n.setLocale(res) should switch locale for res but not change defaultLocale', () => {
     i18n.init(req, res)
 
     // switch locale on req
@@ -187,7 +187,7 @@ describe('Locale switching should not modify defaultLocale on unsupported langua
     i18n.__('Hello').should.equal('Hello')
   })
 
-  it('res.setLocale() should switch locale for res but not change defaultLocale', function () {
+  it('res.setLocale() should switch locale for res but not change defaultLocale', () => {
     i18n.init(req, res)
 
     // switch locale on req

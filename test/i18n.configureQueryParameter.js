@@ -1,10 +1,10 @@
 const i18n = require('..')
 
-describe('Locale switching should work queryParameter', function () {
+describe('Locale switching should work queryParameter', () => {
   let req
   let res
 
-  beforeEach(function () {
+  beforeEach(() => {
     i18n.configure({
       locales: ['en', 'de', 'fr'],
       defaultLocale: 'en',
@@ -29,7 +29,7 @@ describe('Locale switching should work queryParameter', function () {
     }
   })
 
-  it('getLocale should return same locale for req and res based on ?lang=fr', function () {
+  it('getLocale should return same locale for req and res based on ?lang=fr', () => {
     i18n.init(req, res)
 
     i18n.getLocale(req).should.equal('fr')
@@ -44,14 +44,14 @@ describe('Locale switching should work queryParameter', function () {
     res.locals.__('Hello').should.equal('Bonjour')
   })
 
-  it('should support WHATWG URL API', function () {
+  it('should support WHATWG URL API', () => {
     req.url = new URL('/test?lang=fr', 'http://localhost')
     i18n.init(req, res)
     i18n.getLocale(req).should.equal('fr')
     i18n.getLocale(res).should.equal('fr')
   })
 
-  it('should handle multiple query parameters', function () {
+  it('should handle multiple query parameters', () => {
     const uriPath = '/test?lang=de&lang=fr'
     req.request = `GET ${uriPath}`
     req.url = new URL(uriPath, 'http://localhost')
@@ -60,7 +60,7 @@ describe('Locale switching should work queryParameter', function () {
     i18n.getLocale(res).should.equal('de')
   })
 
-  it('should handle multiple query parameters, first is empty', function () {
+  it('should handle multiple query parameters, first is empty', () => {
     const uriPath = '/test?lang=&lang=de'
     req.request = `GET ${uriPath}`
     req.url = new URL(uriPath, 'http://localhost')
@@ -69,7 +69,7 @@ describe('Locale switching should work queryParameter', function () {
     i18n.getLocale(res).should.equal('de')
   })
 
-  it('should handle multiple query parameters, repeated values', function () {
+  it('should handle multiple query parameters, repeated values', () => {
     const uriPath = '/test?lang=en&lang=en'
     req.request = `GET ${uriPath}`
     req.url = new URL(uriPath, 'http://localhost')
@@ -78,7 +78,7 @@ describe('Locale switching should work queryParameter', function () {
     i18n.getLocale(res).should.equal('en')
   })
 
-  it('should handle empty query parameters', function () {
+  it('should handle empty query parameters', () => {
     const uriPath = '/test?lang='
     req.request = `GET ${uriPath}`
     req.headers = {}
@@ -88,7 +88,7 @@ describe('Locale switching should work queryParameter', function () {
     i18n.getLocale(res).should.equal('en')
   })
 
-  it('should handle empty query parameters, repeated params', function () {
+  it('should handle empty query parameters, repeated params', () => {
     const uriPath = '/test?lang=&lang=&lang='
     req.request = `GET ${uriPath}`
     req.headers = {}
@@ -98,7 +98,7 @@ describe('Locale switching should work queryParameter', function () {
     i18n.getLocale(res).should.equal('en')
   })
 
-  it('should fall back to language header if present on empty query parameters', function () {
+  it('should fall back to language header if present on empty query parameters', () => {
     const uriPath = '/test?lang='
     req.request = `GET ${uriPath}`
     req.headers = {
@@ -110,7 +110,7 @@ describe('Locale switching should work queryParameter', function () {
     i18n.getLocale(res).should.equal('fr')
   })
 
-  it('should fall back to language header if present on empty query parameters, with repeated params', function () {
+  it('should fall back to language header if present on empty query parameters, with repeated params', () => {
     const uriPath = '/test?lang=&lang='
     req.request = `GET ${uriPath}`
     req.headers = {

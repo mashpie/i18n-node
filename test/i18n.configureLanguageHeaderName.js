@@ -1,7 +1,7 @@
 const { I18n } = require('..')
 require('should')
 
-describe('Locale switching should work when set via custom header', function () {
+describe('Locale switching should work when set via custom header', () => {
   const i18n = new I18n({
     locales: ['en', 'de', 'fr'],
     defaultLocale: 'en',
@@ -26,7 +26,7 @@ describe('Locale switching should work when set via custom header', function () 
     locals: {}
   }
 
-  it('getLocale should return same locale for req and res based on custom header', function () {
+  it('getLocale should return same locale for req and res based on custom header', () => {
     i18n.init(reqFr, res)
     i18n.getLocale(reqFr).should.equal('fr')
     i18n.getLocale(res).should.equal('fr')
@@ -40,7 +40,7 @@ describe('Locale switching should work when set via custom header', function () 
     res.locals.__('Hello').should.equal('Bonjour')
   })
 
-  it('getLocale should fallback to defaultLocale with custom header set to unsupported locale', function () {
+  it('getLocale should fallback to defaultLocale with custom header set to unsupported locale', () => {
     i18n.init(reqSv, res)
     i18n.getLocale(reqSv).should.equal('en')
     i18n.getLocale(res).should.equal('en')

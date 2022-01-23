@@ -2,8 +2,8 @@
 const i18n = require('..')
 const should = require('should')
 
-describe('Module API', function () {
-  beforeEach(function () {
+describe('Module API', () => {
+  beforeEach(() => {
     i18n.configure({
       locales: ['en', 'de'],
       fallbacks: { nl: 'de' },
@@ -12,56 +12,56 @@ describe('Module API', function () {
     })
   })
 
-  describe('Global Scope', function () {
-    describe('i18nSetLocale and i18nGetLocale', function () {
-      it('getLocale should return default setting', function () {
+  describe('Global Scope', () => {
+    describe('i18nSetLocale and i18nGetLocale', () => {
+      it('getLocale should return default setting', () => {
         i18n.getLocale().should.equal('en')
       })
 
-      it('setLocale should return the new setting', function () {
+      it('setLocale should return the new setting', () => {
         i18n.setLocale('de').should.equal('de')
       })
 
-      it('getLocale should return the new setting', function () {
+      it('getLocale should return the new setting', () => {
         i18n.setLocale('de')
         i18n.getLocale().should.equal('de')
       })
 
-      it('setLocale should return a fallback value', function () {
+      it('setLocale should return a fallback value', () => {
         i18n.setLocale('en')
         i18n.setLocale('nl').should.equal('de')
       })
     })
 
-    describe('i18nGetCatalog', function () {
-      it('should return all catalogs when invoked with empty parameters', function () {
+    describe('i18nGetCatalog', () => {
+      it('should return all catalogs when invoked with empty parameters', () => {
         const catalogs = i18n.getCatalog()
         catalogs.should.have.property('en')
         catalogs.en.should.have.property('Hello', 'Hello')
         catalogs.should.have.property('de')
         catalogs.de.should.have.property('Hello', 'Hallo')
       })
-      it('should return just the DE catalog when invoked with "de" as parameter', function () {
+      it('should return just the DE catalog when invoked with "de" as parameter', () => {
         i18n.getCatalog('en').should.have.property('Hello', 'Hello')
       })
-      it('should return just the EN catalog when invoked with "en" as parameter', function () {
+      it('should return just the EN catalog when invoked with "en" as parameter', () => {
         i18n.getCatalog('de').should.have.property('Hello', 'Hallo')
       })
-      it('should return just the DE catalog when invoked with a (fallback) "nl" as parameter', function () {
+      it('should return just the DE catalog when invoked with a (fallback) "nl" as parameter', () => {
         i18n.getCatalog('nl').should.have.property('Hello', 'Hallo')
       })
-      it('should return false when invoked with unsupported locale as parameter', function () {
+      it('should return false when invoked with unsupported locale as parameter', () => {
         i18n.getCatalog('oO').should.equal(false)
       })
     })
 
-    describe('i18nTranslate', function () {
-      it('should return an empty string if the translation is an empty string', function () {
+    describe('i18nTranslate', () => {
+      it('should return an empty string if the translation is an empty string', () => {
         i18n.setLocale('en')
         should.equal(__('Empty'), '')
       })
 
-      it('should return en translations as expected', function () {
+      it('should return en translations as expected', () => {
         i18n.setLocale('en')
         should.equal(__('Hello'), 'Hello')
         should.equal(
@@ -78,7 +78,7 @@ describe('Module API', function () {
         )
       })
 
-      it('should return en translations as expected, using mustached messages', function () {
+      it('should return en translations as expected, using mustached messages', () => {
         i18n.setLocale('en')
         should.equal(__('Hello {{name}}', { name: 'Marcus' }), 'Hello Marcus')
         should.equal(
@@ -97,7 +97,7 @@ describe('Module API', function () {
         )
       })
 
-      it('should return de translations as expected', function () {
+      it('should return de translations as expected', () => {
         i18n.setLocale('de')
         should.equal(__('Hello'), 'Hallo')
         should.equal(
@@ -114,7 +114,7 @@ describe('Module API', function () {
         )
       })
 
-      it('should return de translations as expected, using mustached messages', function () {
+      it('should return de translations as expected, using mustached messages', () => {
         i18n.setLocale('de')
 
         // named only
@@ -146,14 +146,14 @@ describe('Module API', function () {
         )
       })
 
-      it('simple translation should work on global', function () {
+      it('simple translation should work on global', () => {
         i18n.setLocale('en')
         should.equal(__('Hello'), 'Hello')
         i18n.setLocale('de')
         should.equal(__('Hello'), 'Hallo')
       })
 
-      it('should test the ordering in sprintf', function () {
+      it('should test the ordering in sprintf', () => {
         i18n.setLocale('en')
         should.equal(
           __('ordered arguments', 'First', 'Second'),
@@ -166,7 +166,7 @@ describe('Module API', function () {
         )
       })
 
-      it('should test more complex sprintf examples', function () {
+      it('should test more complex sprintf examples', () => {
         i18n.setLocale('en')
         should.equal(
           __('ordered arguments with numbers', 'First', 2, 123.456),
@@ -179,7 +179,7 @@ describe('Module API', function () {
         )
       })
 
-      it('should allow for repeated references to the same argument.', function () {
+      it('should allow for repeated references to the same argument.', () => {
         i18n.setLocale('en')
         should.equal(
           __('repeated argument', 'repeated'),
@@ -187,7 +187,7 @@ describe('Module API', function () {
         )
       })
 
-      it('should also return translations when iterating thru variables values', function () {
+      it('should also return translations when iterating thru variables values', () => {
         let i = 0
         const greetings = ['Hi', 'Hello', 'Howdy']
         const greetingsDE = ['Hi', 'Hallo', 'Hallöchen']
@@ -203,7 +203,7 @@ describe('Module API', function () {
         }
       })
 
-      it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
+      it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', () => {
         should.equal(
           __({
             phrase: 'Hello',
@@ -276,8 +276,8 @@ describe('Module API', function () {
       })
     })
 
-    describe('i18nTranslatePlural', function () {
-      it('should return singular or plural form based on last parameter', function () {
+    describe('i18nTranslatePlural', () => {
+      it('should return singular or plural form based on last parameter', () => {
         i18n.setLocale('en')
         let singular = __n('%s cat', '%s cats', 1)
         let plural = __n('%s cat', '%s cats', 3)
@@ -291,7 +291,7 @@ describe('Module API', function () {
         should.equal(plural, '3 Katzen')
       })
 
-      it('should return substituted phrases when used nested', function () {
+      it('should return substituted phrases when used nested', () => {
         i18n.setLocale('en')
         let singular = __n(
           'There is one monkey in the %%s',
@@ -325,7 +325,7 @@ describe('Module API', function () {
         should.equal(plural, 'Im Baum sitzen 3 Affen')
       })
 
-      it("won't return substitutions when not masked by an extra % (%% issue #49)", function () {
+      it("won't return substitutions when not masked by an extra % (%% issue #49)", () => {
         i18n.setLocale('en')
         let singular = __n(
           'There is one monkey in the %s',
@@ -385,7 +385,7 @@ describe('Module API', function () {
         should.equal(plural, 'There are 3 monkeys in the Baum')
       })
 
-      it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
+      it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', () => {
         let singular, plural
 
         i18n.setLocale('en')
@@ -506,7 +506,7 @@ describe('Module API', function () {
         should.equal(plural, '3 Katzen')
       })
 
-      it('should allow two arguments', function () {
+      it('should allow two arguments', () => {
         const singular = __n('cat', 1)
         const plural = __n('cat', 3)
         should.equal(singular, '1 cat')

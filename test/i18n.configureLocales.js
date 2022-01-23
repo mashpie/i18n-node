@@ -3,8 +3,8 @@ const should = require('should')
 const fs = require('fs')
 const path = require('path')
 
-describe('locales configuration', function () {
-  it('omitting it should read all directory contents', function (done) {
+describe('locales configuration', () => {
+  it('omitting it should read all directory contents', (done) => {
     const directory = path.join(__dirname, '..', 'locales')
 
     i18n.configure({
@@ -29,7 +29,7 @@ describe('locales configuration', function () {
     done()
   })
 
-  it('should work when using together with prefix', function (done) {
+  it('should work when using together with prefix', (done) => {
     const directory = path.join(__dirname, '..', 'testlocales')
 
     fs.mkdirSync(directory)
@@ -53,7 +53,7 @@ describe('locales configuration', function () {
     done()
   })
 
-  it('should work when using together with prefix and extension', function (done) {
+  it('should work when using together with prefix and extension', (done) => {
     const directory = path.join(__dirname, '..', 'testlocales')
 
     fs.mkdirSync(directory)
@@ -76,7 +76,7 @@ describe('locales configuration', function () {
     done()
   })
 
-  it('should ignore unmatching files when using together with prefix and extension', function (done) {
+  it('should ignore unmatching files when using together with prefix and extension', (done) => {
     const directory = path.join(__dirname, '..', 'testlocales')
 
     fs.mkdirSync(directory)

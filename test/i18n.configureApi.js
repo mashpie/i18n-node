@@ -1,8 +1,8 @@
 const { I18n } = require('..')
 const should = require('should')
 
-describe('configure api', function () {
-  it('should set an alias method on the object', function () {
+describe('configure api', () => {
+  it('should set an alias method on the object', () => {
     const customObject = {}
     I18n({
       locales: ['en', 'de'],
@@ -17,7 +17,7 @@ describe('configure api', function () {
     should.equal(customObject.t('Hello'), 'Hallo')
   })
 
-  it('should work for any existing API method', function () {
+  it('should work for any existing API method', () => {
     const customObject = {}
     I18n({
       locales: ['en', 'de'],
@@ -31,7 +31,7 @@ describe('configure api', function () {
     should.equal(customObject.getLocaleAlias(), 'de')
   })
 
-  it('should ignore non existing API methods', function () {
+  it('should ignore non existing API methods', () => {
     const customObject = {}
     I18n({
       locales: ['en', 'de'],
@@ -43,7 +43,7 @@ describe('configure api', function () {
     should.equal(typeof customObject.nonExistingMethod, 'undefined')
   })
 
-  it('should not expose the actual API methods', function () {
+  it('should not expose the actual API methods', () => {
     const customObject = {}
     I18n({
       locales: ['en', 'de'],
@@ -55,7 +55,7 @@ describe('configure api', function () {
     should.equal(typeof customObject.__, 'undefined')
   })
 
-  it('should escape res -> locals -> res recursion', function () {
+  it('should escape res -> locals -> res recursion', () => {
     const customObject = {}
     customObject.locals = { res: customObject }
     I18n({

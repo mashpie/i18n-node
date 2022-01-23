@@ -1,10 +1,10 @@
 const i18n = require('..')
 const should = require('should')
 
-describe('parsing Messageformat phrases', function () {
+describe('parsing Messageformat phrases', () => {
   const mfTest = {}
 
-  beforeEach(function () {
+  beforeEach(() => {
     i18n.configure({
       locales: ['en', 'de', 'fr', 'ru'],
       register: mfTest,
@@ -14,7 +14,7 @@ describe('parsing Messageformat phrases', function () {
     })
   })
 
-  it('should work with simple strings', function () {
+  it('should work with simple strings', () => {
     mfTest.setLocale('en')
     should.equal('Hello', mfTest.__mf('Hello'))
 
@@ -29,7 +29,7 @@ describe('parsing Messageformat phrases', function () {
     should.equal('Hello', mfTest.__mf({ phrase: 'Hello', locale: 'en' }))
   })
 
-  it('should work with basic replacements', function () {
+  it('should work with basic replacements', () => {
     mfTest.setLocale('en')
     should.equal(
       'Hello Marcus',
@@ -47,7 +47,7 @@ describe('parsing Messageformat phrases', function () {
     )
   })
 
-  it('should work with plurals', function () {
+  it('should work with plurals', () => {
     /**
      * en: "mftest": "In {lang} there {NUM, plural,one{is one for #}other{others for #}}"
      */

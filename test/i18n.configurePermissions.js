@@ -4,10 +4,10 @@ const fs = require('fs')
 
 const isWin = /^win/.test(process.platform)
 
-describe('Module Config (directoryPermissions)', function () {
+describe('Module Config (directoryPermissions)', () => {
   const testScope = {}
 
-  afterEach(function () {
+  afterEach(() => {
     const stats = fs.lstatSync('./customlocales')
     should.exist(stats)
     if (stats) {
@@ -19,7 +19,7 @@ describe('Module Config (directoryPermissions)', function () {
     }
   })
 
-  it('should be possible to setup a custom directory with default permissions', function () {
+  it('should be possible to setup a custom directory with default permissions', () => {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
@@ -32,7 +32,7 @@ describe('Module Config (directoryPermissions)', function () {
     should.exist(stat)
   })
 
-  it('should be possible to setup a custom directory with customized permissions', function () {
+  it('should be possible to setup a custom directory with customized permissions', () => {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,
@@ -48,7 +48,7 @@ describe('Module Config (directoryPermissions)', function () {
     should.exist(stat)
   })
 
-  it('should be possible to setup a custom directory with customized permissions', function () {
+  it('should be possible to setup a custom directory with customized permissions', () => {
     i18n.configure({
       locales: ['en', 'de'],
       register: testScope,

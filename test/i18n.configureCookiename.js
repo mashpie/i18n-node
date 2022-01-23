@@ -1,10 +1,10 @@
 const i18n = require('..')
 
-describe('Locale switching should work when set via cookie', function () {
+describe('Locale switching should work when set via cookie', () => {
   let req
   let res
 
-  beforeEach(function () {
+  beforeEach(() => {
     i18n.configure({
       locales: ['en', 'de', 'fr'],
       defaultLocale: 'en',
@@ -28,7 +28,7 @@ describe('Locale switching should work when set via cookie', function () {
     }
   })
 
-  it('getLocale should return same locale for req and res based on cookie header', function () {
+  it('getLocale should return same locale for req and res based on cookie header', () => {
     i18n.init(req, res)
 
     i18n.getLocale(req).should.equal('fr')

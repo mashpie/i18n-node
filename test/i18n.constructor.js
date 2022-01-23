@@ -18,8 +18,8 @@ const testApi = (instance) => {
   should.equal(typeof instance.removeLocale, 'function')
 }
 
-describe('exported constructor', function () {
-  it('should setup independend instances', function () {
+describe('exported constructor', () => {
+  it('should setup independend instances', () => {
     const one = new I18n()
     const two = new I18n()
     one.configure({
@@ -36,7 +36,7 @@ describe('exported constructor', function () {
     testApi(two)
   })
 
-  it('should setup independend instances configured on creation', function () {
+  it('should setup independend instances configured on creation', () => {
     const one = new I18n({
       locales: ['en-GB'],
       updateFiles: false
@@ -52,18 +52,18 @@ describe('exported constructor', function () {
   })
 })
 
-describe('classic require', function () {
-  it('should expose all API methods', function () {
+describe('classic require', () => {
+  it('should expose all API methods', () => {
     testApi(i18n)
   })
 
-  it('should expose constructor too', function () {
+  it('should expose constructor too', () => {
     should.equal(typeof i18n.I18n, 'function')
   })
 })
 
-describe('included constructor', function () {
-  it('should setup independend instances', function () {
+describe('included constructor', () => {
+  it('should setup independend instances', () => {
     const one = new i18n.I18n()
     const two = new i18n.I18n()
     one.configure({
@@ -80,7 +80,7 @@ describe('included constructor', function () {
     testApi(two)
   })
 
-  it('should setup independend instances configured on creation', function () {
+  it('should setup independend instances configured on creation', () => {
     const one = new i18n.I18n({
       locales: ['en-GB'],
       updateFiles: false
