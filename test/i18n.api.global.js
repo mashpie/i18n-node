@@ -1,6 +1,6 @@
 /* global __, __n */
-var i18n = require('..')
-var should = require('should')
+const i18n = require('..')
+const should = require('should')
 
 describe('Module API', function () {
   beforeEach(function () {
@@ -35,7 +35,7 @@ describe('Module API', function () {
 
     describe('i18nGetCatalog', function () {
       it('should return all catalogs when invoked with empty parameters', function () {
-        var catalogs = i18n.getCatalog()
+        const catalogs = i18n.getCatalog()
         catalogs.should.have.property('en')
         catalogs.en.should.have.property('Hello', 'Hello')
         catalogs.should.have.property('de')
@@ -188,9 +188,9 @@ describe('Module API', function () {
       })
 
       it('should also return translations when iterating thru variables values', function () {
-        var i = 0
-        var greetings = ['Hi', 'Hello', 'Howdy']
-        var greetingsDE = ['Hi', 'Hallo', 'Hallöchen']
+        let i = 0
+        const greetings = ['Hi', 'Hello', 'Howdy']
+        const greetingsDE = ['Hi', 'Hallo', 'Hallöchen']
 
         i18n.setLocale('en')
         for (i = 0; i < greetings.length; i++) {
@@ -279,8 +279,8 @@ describe('Module API', function () {
     describe('i18nTranslatePlural', function () {
       it('should return singular or plural form based on last parameter', function () {
         i18n.setLocale('en')
-        var singular = __n('%s cat', '%s cats', 1)
-        var plural = __n('%s cat', '%s cats', 3)
+        let singular = __n('%s cat', '%s cats', 1)
+        let plural = __n('%s cat', '%s cats', 3)
         should.equal(singular, '1 cat')
         should.equal(plural, '3 cats')
 
@@ -293,13 +293,13 @@ describe('Module API', function () {
 
       it('should return substituted phrases when used nested', function () {
         i18n.setLocale('en')
-        var singular = __n(
+        let singular = __n(
           'There is one monkey in the %%s',
           'There are %d monkeys in the %%s',
           1,
           __('tree')
         )
-        var plural = __n(
+        let plural = __n(
           'There is one monkey in the %%s',
           'There are %d monkeys in the %%s',
           3,
@@ -327,22 +327,19 @@ describe('Module API', function () {
 
       it("won't return substitutions when not masked by an extra % (%% issue #49)", function () {
         i18n.setLocale('en')
-        var singular = __n(
+        let singular = __n(
           'There is one monkey in the %s',
           'There are %d monkeys in the %s',
-          1,
-          __('tree')
+          1
         )
-        var plural = __n(
+        let plural = __n(
           'There is one monkey in the %s',
           'There are %d monkeys in the %s',
-          3,
-          __('tree')
+          3
         )
         should.equal(singular, 'There is one monkey in the 1')
-        should.equal(plural, 'There are 3 monkeys in the undefined')
+        should.equal(plural, 'There are 3 monkeys in the %s')
 
-        i18n.setLocale('de')
         singular = __n(
           'There is one monkey in the %s',
           'There are %d monkeys in the %s',
@@ -356,11 +353,40 @@ describe('Module API', function () {
           __('tree')
         )
         should.equal(singular, 'There is one monkey in the 1')
-        should.equal(plural, 'There are 3 monkeys in the undefined')
+        should.equal(plural, 'There are 3 monkeys in the tree')
+
+        i18n.setLocale('de')
+        singular = __n(
+          'There is one monkey in the %s',
+          'There are %d monkeys in the %s',
+          1
+        )
+        plural = __n(
+          'There is one monkey in the %s',
+          'There are %d monkeys in the %s',
+          3
+        )
+        should.equal(singular, 'There is one monkey in the 1')
+        should.equal(plural, 'There are 3 monkeys in the %s')
+
+        singular = __n(
+          'There is one monkey in the %s',
+          'There are %d monkeys in the %s',
+          1,
+          __('tree')
+        )
+        plural = __n(
+          'There is one monkey in the %s',
+          'There are %d monkeys in the %s',
+          3,
+          __('tree')
+        )
+        should.equal(singular, 'There is one monkey in the 1')
+        should.equal(plural, 'There are 3 monkeys in the Baum')
       })
 
       it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
-        var singular, plural
+        let singular, plural
 
         i18n.setLocale('en')
         singular = __n(
@@ -481,8 +507,8 @@ describe('Module API', function () {
       })
 
       it('should allow two arguments', function () {
-        var singular = __n('cat', 1)
-        var plural = __n('cat', 3)
+        const singular = __n('cat', 1)
+        const plural = __n('cat', 3)
         should.equal(singular, '1 cat')
         should.equal(plural, '3 cats')
       })

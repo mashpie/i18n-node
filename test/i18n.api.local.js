@@ -1,6 +1,6 @@
 /* global __ */
-var i18n = require('..')
-var should = require('should')
+const i18n = require('..')
+const should = require('should')
 
 describe('Module API', function () {
   beforeEach(function () {
@@ -12,7 +12,7 @@ describe('Module API', function () {
   })
 
   describe('Local Scope', function () {
-    var req = {
+    const req = {
       request: 'GET /test',
       __: i18n.__,
       __n: i18n.__n,
@@ -128,34 +128,34 @@ describe('Module API', function () {
       })
       describe('i18nGetLocales', function () {
         it('should return the locales', function () {
-          var returnedLocales = i18n.getLocales()
+          const returnedLocales = i18n.getLocales()
           returnedLocales.sort()
-          var expectedLocales = ['en', 'de', 'en-GB']
+          const expectedLocales = ['en', 'de', 'en-GB']
           expectedLocales.sort()
 
           returnedLocales.length.should.equal(expectedLocales.length)
 
-          for (var i = 0; i < returnedLocales.length; i++) {
+          for (let i = 0; i < returnedLocales.length; i++) {
             returnedLocales[i].should.equal(expectedLocales[i])
           }
         })
       })
       describe('i18nAddLocale and i18nRemoveLocale', function () {
         it('addLocale should add a locale', function () {
-          var oldLength = i18n.getLocales().length
+          const oldLength = i18n.getLocales().length
           i18n.addLocale('fr')
-          var locales = i18n.getLocales()
+          const locales = i18n.getLocales()
           locales.length.should.equal(oldLength + 1)
           locales.should.containEql('fr')
         })
         it('removeLocale should remove a locale', function () {
-          var initialLength = i18n.getLocales().length
+          const initialLength = i18n.getLocales().length
           // ensure we have an extra locale
           i18n.addLocale('fr')
-          var oldLength = i18n.getLocales().length
+          const oldLength = i18n.getLocales().length
           oldLength.should.equal(initialLength + 1)
           i18n.removeLocale('fr')
-          var locales = i18n.getLocales()
+          const locales = i18n.getLocales()
           locales.length.should.equal(oldLength - 1)
           locales.should.not.containEql('fr')
         })
@@ -393,8 +393,8 @@ describe('Module API', function () {
     describe('i18nTranslatePlural', function () {
       it('should return singular or plural form based on last parameter', function () {
         i18n.setLocale(req, 'en')
-        var singular = req.__n('%s cat', '%s cats', 1)
-        var plural = req.__n('%s cat', '%s cats', 3)
+        let singular = req.__n('%s cat', '%s cats', 1)
+        let plural = req.__n('%s cat', '%s cats', 3)
         should.equal(singular, '1 cat')
         should.equal(plural, '3 cats')
 
@@ -407,13 +407,13 @@ describe('Module API', function () {
 
       it('should return substituted phrases when used nested', function () {
         i18n.setLocale(req, 'en')
-        var singular = req.__n(
+        let singular = req.__n(
           'There is one monkey in the %%s',
           'There are %d monkeys in the %%s',
           1,
           req.__('tree')
         )
-        var plural = req.__n(
+        let plural = req.__n(
           'There is one monkey in the %%s',
           'There are %d monkeys in the %%s',
           3,
@@ -441,20 +441,32 @@ describe('Module API', function () {
 
       it("won't return substitutions when not masked by an extra % (%% issue #49)", function () {
         i18n.setLocale(req, 'en')
-        var singular = req.__n(
+        let singular = req.__n(
           'There is one monkey in the %s',
           'There are %d monkeys in the %s',
           1,
           req.__('tree')
         )
-        var plural = req.__n(
+        let plural = req.__n(
           'There is one monkey in the %s',
           'There are %d monkeys in the %s',
           3,
           req.__('tree')
         )
         should.equal(singular, 'There is one monkey in the 1')
-        should.equal(plural, 'There are 3 monkeys in the undefined')
+        should.equal(plural, 'There are 3 monkeys in the tree')
+        singular = req.__n(
+          'There is one monkey in the %s',
+          'There are %d monkeys in the %s',
+          1
+        )
+        plural = req.__n(
+          'There is one monkey in the %s',
+          'There are %d monkeys in the %s',
+          3
+        )
+        should.equal(singular, 'There is one monkey in the 1')
+        should.equal(plural, 'There are 3 monkeys in the %s')
 
         i18n.setLocale(req, 'de')
         singular = req.__n(
@@ -470,16 +482,28 @@ describe('Module API', function () {
           req.__('tree')
         )
         should.equal(singular, 'There is one monkey in the 1')
-        should.equal(plural, 'There are 3 monkeys in the undefined')
+        should.equal(plural, 'There are 3 monkeys in the Baum')
+        singular = req.__n(
+          'There is one monkey in the %s',
+          'There are %d monkeys in the %s',
+          1
+        )
+        plural = req.__n(
+          'There is one monkey in the %s',
+          'There are %d monkeys in the %s',
+          3
+        )
+        should.equal(singular, 'There is one monkey in the 1')
+        should.equal(plural, 'There are 3 monkeys in the %s')
       })
 
       it('should be possible to use an json object as 1st parameter to specifiy a certain locale for that lookup', function () {
         i18n.setLocale(req, 'en')
-        var singular = req.__n(
+        let singular = req.__n(
           { singular: '%s cat', plural: '%s cats', locale: 'de' },
           1
         )
-        var plural = req.__n(
+        let plural = req.__n(
           { singular: '%s cat', plural: '%s cats', locale: 'de' },
           3
         )

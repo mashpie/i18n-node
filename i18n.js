@@ -7,30 +7,30 @@
 'use strict'
 
 // dependencies
-var vsprintf = require('sprintf-js').vsprintf
-var pkgVersion = require('./package.json').version
-var fs = require('fs')
-var url = require('url')
-var path = require('path')
-var debug = require('debug')('i18n:debug')
-var warn = require('debug')('i18n:warn')
-var error = require('debug')('i18n:error')
-var Mustache = require('mustache')
-var Messageformat = require('@messageformat/core')
-var MakePlural = require('make-plural')
-var parseInterval = require('math-interval-parser').default
+const printf = require('fast-printf').printf
+const pkgVersion = require('./package.json').version
+const fs = require('fs')
+const url = require('url')
+const path = require('path')
+const debug = require('debug')('i18n:debug')
+const warn = require('debug')('i18n:warn')
+const error = require('debug')('i18n:error')
+const Mustache = require('mustache')
+const Messageformat = require('@messageformat/core')
+const MakePlural = require('make-plural')
+const parseInterval = require('math-interval-parser').default
 
 // utils
-var escapeRegExp = function (string) {
+const escapeRegExp = function (string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
 // create constructor function
 const i18n = function I18n(_OPTS = false) {
-  var MessageformatInstanceForLocale = {}
-  var PluralsForLocale = {}
-  var locales = {}
-  var api = {
+  const MessageformatInstanceForLocale = {}
+  const PluralsForLocale = {}
+  let locales = {}
+  const api = {
     __: '__',
     __n: '__n',
     __l: '__l',
@@ -43,36 +43,36 @@ const i18n = function I18n(_OPTS = false) {
     addLocale: 'addLocale',
     removeLocale: 'removeLocale'
   }
-  var mustacheConfig = {
+  const mustacheConfig = {
     tags: ['{{', '}}'],
     disable: false
   }
-  var mustacheRegex
-  var pathsep = path.sep // ---> means win support will be available in node 0.8.x and above
-  var autoReload
-  var cookiename
-  var languageHeaderName
-  var defaultLocale
-  var retryInDefaultLocale
-  var directory
-  var directoryPermissions
-  var extension
-  var fallbacks
-  var indent
-  var logDebugFn
-  var logErrorFn
-  var logWarnFn
-  var preserveLegacyCase
-  var objectNotation
-  var prefix
-  var queryParameter
-  var register
-  var updateFiles
-  var syncFiles
-  var missingKeyFn
+  let mustacheRegex
+  const pathsep = path.sep // ---> means win support will be available in node 0.8.x and above
+  let autoReload
+  let cookiename
+  let languageHeaderName
+  let defaultLocale
+  let retryInDefaultLocale
+  let directory
+  let directoryPermissions
+  let extension
+  let fallbacks
+  let indent
+  let logDebugFn
+  let logErrorFn
+  let logWarnFn
+  let preserveLegacyCase
+  let objectNotation
+  let prefix
+  let queryParameter
+  let register
+  let updateFiles
+  let syncFiles
+  let missingKeyFn
 
   // public exports
-  var i18n = {}
+  const i18n = {}
 
   i18n.version = pkgVersion
 
@@ -83,9 +83,9 @@ const i18n = function I18n(_OPTS = false) {
     // Provide custom API method aliases if desired
     // This needs to be processed before the first call to applyAPItoObject()
     if (opt.api && typeof opt.api === 'object') {
-      for (var method in opt.api) {
+      for (const method in opt.api) {
         if (Object.prototype.hasOwnProperty.call(opt.api, method)) {
-          var alias = opt.api[method]
+          const alias = opt.api[method]
           if (typeof api[method] !== 'undefined') {
             api[method] = alias
           }
@@ -219,7 +219,7 @@ const i18n = function I18n(_OPTS = false) {
       if (autoReload) {
         // watch changes of locale files (it's called twice because fs.watch is still unstable)
         fs.watch(directory, function (event, filename) {
-          var localeFromFile = guessLocaleFromFile(filename)
+          const localeFromFile = guessLocaleFromFile(filename)
 
           if (localeFromFile && opt.locales.indexOf(localeFromFile) > -1) {
             logDebug('Auto reloading locale file "' + filename + '".')
@@ -260,10 +260,10 @@ const i18n = function I18n(_OPTS = false) {
   }
 
   i18n.__ = function i18nTranslate(phrase) {
-    var msg
-    var argv = parseArgv(arguments)
-    var namedValues = argv[0]
-    var args = argv[1]
+    let msg
+    const argv = parseArgv(arguments)
+    const namedValues = argv[0]
+    const args = argv[1]
 
     // called like __({phrase: "Hello", locale: "en"})
     if (typeof phrase === 'object') {
@@ -295,11 +295,11 @@ const i18n = function I18n(_OPTS = false) {
   }
 
   i18n.__mf = function i18nMessageformat(phrase) {
-    var msg, mf, f
-    var targetLocale = defaultLocale
-    var argv = parseArgv(arguments)
-    var namedValues = argv[0]
-    var args = argv[1]
+    let msg, mf, f
+    let targetLocale = defaultLocale
+    const argv = parseArgv(arguments)
+    const namedValues = argv[0]
+    const args = argv[1]
 
     // called like __({phrase: "Hello", locale: "en"})
     if (typeof phrase === 'object') {
@@ -344,7 +344,7 @@ const i18n = function I18n(_OPTS = false) {
   }
 
   i18n.__l = function i18nTranslationList(phrase) {
-    var translations = []
+    const translations = []
     Object.keys(locales)
       .sort()
       .forEach(function (l) {
@@ -354,11 +354,11 @@ const i18n = function I18n(_OPTS = false) {
   }
 
   i18n.__h = function i18nTranslationHash(phrase) {
-    var translations = []
+    const translations = []
     Object.keys(locales)
       .sort()
       .forEach(function (l) {
-        var hash = {}
+        const hash = {}
         hash[l] = i18n.__({ phrase: phrase, locale: l })
         translations.push(hash)
       })
@@ -366,10 +366,10 @@ const i18n = function I18n(_OPTS = false) {
   }
 
   i18n.__n = function i18nTranslatePlural(singular, plural, count) {
-    var msg
-    var namedValues
-    var targetLocale
-    var args = []
+    let msg
+    let namedValues
+    let targetLocale
+    let args = []
 
     // Accept an object with named values as the last parameter
     if (argsEndWithNamedObject(arguments)) {
@@ -435,14 +435,14 @@ const i18n = function I18n(_OPTS = false) {
 
     // find the correct plural rule for given locale
     if (typeof msg === 'object') {
-      var p
+      let p
       // create a new Plural for locale
       // and try to cache instance
       if (PluralsForLocale[targetLocale]) {
         p = PluralsForLocale[targetLocale]
       } else {
         // split locales with a region code
-        var lc = targetLocale
+        const lc = targetLocale
           .toLowerCase()
           .split(/[_-\s]+/)
           .filter(function (el) {
@@ -464,15 +464,15 @@ const i18n = function I18n(_OPTS = false) {
   i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
     // when given an array of objects => setLocale on each
     if (Array.isArray(object) && typeof locale === 'string') {
-      for (var i = object.length - 1; i >= 0; i--) {
+      for (let i = object.length - 1; i >= 0; i--) {
         i18n.setLocale(object[i], locale, true)
       }
       return i18n.getLocale(object[0])
     }
 
     // defaults to called like i18n.setLocale(req, 'en')
-    var targetObject = object
-    var targetLocale = locale
+    let targetObject = object
+    let targetLocale = locale
 
     // called like req.setLocale('en') or i18n.setLocale('en')
     if (locale === undefined && typeof object === 'string') {
@@ -539,7 +539,7 @@ const i18n = function I18n(_OPTS = false) {
   }
 
   i18n.getCatalog = function i18nGetCatalog(object, locale) {
-    var targetLocale
+    let targetLocale
 
     // called like i18n.getCatalog(req)
     if (
@@ -611,7 +611,7 @@ const i18n = function I18n(_OPTS = false) {
   // = private methods =
   // ===================
 
-  var postProcess = function (msg, namedValues, args, count) {
+  const postProcess = function (msg, namedValues, args, count) {
     // test for parsable interval string
     if (/\|/.test(msg)) {
       msg = parsePluralInterval(msg, count)
@@ -619,10 +619,10 @@ const i18n = function I18n(_OPTS = false) {
 
     // replace the counter
     if (typeof count === 'number') {
-      msg = vsprintf(msg, [Number(count)])
+      msg = printf(msg, Number(count))
     }
 
-    // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
+    // if the msg string contains {{Mustache}} patterns we render it as a mini template
     if (!mustacheConfig.disable && mustacheRegex.test(msg)) {
       msg = Mustache.render(msg, namedValues, {}, mustacheConfig.tags)
     }
@@ -630,13 +630,13 @@ const i18n = function I18n(_OPTS = false) {
     // if we have extra arguments with values to get replaced,
     // an additional substition injects those strings afterwards
     if (/%/.test(msg) && args && args.length > 0) {
-      msg = vsprintf(msg, args)
+      msg = printf(msg, ...args)
     }
 
     return msg
   }
 
-  var argsEndWithNamedObject = function (args) {
+  const argsEndWithNamedObject = function (args) {
     return (
       args.length > 1 &&
       args[args.length - 1] !== null &&
@@ -644,8 +644,8 @@ const i18n = function I18n(_OPTS = false) {
     )
   }
 
-  var parseArgv = function (args) {
-    var namedValues, returnArgs
+  const parseArgv = function (args) {
+    let namedValues, returnArgs
 
     if (argsEndWithNamedObject(args)) {
       namedValues = args[args.length - 1]
@@ -661,13 +661,13 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * registers all public API methods to a given response object when not already declared
    */
-  var applyAPItoObject = function (object) {
-    var alreadySetted = true
+  const applyAPItoObject = function (object) {
+    let alreadySetted = true
 
     // attach to itself if not provided
-    for (var method in api) {
+    for (const method in api) {
       if (Object.prototype.hasOwnProperty.call(api, method)) {
-        var alias = api[method]
+        const alias = api[method]
 
         // be kind rewind, or better not touch anything already existing
         if (!object[alias]) {
@@ -701,13 +701,13 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * tries to guess locales by scanning the given directory
    */
-  var guessLocales = function (directory) {
-    var entries = fs.readdirSync(directory)
-    var localesFound = []
+  const guessLocales = function (directory) {
+    const entries = fs.readdirSync(directory)
+    const localesFound = []
 
-    for (var i = entries.length - 1; i >= 0; i--) {
+    for (let i = entries.length - 1; i >= 0; i--) {
       if (entries[i].match(/^\./)) continue
-      var localeFromFile = guessLocaleFromFile(entries[i])
+      const localeFromFile = guessLocaleFromFile(entries[i])
       if (localeFromFile) localesFound.push(localeFromFile)
     }
 
@@ -717,9 +717,9 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * tries to guess locales from a given filename
    */
-  var guessLocaleFromFile = function (filename) {
-    var extensionRegex = new RegExp(extension + '$', 'g')
-    var prefixRegex = new RegExp('^' + prefix, 'g')
+  const guessLocaleFromFile = function (filename) {
+    const extensionRegex = new RegExp(extension + '$', 'g')
+    const prefixRegex = new RegExp('^' + prefix, 'g')
 
     if (!filename) return false
     if (prefix && !filename.match(prefixRegex)) return false
@@ -731,7 +731,7 @@ const i18n = function I18n(_OPTS = false) {
    * @param queryLanguage - language query parameter, either an array or a string.
    * @return the first non-empty language query parameter found, null otherwise.
    */
-  var extractQueryLanguage = function (queryLanguage) {
+  const extractQueryLanguage = function (queryLanguage) {
     if (Array.isArray(queryLanguage)) {
       return queryLanguage.find((lang) => lang !== '' && lang)
     }
@@ -742,13 +742,13 @@ const i18n = function I18n(_OPTS = false) {
    * guess language setting based on http headers
    */
 
-  var guessLanguage = function (request) {
+  const guessLanguage = function (request) {
     if (typeof request === 'object') {
-      var languageHeader = request.headers
+      const languageHeader = request.headers
         ? request.headers[languageHeaderName]
         : undefined
-      var languages = []
-      var regions = []
+      const languages = []
+      const regions = []
 
       request.languages = [defaultLocale]
       request.regions = [defaultLocale]
@@ -757,7 +757,7 @@ const i18n = function I18n(_OPTS = false) {
 
       // a query parameter overwrites all
       if (queryParameter && request.url) {
-        var urlAsString =
+        const urlAsString =
           typeof request.url === 'string' ? request.url : request.url.toString()
 
         /**
@@ -765,8 +765,8 @@ const i18n = function I18n(_OPTS = false) {
          * @see https://github.com/nodejs/node/issues/12682
          */
         // eslint-disable-next-line node/no-deprecated-api
-        var urlObj = url.parse(urlAsString, true)
-        var languageQueryParameter = urlObj.query[queryParameter]
+        const urlObj = url.parse(urlAsString, true)
+        const languageQueryParameter = urlObj.query[queryParameter]
         if (languageQueryParameter) {
           let queryLanguage = extractQueryLanguage(languageQueryParameter)
           if (queryLanguage) {
@@ -787,24 +787,24 @@ const i18n = function I18n(_OPTS = false) {
 
       // 'accept-language' is the most common source
       if (languageHeader) {
-        var acceptedLanguages = getAcceptedLanguagesFromHeader(languageHeader)
-        var match
-        var fallbackMatch
-        var fallback
-        for (var i = 0; i < acceptedLanguages.length; i++) {
-          var lang = acceptedLanguages[i]
-          var lr = lang.split('-', 2)
-          var parentLang = lr[0]
-          var region = lr[1]
+        const acceptedLanguages = getAcceptedLanguagesFromHeader(languageHeader)
+        let match
+        let fallbackMatch
+        let fallback
+        for (let i = 0; i < acceptedLanguages.length; i++) {
+          const lang = acceptedLanguages[i]
+          const lr = lang.split('-', 2)
+          const parentLang = lr[0]
+          const region = lr[1]
 
           // Check if we have a configured fallback set for this language.
-          var fallbackLang = getFallback(lang, fallbacks)
+          const fallbackLang = getFallback(lang, fallbacks)
           if (fallbackLang) {
             fallback = fallbackLang
             // Fallbacks for languages should be inserted
             // where the original, unsupported language existed.
-            var acceptedLanguageIndex = acceptedLanguages.indexOf(lang)
-            var fallbackIndex = acceptedLanguages.indexOf(fallback)
+            const acceptedLanguageIndex = acceptedLanguages.indexOf(lang)
+            const fallbackIndex = acceptedLanguages.indexOf(fallback)
             if (fallbackIndex > -1) {
               acceptedLanguages.splice(fallbackIndex, 1)
             }
@@ -812,7 +812,7 @@ const i18n = function I18n(_OPTS = false) {
           }
 
           // Check if we have a configured fallback set for the parent language of the locale.
-          var fallbackParentLang = getFallback(parentLang, fallbacks)
+          const fallbackParentLang = getFallback(parentLang, fallbacks)
           if (fallbackParentLang) {
             fallback = fallbackParentLang
             // Fallbacks for a parent language should be inserted
@@ -853,16 +853,16 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * Get a sorted list of accepted languages from the HTTP Accept-Language header
    */
-  var getAcceptedLanguagesFromHeader = function (header) {
-    var languages = header.split(',')
-    var preferences = {}
+  const getAcceptedLanguagesFromHeader = function (header) {
+    const languages = header.split(',')
+    const preferences = {}
     return languages
       .map(function parseLanguagePreference(item) {
-        var preferenceParts = item.trim().split(';q=')
+        const preferenceParts = item.trim().split(';q=')
         if (preferenceParts.length < 2) {
           preferenceParts[1] = 1.0
         } else {
-          var quality = parseFloat(preferenceParts[1])
+          const quality = parseFloat(preferenceParts[1])
           preferenceParts[1] = quality || 0.0
         }
         preferences[preferenceParts[0]] = preferenceParts[1]
@@ -881,8 +881,8 @@ const i18n = function I18n(_OPTS = false) {
    * searches for locale in given object
    */
 
-  var getLocaleFromObject = function (obj) {
-    var locale
+  const getLocaleFromObject = function (obj) {
+    let locale
     if (obj && obj.scope) {
       locale = obj.scope.locale
     }
@@ -895,14 +895,14 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * splits and parses a phrase for mathematical interval expressions
    */
-  var parsePluralInterval = function (phrase, count) {
-    var returnPhrase = phrase
-    var phrases = phrase.split(/\|/)
-    var intervalRuleExists = false
+  const parsePluralInterval = function (phrase, count) {
+    let returnPhrase = phrase
+    const phrases = phrase.split(/\|/)
+    let intervalRuleExists = false
 
     // some() breaks on 1st true
     phrases.some(function (p) {
-      var matches = p.match(/^\s*([()[\]]+[\d,]+[()[\]]+)?\s*(.*)$/)
+      const matches = p.match(/^\s*([()[\]]+[\d,]+[()[\]]+)?\s*(.*)$/)
 
       // not the same as in combined condition
       if (matches != null && matches[1]) {
@@ -929,7 +929,7 @@ const i18n = function I18n(_OPTS = false) {
    * [20,] - all numbers ≥20 (matches: 20, 21, 22, ...)
    * [,20] - all numbers ≤20 (matches: 20, 21, 22, ...)
    */
-  var matchInterval = function (number, interval) {
+  const matchInterval = function (number, interval) {
     interval = parseInterval(interval)
     if (interval && typeof number === 'number') {
       if (interval.from.value === number) {
@@ -950,7 +950,7 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * read locale file, translate a msg and write to fs if new
    */
-  var translate = function (locale, singular, plural, skipSyncToAllFiles) {
+  const translate = function (locale, singular, plural, skipSyncToAllFiles) {
     // add same key to all translations
     if (!skipSyncToAllFiles && syncFiles) {
       syncToAllFiles(singular, plural)
@@ -990,10 +990,10 @@ const i18n = function I18n(_OPTS = false) {
     }
 
     // dotnotaction add on, @todo: factor out
-    var defaultSingular = singular
-    var defaultPlural = plural
+    let defaultSingular = singular
+    let defaultPlural = plural
     if (objectNotation) {
-      var indexOfColon = singular.indexOf(':')
+      let indexOfColon = singular.indexOf(':')
       // We compare against 0 instead of -1 because
       // we don't really expect the string to start with ':'.
       if (indexOfColon > 0) {
@@ -1009,8 +1009,8 @@ const i18n = function I18n(_OPTS = false) {
       }
     }
 
-    var accessor = localeAccessor(locale, singular)
-    var mutator = localeMutator(locale, singular)
+    const accessor = localeAccessor(locale, singular)
+    const mutator = localeMutator(locale, singular)
 
     // if (plural) {
     //   if (accessor() == null) {
@@ -1075,11 +1075,11 @@ const i18n = function I18n(_OPTS = false) {
    * initialize the same key in all locales
    * when not already existing, checked via translate
    */
-  var syncToAllFiles = function (singular, plural) {
+  const syncToAllFiles = function (singular, plural) {
     // iterate over locales and translate again
     // this will implicitly write/sync missing keys
     // to the rest of locales
-    for (var l in locales) {
+    for (const l in locales) {
       translate(l, singular, plural, true)
     }
   }
@@ -1095,24 +1095,24 @@ const i18n = function I18n(_OPTS = false) {
    * @returns {Function} A function that, when invoked, returns the current value stored
    * in the object at the requested location.
    */
-  var localeAccessor = function (locale, singular, allowDelayedTraversal) {
+  const localeAccessor = function (locale, singular, allowDelayedTraversal) {
     // Bail out on non-existent locales to defend against internal errors.
     if (!locales[locale]) return Function.prototype
 
     // Handle object lookup notation
-    var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation)
+    const indexOfDot = objectNotation && singular.lastIndexOf(objectNotation)
     if (objectNotation && indexOfDot > 0 && indexOfDot < singular.length - 1) {
       // If delayed traversal wasn't specifically forbidden, it is allowed.
       if (typeof allowDelayedTraversal === 'undefined')
         allowDelayedTraversal = true
       // The accessor we're trying to find and which we want to return.
-      var accessor = null
+      let accessor = null
       // An accessor that returns null.
-      var nullAccessor = function () {
+      const nullAccessor = function () {
         return null
       }
       // Do we need to re-traverse the tree upon invocation of the accessor?
-      var reTraverse = false
+      let reTraverse = false
       // Split the provided term and run the callback for each subterm.
       singular.split(objectNotation).reduce(function (object, index) {
         // Make the accessor return null.
@@ -1165,27 +1165,27 @@ const i18n = function I18n(_OPTS = false) {
    * @returns {Function} A function that takes one argument. When the function is
    * invoked, the targeted translation term will be set to the given value inside the locale table.
    */
-  var localeMutator = function (locale, singular, allowBranching) {
+  const localeMutator = function (locale, singular, allowBranching) {
     // Bail out on non-existent locales to defend against internal errors.
     if (!locales[locale]) return Function.prototype
 
     // Handle object lookup notation
-    var indexOfDot = objectNotation && singular.lastIndexOf(objectNotation)
+    const indexOfDot = objectNotation && singular.lastIndexOf(objectNotation)
     if (objectNotation && indexOfDot > 0 && indexOfDot < singular.length - 1) {
       // If branching wasn't specifically allowed, disable it.
       if (typeof allowBranching === 'undefined') allowBranching = false
       // This will become the function we want to return.
-      var accessor = null
+      let accessor = null
       // An accessor that takes one argument and returns null.
-      var nullAccessor = function () {
+      const nullAccessor = function () {
         return null
       }
       // Fix object path.
-      var fixObject = function () {
+      let fixObject = function () {
         return {}
       }
       // Are we going to need to re-traverse the tree when the mutator is invoked?
-      var reTraverse = false
+      let reTraverse = false
       // Split the provided term and run the callback for each subterm.
       singular.split(objectNotation).reduce(function (object, index) {
         // Make the mutator do nothing.
@@ -1250,9 +1250,9 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * try reading a file
    */
-  var read = function (locale) {
-    var localeFile = {}
-    var file = getStorageFilePath(locale)
+  const read = function (locale) {
+    let localeFile = {}
+    const file = getStorageFilePath(locale)
     try {
       logDebug('read ' + file + ' for locale: ' + locale)
       localeFile = fs.readFileSync(file)
@@ -1288,8 +1288,8 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * try writing a file in a created directory
    */
-  var write = function (locale) {
-    var stats, target, tmp
+  const write = function (locale) {
+    let stats, target, tmp
 
     // don't write new locale information to disk if updateFiles isn't true
     if (!updateFiles) {
@@ -1350,11 +1350,11 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * basic normalization of filepath
    */
-  var getStorageFilePath = function (locale) {
+  const getStorageFilePath = function (locale) {
     // changed API to use .json as default, #16
-    var ext = extension || '.json'
-    var filepath = path.normalize(directory + pathsep + prefix + locale + ext)
-    var filepathJS = path.normalize(
+    const ext = extension || '.json'
+    const filepath = path.normalize(directory + pathsep + prefix + locale + ext)
+    const filepathJS = path.normalize(
       directory + pathsep + prefix + locale + '.js'
     )
     // use .js as fallback if already existing
@@ -1373,11 +1373,11 @@ const i18n = function I18n(_OPTS = false) {
   /**
    * Get locales with wildcard support
    */
-  var getFallback = function (targetLocale, fallbacks) {
+  const getFallback = function (targetLocale, fallbacks) {
     fallbacks = fallbacks || {}
     if (fallbacks[targetLocale]) return fallbacks[targetLocale]
-    var fallBackLocale = null
-    for (var key in fallbacks) {
+    let fallBackLocale = null
+    for (const key in fallbacks) {
       if (targetLocale.match(new RegExp('^' + key.replace('*', '.*') + '$'))) {
         fallBackLocale = fallbacks[key]
         break
