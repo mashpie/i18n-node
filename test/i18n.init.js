@@ -1,14 +1,14 @@
-var i18n = require('..')
-var should = require('should')
-var sinon = require('sinon')
+const i18n = require('..')
+const should = require('should')
+const sinon = require('sinon')
 
 describe('i18n.init()', function () {
-  var TestScope
-  var UnboundTestScope
-  var UnboundTestScopeWithLocale
-  var TestRequest
-  var TestResponse
-  var next
+  let TestScope
+  let UnboundTestScope
+  let UnboundTestScopeWithLocale
+  let TestRequest
+  let TestResponse
+  let next
 
   beforeEach(function () {
     TestScope = {
@@ -55,7 +55,7 @@ describe('i18n.init()', function () {
   })
 
   it('should be possible to bind to non-request objects', function (done) {
-    var plain = {}
+    const plain = {}
     should.equal(i18n.init(plain), undefined)
     should.equal(plain.locale, 'en')
     should.equal(plain.__('Hello'), 'Hello')

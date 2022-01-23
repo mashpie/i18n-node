@@ -1,8 +1,8 @@
-var i18n = require('..')
-var should = require('should')
+const i18n = require('..')
+const should = require('should')
 
 // reserve a "private" scope
-var pluralTest = {}
+const pluralTest = {}
 i18n.configure({
   locales: ['en', 'de'],
   directory: './locales',
@@ -101,7 +101,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('plurals with intervals in string (no object)', function () {
-    var p = 'plurals with intervals in string (no object)'
+    const p = 'plurals with intervals in string (no object)'
     should.equal(pluralTest.__n(p, 2), 'two to five (included)')
     should.equal(pluralTest.__n(p, 5), 'two to five (included)')
     should.equal(pluralTest.__n(p, 3), 'two to five (included)')
@@ -109,7 +109,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('plurals with intervals in _other_ missing _one_', function () {
-    var p = 'plurals with intervals in _other_ missing _one_'
+    const p = 'plurals with intervals in _other_ missing _one_'
     should.equal(pluralTest.__n(p, 2), 'two to five (included)')
     should.equal(pluralTest.__n(p, 5), 'two to five (included)')
     should.equal(pluralTest.__n(p, 3), 'two to five (included)')
@@ -117,7 +117,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('returns correctly for 2 and 5 and included 3', function () {
-    var p = 'plurals with intervals as string'
+    const p = 'plurals with intervals as string'
     should.equal(pluralTest.__n(p, 2), 'two to five (included)')
     should.equal(pluralTest.__n(p, 5), 'two to five (included)')
     should.equal(pluralTest.__n(p, 3), 'two to five (included)')
@@ -125,7 +125,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('returns correctly for 2 and 5 and included 3 in mixed order', function () {
-    var p = 'plurals in any order'
+    const p = 'plurals in any order'
     should.equal(pluralTest.__n(p, 2), 'two to five (included)')
     should.equal(pluralTest.__n(p, 5), 'two to five (included)')
     should.equal(pluralTest.__n(p, 3), 'two to five (included)')
@@ -133,7 +133,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('returns correctly catchall for 2 and 5 when excluded and an included 3', function () {
-    var p = 'plurals with intervals as string (excluded)'
+    const p = 'plurals with intervals as string (excluded)'
     should.equal(pluralTest.__n(p, 2), 'and a catchall rule')
     should.equal(pluralTest.__n(p, 5), 'and a catchall rule')
     should.equal(pluralTest.__n(p, 3), 'two to five (excluded)')
@@ -141,7 +141,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('supports infinity in ranges [0,]', function () {
-    var p = 'plurals to eternity'
+    const p = 'plurals to eternity'
     should.equal(pluralTest.__n(p, 0), 'this will last forever')
     should.equal(pluralTest.__n(p, 2), 'this will last forever')
     should.equal(pluralTest.__n(p, 2000), 'this will last forever')
@@ -149,7 +149,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('supports infinity in ranges [,0]', function () {
-    var p = 'plurals from eternity'
+    const p = 'plurals from eternity'
     should.equal(pluralTest.__n(p, 0), 'this was born long before')
     should.equal(pluralTest.__n(p, -2), 'this was born long before')
     should.equal(pluralTest.__n(p, -2000), 'this was born long before')
@@ -157,7 +157,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('returns correctly for nested plurals', function () {
-    var p = 'greeting.plurals'
+    const p = 'greeting.plurals'
     should.equal(pluralTest.__n(p, 1), "The default 'one' rule")
     should.equal(pluralTest.__n(p, 2), 'two to five (included)')
     should.equal(pluralTest.__n(p, 5), 'two to five (included)')
@@ -166,7 +166,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('returns correctly for extra deep nested plurals', function () {
-    var p = 'another.nested.extra.deep.example'
+    const p = 'another.nested.extra.deep.example'
     should.equal(pluralTest.__(p), "The default 'one' rule")
     should.equal(pluralTest.__n(p, 1), "The default 'one' rule")
     should.equal(pluralTest.__n(p, 2), 'two to five (included)')
@@ -176,7 +176,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('returns correctly for incomplete nested plurals', function () {
-    var p = 'another.nested.extra.lazy.example'
+    const p = 'another.nested.extra.lazy.example'
 
     should.equal(pluralTest.__(p), 'and a catchall rule')
     should.equal(pluralTest.__n(p, 1), 'and a catchall rule')
@@ -187,7 +187,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('returns correctly for nested mustache plurals', function () {
-    var p = 'another.nested.extra.mustache.example'
+    const p = 'another.nested.extra.mustache.example'
 
     should.equal(
       pluralTest.__(p, { me: 'marcus' }),
@@ -216,7 +216,7 @@ describe('parsing plural intervals from strings', function () {
   })
 
   it('returns correctly for nested mustache plurals with sprintf', function () {
-    var p = 'another.nested.extra.mustacheprintf.example'
+    const p = 'another.nested.extra.mustacheprintf.example'
 
     should.equal(
       pluralTest.__(p, { me: 'marcus' }),

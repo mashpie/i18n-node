@@ -1,8 +1,8 @@
-var i18n = require('..')
-var should = require('should')
-var fs = require('fs')
+const i18n = require('..')
+const should = require('should')
+const fs = require('fs')
 
-var directory = './localestowrite'
+const directory = './localestowrite'
 
 function getJson(l) {
   return JSON.parse(fs.readFileSync(directory + '/' + l + '.json'))
@@ -13,8 +13,8 @@ function putJson(l, d) {
 }
 
 describe('when i18n gets a new phrase', function () {
-  var TestScope = {}
-  var locales = ['en', 'de', 'fr', 'ru']
+  let TestScope = {}
+  const locales = ['en', 'de', 'fr', 'ru']
 
   beforeEach(function () {
     TestScope = {}
@@ -39,7 +39,7 @@ describe('when i18n gets a new phrase', function () {
   })
 
   it('is possible to manually add a translation', function (done) {
-    var german = getJson('de')
+    const german = getJson('de')
     german.car = 'Auto'
     putJson('de', german)
     should.deepEqual(getJson('de').car, 'Auto')
@@ -116,7 +116,7 @@ describe('when i18n gets a new phrase', function () {
 
   it('should add subnodes to dotnotaction by use of __()', function (done) {
     TestScope.__('some.other.example:with defaults')
-    var expected = {
+    const expected = {
       deeper: { example: 'some.deeper.example' },
       other: { example: 'with defaults' }
     }
@@ -133,7 +133,7 @@ describe('when i18n gets a new phrase', function () {
       'example.for.plurals:%s kitties',
       2
     )
-    var expected = { one: '%s kitty', other: '%s kitties' }
+    const expected = { one: '%s kitty', other: '%s kitties' }
     should.deepEqual(getJson('en').example.nested.plurals, expected)
     should.deepEqual(getJson('de').example.nested.plurals, expected)
     should.deepEqual(getJson('fr').example.nested.plurals, expected)
@@ -143,7 +143,7 @@ describe('when i18n gets a new phrase', function () {
 
   it('should add translations with dotnotaction by use of __n()', function (done) {
     TestScope.__n('example.single.plurals:%s kitty', 2)
-    var expected = { one: '%s kitty', other: '%s kitty' }
+    const expected = { one: '%s kitty', other: '%s kitty' }
     should.deepEqual(getJson('en').example.single.plurals, expected)
     should.deepEqual(getJson('de').example.single.plurals, expected)
     should.deepEqual(getJson('fr').example.single.plurals, expected)
@@ -152,7 +152,7 @@ describe('when i18n gets a new phrase', function () {
   })
 
   it('should add translations with messageformat by use of __mf()', function (done) {
-    var msg = 'In {language} there {N, plural,'
+    let msg = 'In {language} there {N, plural,'
     msg += '=0{are zero for #}'
     msg += 'one {is one for #}'
     msg += 'other{others for #}}'

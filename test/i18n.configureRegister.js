@@ -3,7 +3,7 @@ const should = require('should')
 
 describe('configure register', function () {
   it('should work on a custom object', function (done) {
-    var customObject = {}
+    const customObject = {}
     I18n({
       locales: ['en', 'de'],
       register: customObject
@@ -15,8 +15,8 @@ describe('configure register', function () {
   })
 
   it('should work on list of objects', function () {
-    var obj1 = {}
-    var obj2 = {}
+    const obj1 = {}
+    const obj2 = {}
     const i18n = new I18n({
       locales: ['en', 'de', 'fr'],
       register: [obj1, obj2]

@@ -1,9 +1,9 @@
-var i18n = require('..')
+const i18n = require('..')
 require('should')
 
 describe('Locale switching should work on req and res', function () {
-  var req
-  var res
+  let req
+  let res
 
   beforeEach(function () {
     i18n.configure({

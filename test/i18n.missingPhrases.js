@@ -1,7 +1,7 @@
 /* global __ */
 
-var i18n = require('..')
-var should = require('should')
+const i18n = require('..')
+const should = require('should')
 
 describe('Missing Phrases', function () {
   beforeEach(function () {
@@ -15,7 +15,7 @@ describe('Missing Phrases', function () {
   })
 
   describe('Local Module API', function () {
-    var req = {
+    const req = {
       request: 'GET /test',
       __: i18n.__,
       __n: i18n.__n,

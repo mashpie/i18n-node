@@ -3,7 +3,7 @@ const should = require('should')
 
 describe('configure api', function () {
   it('should set an alias method on the object', function () {
-    var customObject = {}
+    const customObject = {}
     I18n({
       locales: ['en', 'de'],
       register: customObject,
@@ -18,7 +18,7 @@ describe('configure api', function () {
   })
 
   it('should work for any existing API method', function () {
-    var customObject = {}
+    const customObject = {}
     I18n({
       locales: ['en', 'de'],
       register: customObject,
@@ -32,7 +32,7 @@ describe('configure api', function () {
   })
 
   it('should ignore non existing API methods', function () {
-    var customObject = {}
+    const customObject = {}
     I18n({
       locales: ['en', 'de'],
       register: customObject,
@@ -44,7 +44,7 @@ describe('configure api', function () {
   })
 
   it('should not expose the actual API methods', function () {
-    var customObject = {}
+    const customObject = {}
     I18n({
       locales: ['en', 'de'],
       register: customObject,
@@ -56,7 +56,7 @@ describe('configure api', function () {
   })
 
   it('should escape res -> locals -> res recursion', function () {
-    var customObject = {}
+    const customObject = {}
     customObject.locals = { res: customObject }
     I18n({
       locales: ['en', 'de'],

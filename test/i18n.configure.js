@@ -1,9 +1,9 @@
-var i18n = require('..')
-var should = require('should')
-var fs = require('fs')
+const i18n = require('..')
+const should = require('should')
+const fs = require('fs')
 
 describe('Module Config', function () {
-  var testScope = {}
+  const testScope = {}
 
   beforeEach(function () {
     i18n.configure({
@@ -17,7 +17,7 @@ describe('Module Config', function () {
   })
 
   afterEach(function () {
-    var stats = fs.lstatSync('./customlocales')
+    const stats = fs.lstatSync('./customlocales')
     should.exist(stats)
     if (stats) {
       try {
@@ -29,15 +29,15 @@ describe('Module Config', function () {
   })
 
   it('should be possible to setup a custom directory', function () {
-    var stats = fs.lstatSync('./customlocales')
+    const stats = fs.lstatSync('./customlocales')
     should.exist(stats)
   })
 
   it('should be possible to read custom files with custom prefixes and extensions', function () {
-    var statsde = fs.lstatSync(
+    const statsde = fs.lstatSync(
       './customlocales/customprefix-de.customextension'
     )
-    var statsen = fs.lstatSync(
+    const statsen = fs.lstatSync(
       './customlocales/customprefix-en.customextension'
     )
     should.exist(statsde)

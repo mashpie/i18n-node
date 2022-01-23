@@ -2,7 +2,7 @@ const { I18n } = require('..')
 
 describe('Fallbacks', function () {
   let i18n = new I18n()
-  var req = {
+  const req = {
     request: 'GET /test',
     __: i18n.__,
     __n: i18n.__n,

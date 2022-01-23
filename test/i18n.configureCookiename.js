@@ -1,8 +1,8 @@
-var i18n = require('..')
+const i18n = require('..')
 
 describe('Locale switching should work when set via cookie', function () {
-  var req
-  var res
+  let req
+  let res
 
   beforeEach(function () {
     i18n.configure({

@@ -1,14 +1,14 @@
-var i18n = require('..')
-var should = require('should')
-var fs = require('fs')
+const i18n = require('..')
+const should = require('should')
+const fs = require('fs')
 
-var isWin = /^win/.test(process.platform)
+const isWin = /^win/.test(process.platform)
 
 describe('Module Config (directoryPermissions)', function () {
-  var testScope = {}
+  const testScope = {}
 
   afterEach(function () {
-    var stats = fs.lstatSync('./customlocales')
+    const stats = fs.lstatSync('./customlocales')
     should.exist(stats)
     if (stats) {
       try {
@@ -28,7 +28,7 @@ describe('Module Config (directoryPermissions)', function () {
       prefix: 'customprefix-'
     })
     testScope.__('Hello')
-    var stat = fs.lstatSync('./customlocales')
+    const stat = fs.lstatSync('./customlocales')
     should.exist(stat)
   })
 
@@ -42,8 +42,8 @@ describe('Module Config (directoryPermissions)', function () {
       prefix: 'customprefix-'
     })
     testScope.__('Hello')
-    var stat = fs.lstatSync('./customlocales')
-    var mode = isWin ? '40666' : '40700'
+    const stat = fs.lstatSync('./customlocales')
+    const mode = isWin ? '40666' : '40700'
     should.equal(mode, parseInt(stat.mode.toString(8), 10))
     should.exist(stat)
   })
@@ -58,8 +58,8 @@ describe('Module Config (directoryPermissions)', function () {
       prefix: 'customprefix-'
     })
     testScope.__('Hello')
-    var stat = fs.lstatSync('./customlocales')
-    var mode = isWin ? '40666' : '40750'
+    const stat = fs.lstatSync('./customlocales')
+    const mode = isWin ? '40666' : '40750'
     should.equal(mode, parseInt(stat.mode.toString(8), 10))
     should.exist(stat)
   })

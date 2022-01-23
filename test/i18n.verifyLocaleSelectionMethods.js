@@ -1,11 +1,11 @@
-var i18n = require('..')
+const i18n = require('..')
 require('should')
 
 describe('when configuring selected locale', function () {
-  var res
+  let res
 
   function setByQueryParam(i18n, locale) {
-    var req = {
+    const req = {
       request: 'GET /test?lang=' + locale,
       url: '/test?lang=' + locale
     }
@@ -14,7 +14,7 @@ describe('when configuring selected locale', function () {
   }
 
   function setByCookie(i18n, locale) {
-    var req = {
+    const req = {
       request: 'GET /test',
       url: '/test',
       cookies: {
@@ -27,7 +27,7 @@ describe('when configuring selected locale', function () {
   }
 
   function setByHeader(i18n, locale) {
-    var req = {
+    const req = {
       request: 'GET /test',
       url: '/test',
       headers: {

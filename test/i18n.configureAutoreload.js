@@ -3,7 +3,7 @@ const should = require('should')
 const fs = require('fs')
 const path = require('path')
 
-var timeout = 50
+const timeout = 50
 
 /**
  * @todo autoreload... by fs.watch never stops
@@ -15,8 +15,8 @@ var timeout = 50
  */
 
 describe('autoreload configuration', function () {
-  var testScope = {}
-  var directory = path.join(__dirname, '..', 'testlocalesauto')
+  const testScope = {}
+  const directory = path.join(__dirname, '..', 'testlocalesauto')
   fs.mkdirSync(directory)
   fs.writeFileSync(directory + '/de.json', '{}')
   fs.writeFileSync(directory + '/en.json', '{}')
@@ -58,8 +58,8 @@ describe('autoreload configuration', function () {
 })
 
 describe('autoreload configuration with prefix', function () {
-  var testScope = {}
-  var directory = path.join(__dirname, '..', 'testlocalesautoprefixed')
+  const testScope = {}
+  const directory = path.join(__dirname, '..', 'testlocalesautoprefixed')
   fs.mkdirSync(directory)
   fs.writeFileSync(directory + '/customprefix-de.json', '{}')
   fs.writeFileSync(directory + '/customprefix-en.json', '{}')
@@ -102,8 +102,8 @@ describe('autoreload configuration with prefix', function () {
 })
 
 describe('autoreload configuration with prefix and customextension', function () {
-  var testScope = {}
-  var directory = path.join(__dirname, '..', 'testlocalesautoprefixedext')
+  const testScope = {}
+  const directory = path.join(__dirname, '..', 'testlocalesautoprefixedext')
   fs.mkdirSync(directory)
   fs.writeFileSync(directory + '/customprefix-de.customextension', '{}')
   fs.writeFileSync(directory + '/customprefix-en.customextension', '{}')
@@ -150,8 +150,8 @@ describe('autoreload configuration with prefix and customextension', function ()
 })
 
 describe('autoreload configuration with customextension', function () {
-  var testScope = {}
-  var directory = path.join(__dirname, '..', 'testlocalesautocustomextension')
+  const testScope = {}
+  const directory = path.join(__dirname, '..', 'testlocalesautocustomextension')
   fs.mkdirSync(directory)
   fs.writeFileSync(directory + '/de.customextension', '{}')
   fs.writeFileSync(directory + '/en.customextension', '{}')

@@ -1,8 +1,8 @@
-var i18n = require('..')
-var should = require('should')
-var fs = require('fs')
+const i18n = require('..')
+const should = require('should')
+const fs = require('fs')
 
-var directory = './localesmakeplural'
+const directory = './localesmakeplural'
 
 function getJson(l) {
   return JSON.parse(fs.readFileSync(directory + '/' + l + '.json'))
@@ -13,9 +13,9 @@ function putJson(l, d) {
 }
 
 describe('i18n supports MakePlural', function () {
-  var TestScope = {}
-  var locales = ['en', 'de', 'fr', 'ru', 'ar', 'de-DE', 'de-AT', 'de-CH']
-  var fixture = {
+  let TestScope = {}
+  const locales = ['en', 'de', 'fr', 'ru', 'ar', 'de-DE', 'de-AT', 'de-CH']
+  const fixture = {
     de: {
       '%s cat': {
         one: '%d Katze',
@@ -84,7 +84,7 @@ describe('i18n supports MakePlural', function () {
 
     TestScope.setLocale('en')
     TestScope.__('Hello World') // <-- just inits
-    for (var i = 0; i < locales.length; i++) {
+    for (let i = 0; i < locales.length; i++) {
       putJson(locales[i], fixture[locales[i]])
     }
   })
@@ -168,8 +168,8 @@ describe('i18n supports MakePlural', function () {
   })
 
   it('__n() should return correctly in german for all regions', function (done) {
-    var regions = ['de-DE', 'de-AT', 'de-CH']
-    for (var i = 0; i < regions.length; i++) {
+    const regions = ['de-DE', 'de-AT', 'de-CH']
+    for (let i = 0; i < regions.length; i++) {
       TestScope.setLocale(regions[i])
       should.deepEqual(TestScope.__n('%s cat', 0), '0 Katzen')
       should.deepEqual(TestScope.__n('%s cat', 1), '1 Katze')

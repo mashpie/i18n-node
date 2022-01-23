@@ -1,9 +1,9 @@
-var i18n = require('..')
-var should = require('should')
+const i18n = require('..')
+const should = require('should')
 
 describe('i18n.__l() - return a list of translations', function () {
   it('should work on a custom object', function () {
-    var customObject = {}
+    const customObject = {}
     i18n.configure({
       locales: ['en', 'de'],
       register: customObject
@@ -14,8 +14,8 @@ describe('i18n.__l() - return a list of translations', function () {
   })
 
   it('should work on list of objects', function () {
-    var obj1 = {}
-    var obj2 = {}
+    const obj1 = {}
+    const obj2 = {}
     i18n.configure({
       locales: ['en', 'de', 'fr'],
       register: [obj1, obj2]
@@ -47,7 +47,7 @@ describe('i18n.__l() - return a list of translations', function () {
 
 describe('i18n.__h() - return a hash of translations', function () {
   it('should work on a custom object', function () {
-    var customObject = {}
+    const customObject = {}
     i18n.configure({
       locales: ['en', 'de'],
       register: customObject
@@ -61,8 +61,8 @@ describe('i18n.__h() - return a hash of translations', function () {
   })
 
   it('should work on list of objects', function () {
-    var obj1 = {}
-    var obj2 = {}
+    const obj1 = {}
+    const obj2 = {}
     i18n.configure({
       locales: ['en', 'de', 'fr'],
       register: [obj1, obj2]

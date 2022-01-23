@@ -1,5 +1,5 @@
 const { I18n } = require('..')
-var should = require('should')
+const should = require('should')
 
 describe('retryInDefaultLocale', function () {
   const i18nWithDefault = new I18n({
@@ -39,7 +39,7 @@ describe('retryInDefaultLocale', function () {
 
     it('should work multple times (not set wrong cache)', function () {
       i18nWithDefault.setLocale('nl')
-      for (var i = 0; i <= 5; i += 1) {
+      for (let i = 0; i <= 5; i += 1) {
         should.equal(
           i18nWithDefault.__('greeting.formal'),
           'Hello',
@@ -74,7 +74,7 @@ describe('retryInDefaultLocale', function () {
 
     it('should work multple times (not set wrong cache)', function () {
       i18nNoDefault.setLocale('nl')
-      for (var i = 0; i <= 5; i += 1) {
+      for (let i = 0; i <= 5; i += 1) {
         should.equal(
           i18nNoDefault.__('greeting.formal'),
           'greeting.formal',
@@ -115,7 +115,7 @@ describe('retryInDefaultLocale', function () {
 
     it('should work multple times (not set wrong cache)', function () {
       i18nWithDefault.setLocale('nl')
-      for (var i = 0; i <= 5; i += 1) {
+      for (let i = 0; i <= 5; i += 1) {
         should.equal(
           i18nWithDefault.__n('%s star', 3),
           '3 stars',
@@ -156,7 +156,7 @@ describe('retryInDefaultLocale', function () {
 
     it('should work multple times (not set wrong cache)', function () {
       i18nNoDefault.setLocale('nl')
-      for (var i = 0; i <= 5; i += 1) {
+      for (let i = 0; i <= 5; i += 1) {
         should.equal(
           i18nNoDefault.__n('%s star', 3),
           '3 star',

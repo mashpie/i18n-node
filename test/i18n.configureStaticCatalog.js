@@ -1,5 +1,5 @@
-var i18n = require('..')
-var should = require('should')
+const i18n = require('..')
+const should = require('should')
 
 describe('staticCatalog configuration', function () {
   it('should take locales from static catalog if set', function (done) {
@@ -9,7 +9,7 @@ describe('staticCatalog configuration', function () {
       }
     })
 
-    var expected = ['en'].sort()
+    const expected = ['en'].sort()
     should.deepEqual(i18n.getLocales(), expected)
 
     done()
@@ -22,7 +22,7 @@ describe('staticCatalog configuration', function () {
       }
     })
 
-    var expected = {}
+    const expected = {}
     should.deepEqual(i18n.getCatalog('en'), expected)
 
     done()

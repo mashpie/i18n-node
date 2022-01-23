@@ -1,6 +1,6 @@
-var i18n = require('..')
-var pkgVersion = require('../package.json').version
-var should = require('should')
+const i18n = require('..')
+const pkgVersion = require('../package.json').version
+const should = require('should')
 
 i18n.configure({
   locales: ['en', 'de'],

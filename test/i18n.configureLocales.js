@@ -1,17 +1,17 @@
-var i18n = require('..')
-var should = require('should')
-var fs = require('fs')
-var path = require('path')
+const i18n = require('..')
+const should = require('should')
+const fs = require('fs')
+const path = require('path')
 
 describe('locales configuration', function () {
   it('omitting it should read all directory contents', function (done) {
-    var directory = path.join(__dirname, '..', 'locales')
+    const directory = path.join(__dirname, '..', 'locales')
 
     i18n.configure({
       directory: directory
     })
 
-    var expected = [
+    const expected = [
       'de',
       'de-AT',
       'de-DE',
@@ -30,7 +30,7 @@ describe('locales configuration', function () {
   })
 
   it('should work when using together with prefix', function (done) {
-    var directory = path.join(__dirname, '..', 'testlocales')
+    const directory = path.join(__dirname, '..', 'testlocales')
 
     fs.mkdirSync(directory)
     fs.writeFileSync(directory + '/.gitkeepornot', 'just kidding')
@@ -42,7 +42,7 @@ describe('locales configuration', function () {
       prefix: 'app-'
     })
 
-    var expected = ['de', 'en'].sort()
+    const expected = ['de', 'en'].sort()
     should.deepEqual(i18n.getLocales(), expected)
 
     fs.unlinkSync(directory + '/.gitkeepornot')
@@ -54,7 +54,7 @@ describe('locales configuration', function () {
   })
 
   it('should work when using together with prefix and extension', function (done) {
-    var directory = path.join(__dirname, '..', 'testlocales')
+    const directory = path.join(__dirname, '..', 'testlocales')
 
     fs.mkdirSync(directory)
     fs.writeFileSync(directory + '/app-de.js', '{}')
@@ -66,7 +66,7 @@ describe('locales configuration', function () {
       extension: '.js'
     })
 
-    var expected = ['de', 'en'].sort()
+    const expected = ['de', 'en'].sort()
     should.deepEqual(i18n.getLocales(), expected)
 
     fs.unlinkSync(directory + '/app-de.js')
@@ -77,7 +77,7 @@ describe('locales configuration', function () {
   })
 
   it('should ignore unmatching files when using together with prefix and extension', function (done) {
-    var directory = path.join(__dirname, '..', 'testlocales')
+    const directory = path.join(__dirname, '..', 'testlocales')
 
     fs.mkdirSync(directory)
     fs.writeFileSync(directory + '/app-de.js', '{}')
@@ -90,7 +90,7 @@ describe('locales configuration', function () {
       extension: '.js'
     })
 
-    var expected = ['de', 'en'].sort()
+    const expected = ['de', 'en'].sort()
     should.deepEqual(i18n.getLocales(), expected)
 
     fs.unlinkSync(directory + '/app-de.js')

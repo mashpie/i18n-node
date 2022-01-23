@@ -1,7 +1,7 @@
 /* global __, __n */
 
-var i18n = require('..')
-var should = require('should')
+const i18n = require('..')
+const should = require('should')
 
 describe('Object Notation', function () {
   beforeEach(function () {
@@ -30,7 +30,7 @@ describe('Object Notation', function () {
 
   describe('i18nTranslate', function () {
     beforeEach(function () {
-      var catalog = i18n.getCatalog('en')
+      const catalog = i18n.getCatalog('en')
       delete catalog.nested.path
     })
 
@@ -52,15 +52,15 @@ describe('Object Notation', function () {
 
     it('should provide proper pluralization support, using object traversal notation', function () {
       i18n.setLocale('en')
-      var singular = __n({ singular: 'cat', plural: 'cat', locale: 'de' }, 1)
-      var plural = __n({ singular: 'cat', plural: 'cat', locale: 'de' }, 3)
+      const singular = __n({ singular: 'cat', plural: 'cat', locale: 'de' }, 1)
+      const plural = __n({ singular: 'cat', plural: 'cat', locale: 'de' }, 3)
       should.equal(singular, '1 Katze')
       should.equal(plural, '3 Katzen')
     })
 
     it('should allow for simple pluralization', function () {
-      var singular = __n('nested.deep.plural', 1)
-      var plural = __n('nested.deep.plural', 3)
+      const singular = __n('nested.deep.plural', 1)
+      const plural = __n('nested.deep.plural', 3)
       should.equal(singular, 'plural')
       should.equal(plural, 'plurals')
     })
