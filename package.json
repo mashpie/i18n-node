@@ -28,10 +28,10 @@
   "dependencies": {
     "@messageformat/core": "^3.0.0",
     "debug": "^4.3.3",
+    "fast-printf": "^1.6.9",
     "make-plural": "^7.0.0",
     "math-interval-parser": "^2.0.1",
-    "mustache": "^4.2.0",
-    "sprintf-js": "^1.1.2"
+    "mustache": "^4.2.0"
   },
   "devDependencies": {
     "async": "^3.2.2",
