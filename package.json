@@ -55,7 +55,7 @@
     "zombie": "^6.1.4"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=10"
   },
   "scripts": {
     "test": "mocha --exit",
