@@ -5,7 +5,8 @@ require('should')
 describe('configure parser', function () {
   context('with YAML parser', function () {
     const i18n = new I18n({
-      locales: ['en', 'de'],
+      locales: ['en'],
+      extension: '.yml',
       parser: YAML
     })
 
@@ -16,7 +17,9 @@ describe('configure parser', function () {
     it('should write unknown keys to the catalog', function () {
       i18n.__('does.not.exist')
 
-      i18n.getCatalog().should.have.property('does.not.exist', 'does.not.exist')
+      const catalog = i18n.getCatalog()
+      catalog.should.have.property('en')
+      catalog.en.should.have.property('does.not.exist', 'does.not.exist')
     })
   })
 })
