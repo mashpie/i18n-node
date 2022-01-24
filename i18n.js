@@ -181,8 +181,9 @@ const i18n = function I18n(_OPTS = false) {
       typeof opt.missingKeyFn === 'function' ? opt.missingKeyFn : missingKey
 
     parser =
-      typeof opt.parser?.parse === 'function' &&
-      typeof opt.parser?.stringify === 'function'
+      typeof opt.parser === 'object' &&
+      typeof opt.parser.parse === 'function' &&
+      typeof opt.parser.stringify === 'function'
         ? opt.parser
         : JSON
 
