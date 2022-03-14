@@ -22,7 +22,7 @@ two()
 
 // -------------------------------------------------
 
-// set to german
+// set to english
 i18n.setLocale('en')
 
 // will put 'Hello'
