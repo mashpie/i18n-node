@@ -1034,7 +1034,7 @@ const i18n = function I18n(_OPTS = false) {
               ' retrying in ' +
               defaultLocale
           )
-          mutator(translate(defaultLocale, singular, plural))
+          mutator(translate(defaultLocale, singular, plural, true))
         } else {
           mutator({
             one: defaultSingular || singular,
@@ -1056,7 +1056,7 @@ const i18n = function I18n(_OPTS = false) {
             ' retrying in ' +
             defaultLocale
         )
-        mutator(translate(defaultLocale, singular, plural))
+        mutator(translate(defaultLocale, singular, plural, true))
       } else {
         mutator(defaultSingular || singular)
       }
