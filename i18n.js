@@ -47,6 +47,7 @@ const i18n = function I18n(_OPTS = false) {
     tags: ['{{', '}}'],
     disable: false
   }
+
   let mustacheRegex
   const pathsep = path.sep // ---> means win support will be available in node 0.8.x and above
   let autoReload
@@ -70,6 +71,7 @@ const i18n = function I18n(_OPTS = false) {
   let updateFiles
   let syncFiles
   let missingKeyFn
+  let parser
 
   // public exports
   const i18n = {}
@@ -177,6 +179,13 @@ const i18n = function I18n(_OPTS = false) {
     // setting custom missing key function
     missingKeyFn =
       typeof opt.missingKeyFn === 'function' ? opt.missingKeyFn : missingKey
+
+    parser =
+      typeof opt.parser === 'object' &&
+      typeof opt.parser.parse === 'function' &&
+      typeof opt.parser.stringify === 'function'
+        ? opt.parser
+        : JSON
 
     // when missing locales we try to guess that from directory
     opt.locales = opt.staticCatalog
@@ -1228,10 +1237,10 @@ const i18n = function I18n(_OPTS = false) {
     const file = getStorageFilePath(locale)
     try {
       logDebug('read ' + file + ' for locale: ' + locale)
-      localeFile = fs.readFileSync(file)
+      localeFile = fs.readFileSync(file, 'utf-8')
       try {
         // parsing filecontents to locales[locale]
-        locales[locale] = JSON.parse(localeFile)
+        locales[locale] = parser.parse(localeFile)
       } catch (parseError) {
         logError(
           'unable to parse locales from file (maybe ' +
@@ -1292,7 +1301,7 @@ const i18n = function I18n(_OPTS = false) {
       tmp = target + '.tmp'
       fs.writeFileSync(
         tmp,
-        JSON.stringify(locales[locale], null, indent),
+        parser.stringify(locales[locale], null, indent),
         'utf8'
       )
       stats = fs.statSync(tmp)
