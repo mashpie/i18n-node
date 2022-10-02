@@ -273,10 +273,9 @@ const i18n = function I18n(_OPTS = false) {
     // called like __({phrase: "Hello", locale: "en"})
     if (typeof phrase === 'object') {
       if (
-        typeof phrase.locale === 'string' &&
         typeof phrase.phrase === 'string'
       ) {
-        msg = translate(phrase.locale, phrase.phrase)
+        msg = translate(getLocaleFromObject(phrase), phrase.phrase)
       }
     }
     // called like __("Hello")
