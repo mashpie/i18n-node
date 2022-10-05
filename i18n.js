@@ -391,12 +391,11 @@ const i18n = function I18n(_OPTS = false) {
     // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
     if (typeof singular === 'object') {
       if (
-        typeof singular.locale === 'string' &&
         typeof singular.singular === 'string' &&
         typeof singular.plural === 'string'
       ) {
-        targetLocale = singular.locale
-        msg = translate(singular.locale, singular.singular, singular.plural)
+        targetLocale = getLocaleFromObject(singular) || defaultLocale;
+        msg = translate(targetLocale, singular.singular, singular.plural)
       }
       args.unshift(count)
 
