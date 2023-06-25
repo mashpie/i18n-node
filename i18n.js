@@ -308,11 +308,10 @@ const i18n = function I18n(_OPTS = false) {
     // called like __({phrase: "Hello", locale: "en"})
     if (typeof phrase === 'object') {
       if (
-        typeof phrase.locale === 'string' &&
         typeof phrase.phrase === 'string'
       ) {
         msg = phrase.phrase
-        targetLocale = phrase.locale
+        targetLocale = getLocaleFromObject(phrase)
       }
     }
     // called like __("Hello")
