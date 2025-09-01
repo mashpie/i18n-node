@@ -1,11 +1,11 @@
 const i18n = {
   translations: {},
-
-  __: function(key, options = {}) {
-    const { defaultValue } = options;
+  __: function(key, options) {
+    const defaultValue = options && options.defaultValue;
     const translation = this.translations[key];
-
-    if (translation) {
+    return translation !== undefined ? translation : defaultValue;
+  },
+  setTranslations: function(translations) {    if (translation) {
       return translation;
     }
 
