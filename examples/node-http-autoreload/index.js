@@ -43,3 +43,6 @@ app.getDelay = function (req, res) {
 
 // startup
 app.listen(3000, '127.0.0.1')
+
+// export for testing
+module.exports = app

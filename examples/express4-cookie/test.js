@@ -3,17 +3,13 @@
  * $ mocha --exit test.js
  */
 
-require('./index')
-
-var Browser = require('zombie')
+var app = require('./index')
+var request = require('supertest')
 var visitLinks = require('../testlib/visitlinks')
-var DE = new Browser()
-var EN = new Browser()
-var AR = new Browser()
 
-EN.setCookie({ name: 'yourcookiename', domain: 'localhost', value: 'en' })
-DE.setCookie({ name: 'yourcookiename', domain: 'localhost', value: 'de' })
-AR.setCookie({ name: 'yourcookiename', domain: 'localhost', value: 'ar' })
+var DE = request(app)
+var EN = request(app)
+var AR = request(app)
 
 describe('Using i18n in express 4.x with cookieParser', function () {
   describe('res.__() is able to handle concurrent request correctly', function () {
@@ -22,9 +18,10 @@ describe('Using i18n in express 4.x with cookieParser', function () {
         'series',
         'test',
         EN,
-        'res: Hello req: Hello',
+        '<body>res: Hello req: Hello</body>',
         DE,
-        'res: Hallo req: Hallo'
+        '<body>res: Hallo req: Hallo</body>',
+        { enCookies: 'yourcookiename=en', deCookies: 'yourcookiename=de' }
       )
     })
 
@@ -33,9 +30,10 @@ describe('Using i18n in express 4.x with cookieParser', function () {
         'parallel',
         'test',
         EN,
-        'res: Hello req: Hello',
+        '<body>res: Hello req: Hello</body>',
         DE,
-        'res: Hallo req: Hallo'
+        '<body>res: Hallo req: Hallo</body>',
+        { enCookies: 'yourcookiename=en', deCookies: 'yourcookiename=de' }
       )
     })
 
@@ -44,9 +42,10 @@ describe('Using i18n in express 4.x with cookieParser', function () {
         'series',
         'test',
         EN,
-        'res: Hello req: Hello',
+        '<body>res: Hello req: Hello</body>',
         AR,
-        'res: مرحبا req: مرحبا'
+        '<body>res: مرحبا req: مرحبا</body>',
+        { enCookies: 'yourcookiename=en', deCookies: 'yourcookiename=ar' }
       )
     })
 
@@ -55,20 +54,43 @@ describe('Using i18n in express 4.x with cookieParser', function () {
         'parallel',
         'test',
         EN,
-        'res: Hello req: Hello',
+        '<body>res: Hello req: Hello</body>',
         AR,
-        'res: مرحبا req: مرحبا'
+        '<body>res: مرحبا req: مرحبا</body>',
+        { enCookies: 'yourcookiename=en', deCookies: 'yourcookiename=ar' }
       )
     })
   })
 
   describe('i18n.__() is NOT able to handle concurrent request correctly', function () {
     describe('serial requests', function () {
-      visitLinks('series', 'testfail', EN, 'Hello', DE, 'Hello')
+      visitLinks(
+        'series',
+        'testfail',
+        EN,
+        '<body>Hello</body>',
+        DE,
+        '<body>Hello</body>',
+        {
+          enCookies: 'yourcookiename=en',
+          deCookies: 'yourcookiename=de'
+        }
+      )
     })
 
     describe('parallel requests', function () {
-      visitLinks('parallel', 'testfail', EN, 'Hello', DE, 'Hello')
+      visitLinks(
+        'parallel',
+        'testfail',
+        EN,
+        '<body>Hello</body>',
+        DE,
+        '<body>Hello</body>',
+        {
+          enCookies: 'yourcookiename=en',
+          deCookies: 'yourcookiename=de'
+        }
+      )
     })
   })
 })

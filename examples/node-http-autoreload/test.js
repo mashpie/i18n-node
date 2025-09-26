@@ -1,36 +1,36 @@
-require('./index')
-
-var Browser = require('zombie')
+var app = require('./index')
+var request = require('supertest')
 var fs = require('fs')
 var should = require('should')
 var path = require('path')
-var DE = new Browser({
-  headers: {
-    'accept-language': 'de'
-  }
-})
-var EN = new Browser({
-  headers: {
-    'accept-language': 'en'
-  }
-})
+
+var DE = request(app)
+var EN = request(app)
 
 var file = path.join(__dirname, 'locales/en.json')
 var content = JSON.parse(fs.readFileSync(file))
 
 describe('autoreload', function () {
   it('should give current translations in EN', function (done) {
-    EN.visit('http://localhost:3000/test/', function () {
-      should.equal(EN.text('body'), 'Hello')
-      done()
-    })
+    EN.get('/test/')
+      .set('accept-language', 'en')
+      .expect(200)
+      .end(function (err, res) {
+        if (err) return done(err)
+        should.equal(res.text, 'Hello')
+        done()
+      })
   })
 
   it('should give current translations in DE', function (done) {
-    DE.visit('http://localhost:3000/test/', function () {
-      should.equal(DE.text('body'), 'Hallo')
-      done()
-    })
+    DE.get('/test/')
+      .set('accept-language', 'de')
+      .expect(200)
+      .end(function (err, res) {
+        if (err) return done(err)
+        should.equal(res.text, 'Hallo')
+        done()
+      })
   })
 
   it('should trigger reload of translations in EN', function (done) {
@@ -40,17 +40,25 @@ describe('autoreload', function () {
   })
 
   it('should give updated translations in EN', function (done) {
-    EN.visit('http://localhost:3000/test/', function () {
-      should.equal(EN.text('body'), 'Hi')
-      done()
-    })
+    EN.get('/test/')
+      .set('accept-language', 'en')
+      .expect(200)
+      .end(function (err, res) {
+        if (err) return done(err)
+        should.equal(res.text, 'Hi')
+        done()
+      })
   })
 
   it('should still give old translations in DE', function (done) {
-    DE.visit('http://localhost:3000/test/', function () {
-      should.equal(DE.text('body'), 'Hallo')
-      done()
-    })
+    DE.get('/test/')
+      .set('accept-language', 'de')
+      .expect(200)
+      .end(function (err, res) {
+        if (err) return done(err)
+        should.equal(res.text, 'Hallo')
+        done()
+      })
   })
 
   it('should reset en.json', function (done) {
