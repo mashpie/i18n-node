@@ -4,6 +4,15 @@ const should = require('should')
 describe('parsing Messageformat phrases', () => {
   const mfTest = {}
 
+  const i18nWithDefault = new i18n.I18n({
+    locales: ['en', 'de'],
+    defaultLocale: 'en',
+    directory: './locales',
+    updateFiles: false,
+    objectNotation: true,
+    retryInDefaultLocale: true
+  })
+
   beforeEach(() => {
     i18n.configure({
       locales: ['en', 'de', 'fr', 'ru'],
@@ -183,5 +192,45 @@ describe('parsing Messageformat phrases', () => {
       'In russian there is one for 21',
       mfTest.__mf('mftest', { NUM: 21, lang: 'russian' })
     )
+  })
+
+  describe('phrase input as object', () => {
+    it('should work with simple strings', () => {
+      should.equal(i18nWithDefault.__mf({ phrase: 'Hello', locale: 'de' }), 'Hallo')
+    })
+
+    it('should work with basic replacements', () => {
+      should.equal(
+        i18nWithDefault.__mf(
+          { phrase: 'Hello {name}', locale: 'de' },
+          { name: 'Marcus' }
+        ),
+        'Hallo Marcus'
+      )
+    })
+
+    it('should work with plurals', () => {
+      should.equal(
+        i18nWithDefault.__mf({phrase: 'mftest', locale: 'de'}, { NUM: 0, lang: 'german' }),
+        'In german there others for 0'
+      )
+      should.equal(
+        i18nWithDefault.__mf({phrase: 'mftest', locale: 'de'}, { NUM: 1, lang: 'german' }),
+        'In german there is one for 1'
+      )
+      should.equal(
+        i18nWithDefault.__mf({phrase: 'mftest', locale: 'de'}, { NUM: 2, lang: 'german' }),
+        'In german there others for 2'
+      )
+      should.equal(
+        i18nWithDefault.__mf({phrase: 'mftest', locale: 'de'}, { NUM: 3, lang: 'german' }),
+        'In german there others for 3'
+      )
+    })
+
+    it('should use translations from defaultLocale if provided locale is "undefined" or "null"', () => {
+      should.equal(i18nWithDefault.__mf({ phrase: 'greeting.formal', locale: undefined }), 'Hello')
+      should.equal(i18nWithDefault.__mf({ phrase: 'greeting.formal', locale: null }), 'Hello')
+    })
   })
 })
