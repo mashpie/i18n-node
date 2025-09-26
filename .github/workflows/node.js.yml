@@ -18,18 +18,23 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: latest
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        cache: 'pnpm'
 
-    - run: npm ci
-    - run: npm run test-ci
+    - run: pnpm install --frozen-lockfile
+    - run: pnpm run test-ci
 
     - name: Generate coverage report
       if: matrix.node-version == 24
-      run: npm run coverage
+      run: pnpm run coverage
 
     - name: Upload coverage to Codecov
       if: matrix.node-version == 24
