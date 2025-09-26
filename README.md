@@ -7,7 +7,7 @@ Adds new strings on-the-fly when first used in your app.
 No extra parsing needed.
 
 ![Test](https://github.com/mashpie/i18n-node/actions/workflows/node.js.yml/badge.svg)
-[![Test Coverage][coveralls-image]][coveralls-url]
+[![Test Coverage][codecov-image]][codecov-url]
 [![NPM version][npm-image]][npm-url]
 ![npm](https://img.shields.io/npm/dw/i18n)
 [![Known Vulnerabilities][snyk-image]][snyk-url]
@@ -1144,8 +1144,8 @@ For current release notes see [GitHub Release Notes](https://github.com/mashpie/
 [npm-image]: https://badge.fury.io/js/i18n.svg
 [npm-url]: https://www.npmjs.com/package/i18n
 
-[coveralls-image]: https://coveralls.io/repos/github/mashpie/i18n-node/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/mashpie/i18n-node?branch=master
+[codecov-image]: https://codecov.io/gh/mashpie/i18n-node/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/mashpie/i18n-node
 
 [snyk-image]: https://snyk.io/test/npm/i18n/badge.svg
 [snyk-url]: https://snyk.io/test/npm/i18n
