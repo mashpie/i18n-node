@@ -1,106 +1,106 @@
 Empty: ""
 Hello: Hello
-"Hello %s, how are you today?": Hello %s, how are you today?
+Hello %s, how are you today?: Hello %s, how are you today?
 weekend: weekend
-"Hello %s, how are you today? How was your %s.": Hello %s, how are you today? How was your %s.
+Hello %s, how are you today? How was your %s.: Hello %s, how are you today? How was your %s.
 Hi: Hi
 Howdy: Howdy
 "%s cat":
-  one: "%s cat"
-  other: "%s cats"
+ one: "%s cat"
+ other: "%s cats"
 "%f star":
-  one: "%f star"
-  other: "%f stars"
+ one: "%f star"
+ other: "%f stars"
 "%d star":
-  one: "%d star"
-  other: "%d stars"
+ one: "%d star"
+ other: "%d stars"
 "%s star":
-  one: "%s star"
-  other: "%s stars"
+ one: "%s star"
+ other: "%s stars"
 cat:
+ one: "%s cat"
+ other: "%s cats"
+cats:
+ n:
   one: "%s cat"
   other: "%s cats"
-cats:
-  n:
-    one: "%s cat"
-    other: "%s cats"
 nested:
-  deep:
-    plural:
-      one: plural
-      other: plurals
-  path:
-    sub: nested.path.sub
+ deep:
+  plural:
+   one: plural
+   other: plurals
+ path:
+  sub: nested.path.sub
 There is one monkey in the %%s:
-  one: There is one monkey in the %%s
-  other: There are %d monkeys in the %%s
+ one: There is one monkey in the %%s
+ other: There are %d monkeys in the %%s
 tree: tree
 There is one monkey in the %s:
-  one: There is one monkey in the %s
-  other: There are %d monkeys in the %s
+ one: There is one monkey in the %s
+ other: There are %d monkeys in the %s
 There is one monkey in the tree:
-  one: There is one monkey in the tree
-  other: There are %d monkeys in the tree
+ one: There is one monkey in the tree
+ other: There are %d monkeys in the tree
 plurals with intervals in string (no object): "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
 plurals with intervals in _other_ missing _one_:
-  other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+ other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
 plurals with intervals as string:
-  one: The default 'one' rule
-  other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+ one: The default 'one' rule
+ other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
 plurals with intervals as string (excluded):
-  one: The default 'one' rule
-  other: "[0] a zero rule|]2,5[ two to five (excluded)|and a catchall rule"
+ one: The default 'one' rule
+ other: "[0] a zero rule|]2,5[ two to five (excluded)|and a catchall rule"
 plurals in any order:
-  one: The default 'one' rule
-  other: "[0] a zero rule|and a catchall rule|[2,5] two to five (included)"
+ one: The default 'one' rule
+ other: "[0] a zero rule|and a catchall rule|[2,5] two to five (included)"
 plurals to eternity: "[0,] this will last forever|but only gt 0"
 plurals from eternity: "[,0] this was born long before|but only lt 0"
 Hello %s: Hello %s
-"Hello {{name}}": Hello {{name}}
-"Hello {{name}}, how was your %s?": Hello {{name}}, how was your %s?
+Hello {{name}}: Hello {{name}}
+Hello {{name}}, how was your %s?: Hello {{name}}, how was your %s?
 format:
-  date: MM/DD/YYYY
-  time: h:mm:ss a
+ date: MM/DD/YYYY
+ time: h:mm:ss a
 greeting:
-  formal: Hello
-  informal: Hi
-  placeholder:
-    formal: Hello %s
-    informal: Hi %s
-    loud: greeting.placeholder.loud
-  plurals:
-    one: The default 'one' rule
-    other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+ formal: Hello
+ informal: Hi
+ placeholder:
+  formal: Hello %s
+  informal: Hi %s
+  loud: greeting.placeholder.loud
+ plurals:
+  one: The default 'one' rule
+  other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
 another:
-  nested:
-    extra:
-      deep:
-        example:
-          one: The default 'one' rule
-          other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
-      lazy:
-        example:
-          other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
-      mustache:
-        example: "[0] a zero rule for {{me}}|[2,5] two to five (included) for {{me}}|and
-          a catchall rule for {{me}}"
-      mustacheprintf:
-        example: "[0] %s is zero rule for {{me}}|[2,5] %s is between two and five
-          (included) for {{me}}|and a catchall rule for {{me}} to get my number
-          %s"
+ nested:
+  extra:
+   deep:
+    example:
+     one: The default 'one' rule
+     other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+   lazy:
+    example:
+     other: "[0] a zero rule|[2,5] two to five (included)|and a catchall rule"
+   mustache:
+    example: "[0] a zero rule for {{me}}|[2,5] two to five (included) for {{me}}|and
+     a catchall rule for {{me}}"
+   mustacheprintf:
+    example: "[0] %s is zero rule for {{me}}|[2,5] %s is between two and five
+     (included) for {{me}}|and a catchall rule for {{me}} to get my number %s"
 nested.deep.plural:
-  one: nested.deep.plural
-  other: 1
+ one: nested.deep.plural
+ other: 1
 ordered arguments: "%2$s then %1$s"
 ordered arguments with numbers: "%2$d then %1$s then %3$.2f"
 repeated argument: "%1$s, %1$s, %1$s"
 . is first character: Dot is first character
 last character is .: last character is Dot
 few sentences. with .: few sentences with Dot
-"Hello {{{name}}}": Hello {{{name}}}
+Hello {{{name}}}: Hello {{{name}}}
 Standalone | 42 symbol somewhere | in the text | 1| 0: Standalone | 42 symbol somewhere | in the text | 1| 0
 "should ignore\ \n standalone | mixed with\ \n new lines 42 | value - 42": |-
-  should ignore
-   standalone | mixed with
-   new lines 42 | value - 42
+ should ignore
+  standalone | mixed with
+  new lines 42 | value - 42
 mftest: "In {lang} there {NUM, plural,one{is one for #}other{others for #}}"
+does.not.exist: does.not.exist

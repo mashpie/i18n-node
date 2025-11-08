@@ -429,11 +429,16 @@ const i18n = function I18n(_OPTS = false) {
       }
       // called like __n('%s cat', '%s cats', 3)
       // get translated message with locale from scope (deprecated) or object
-      msg = translate(getLocaleFromObject(this), singular, plural)
-      targetLocale = getLocaleFromObject(this)
+      targetLocale = getLocaleFromObject(this) || defaultLocale
+      msg = translate(targetLocale, singular, plural)
     }
 
     if (count === null) count = namedValues.count
+
+    // ensure we have a valid targetLocale
+    if (!targetLocale) {
+      targetLocale = defaultLocale
+    }
 
     // enforce number
     count = Number(count)
@@ -547,6 +552,7 @@ const i18n = function I18n(_OPTS = false) {
     // called like i18n.getCatalog(req)
     if (
       typeof object === 'object' &&
+      object !== null &&
       typeof object.locale === 'string' &&
       locale === undefined
     ) {
@@ -557,6 +563,7 @@ const i18n = function I18n(_OPTS = false) {
     if (
       !targetLocale &&
       typeof object === 'object' &&
+      object !== null &&
       typeof locale === 'string'
     ) {
       targetLocale = locale
@@ -608,6 +615,46 @@ const i18n = function I18n(_OPTS = false) {
 
   i18n.removeLocale = function i18nRemoveLocale(locale) {
     delete locales[locale]
+  }
+
+  i18n.validateLocaleFiles = function i18nValidateLocaleFiles() {
+    const result = {
+      valid: [],
+      invalid: []
+    }
+
+    // Get all configured locales
+    const localeList = Object.keys(locales)
+    
+    for (const locale of localeList) {
+      try {
+        const file = getStorageFilePath(locale)
+        if (fs.existsSync(file)) {
+          const content = fs.readFileSync(file, 'utf-8')
+          try {
+            // Try to parse the JSON
+            parser.parse(content)
+            result.valid.push(locale)
+          } catch (parseError) {
+            result.invalid.push(locale)
+            logError(
+              'Invalid JSON in locale file ' + file + ': ' + parseError.message
+            )
+          }
+        } else {
+          // File doesn't exist
+          result.invalid.push(locale)
+          logError('Locale file not found: ' + file)
+        }
+      } catch (error) {
+        result.invalid.push(locale)
+        logError(
+          'Error validating locale file for ' + locale + ': ' + error.message
+        )
+      }
+    }
+
+    return result
   }
 
   // ===================
