@@ -31,6 +31,11 @@ describe('retryInDefaultLocale', () => {
       should.equal(i18nWithDefault.__('greeting.formal'), 'Hello')
     })
 
+    it('should use translations from defaultLocale if provided locale is "undefined" or "null"', () => {
+      should.equal(i18nWithDefault.__({ phrase: 'greeting.formal', locale: undefined }), 'Hello')
+      should.equal(i18nWithDefault.__({ phrase: 'greeting.formal', locale: null }), 'Hello')
+    })
+
     it('should default "en" when locale is set to unconfigured value', () => {
       i18nWithDefault.setLocale('sv')
       should.equal(i18nWithDefault.getLocale(), 'en')
@@ -64,6 +69,11 @@ describe('retryInDefaultLocale', () => {
       i18nNoDefault.setLocale('en')
       should.equal(i18nNoDefault.getLocale(), 'en')
       should.equal(i18nNoDefault.__('greeting.formal'), 'Hello')
+    })
+
+    it('should use translation from defaultValue if provided locale is "undefined" or "null"', () => {
+      should.equal(i18nWithDefault.__({ phrase: 'greeting.formal', locale: undefined }), 'Hello')
+      should.equal(i18nWithDefault.__({ phrase: 'greeting.formal', locale: null }), 'Hello')
     })
 
     it('should default "en" when locale is set to unconfigured value', () => {
@@ -106,6 +116,11 @@ describe('retryInDefaultLocale', () => {
       should.equal(i18nWithDefault.__n('%s star', 3), '3 stars')
     })
 
+    it('should use translation from defaultValue if provided locale is "undefined" or "null"', () => {
+      should.equal(i18nWithDefault.__n({ singular: '%s star', plural: '%s stars', locale: undefined }, 3), '3 stars')
+      should.equal(i18nWithDefault.__n({ singular: '%s star', plural: '%s stars', locale: null }, 3), '3 stars')
+    })
+
     it('should default "en" when locale is set to unconfigured value', () => {
       i18nWithDefault.setLocale('sv')
       should.equal(i18nWithDefault.getLocale(), 'en')
@@ -145,6 +160,11 @@ describe('retryInDefaultLocale', () => {
       should.equal(i18nNoDefault.getLocale(), 'en')
       should.equal(i18nNoDefault.__n('%s star', 1), '1 star')
       should.equal(i18nNoDefault.__n('%s star', 3), '3 stars')
+    })
+
+    it('should use translation from defaultValue if provided locale is "undefined" or "null"', () => {
+      should.equal(i18nWithDefault.__n({ singular: '%s star', plural: '%s stars', locale: undefined }, 3), '3 stars')
+      should.equal(i18nWithDefault.__n({ singular: '%s star', plural: '%s stars', locale: null }, 3), '3 stars')
     })
 
     it('should default "en" when locale is set to unconfigured value', () => {
