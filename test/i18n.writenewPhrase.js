@@ -158,7 +158,7 @@ describe('when i18n gets a new phrase', () => {
     msg += 'other{others for #}}'
 
     // this should just add that string
-    TestScope.__mf(msg, { N: 1 })
+    TestScope.__mf(msg, { language: '', N: 1 })
 
     should.deepEqual(getJson('en')[msg], msg)
     should.deepEqual(getJson('de')[msg], msg)

@@ -16,7 +16,7 @@ const debug = require('debug')('i18n:debug')
 const warn = require('debug')('i18n:warn')
 const error = require('debug')('i18n:error')
 const Mustache = require('mustache')
-const Messageformat = require('@messageformat/core')
+const IntlMessageFormat = require('intl-messageformat').default
 const MakePlural = require('make-plural')
 const parseInterval = require('math-interval-parser').default
 
@@ -27,7 +27,7 @@ const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') /
  * create constructor function
  */
 const i18n = function I18n(_OPTS = false) {
-  const MessageformatInstanceForLocale = {}
+  const messageFormatCacheForLocale = new Map()
   const PluralsForLocale = {}
   let locales = {}
   const api = {
@@ -300,7 +300,7 @@ const i18n = function I18n(_OPTS = false) {
   }
 
   i18n.__mf = function i18nMessageformat(phrase) {
-    let msg, mf, f
+    let msg, compiledFunctions, f
     let targetLocale = defaultLocale
     const argv = parseArgv(arguments)
     const namedValues = argv[0]
@@ -328,21 +328,20 @@ const i18n = function I18n(_OPTS = false) {
 
     // now head over to Messageformat
     // and try to cache instance
-    if (MessageformatInstanceForLocale[targetLocale]) {
-      mf = MessageformatInstanceForLocale[targetLocale]
+    if (messageFormatCacheForLocale.has(targetLocale)) {
+      compiledFunctions = messageFormatCacheForLocale.get(targetLocale)
     } else {
-      mf = new Messageformat(targetLocale)
-
-      mf.compiledFunctions = {}
-      MessageformatInstanceForLocale[targetLocale] = mf
+      compiledFunctions = new Map()
+      messageFormatCacheForLocale.set(targetLocale, compiledFunctions)
     }
 
     // let's try to cache that function
-    if (mf.compiledFunctions[msg]) {
-      f = mf.compiledFunctions[msg]
+    if (compiledFunctions.has(msg)) {
+      f = compiledFunctions.get(msg)
     } else {
-      f = mf.compile(msg)
-      mf.compiledFunctions[msg] = f
+      const format = new IntlMessageFormat(msg, targetLocale)
+      f = format.format.bind(format)
+      compiledFunctions.set(msg, f)
     }
 
     return postProcess(f(namedValues), namedValues, args)
