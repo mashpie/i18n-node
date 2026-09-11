@@ -304,7 +304,8 @@ const i18n = function I18n(_OPTS = false) {
     let targetLocale = defaultLocale
     const argv = parseArgv(arguments)
     const namedValues = argv[0]
-    const args = argv[1]
+    if (argv[1].length > 0)
+      logWarn('i18n.__mf must be called with named values only')
 
     // called like __({phrase: "Hello", locale: "en"})
     if (typeof phrase === 'object') {
@@ -345,7 +346,7 @@ const i18n = function I18n(_OPTS = false) {
       mf.compiledFunctions[msg] = f
     }
 
-    return postProcess(f(namedValues), namedValues, args)
+    return f(namedValues)
   }
 
   i18n.__l = function i18nTranslationList(phrase) {

@@ -21,10 +21,6 @@ describe('parsing Messageformat phrases', () => {
     mfTest.setLocale('de')
     should.equal('Hallo', mfTest.__mf('Hello'))
     should.equal('Hallo', mfTest.__mf('Hello'))
-    should.equal(
-      'Hallo Marcus, wie geht es dir heute?',
-      mfTest.__mf('Hello %s, how are you today?', 'Marcus')
-    )
     should.equal('Hello', i18n.__mf({ phrase: 'Hello', locale: 'en' }))
     should.equal('Hello', mfTest.__mf({ phrase: 'Hello', locale: 'en' }))
   })
@@ -37,14 +33,9 @@ describe('parsing Messageformat phrases', () => {
     )
 
     mfTest.setLocale('de')
-    should.equal(
-      'Hallo Marcus',
-      mfTest.__mf('Hello {name}', { name: 'Marcus' })
-    )
-    should.equal(
-      'Hallo Marcus, wie war dein test?',
-      mfTest.__mf('Hello {name}, how was your %s?', 'test', { name: 'Marcus' })
-    )
+    for (const name of ['Marcus', '[0]|[1]|s', '{{}}', '{{{}}', '%%']) {
+      should.equal(`Hallo ${name}`, mfTest.__mf('Hello {name}', { name }))
+    }
   })
 
   it('should work with plurals', () => {
